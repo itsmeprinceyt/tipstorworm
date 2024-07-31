@@ -15,6 +15,7 @@ module.exports = {
       boxShadow: {
         'blackcustom': '4px 4px 0px rgba(0, 0, 0, 1)',
         'yellowcustom': '4px 4px 0px rgba(234, 179, 8, 1)',
+        'greencustom': '4px 4px 0px rgba(34, 197, 94, 1)',
       },
       textShadow: {
         'default': '2px 2px 4px rgba(0, 0, 0, 0.5)',
