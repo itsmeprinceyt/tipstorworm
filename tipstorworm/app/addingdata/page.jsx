@@ -1,26 +1,14 @@
-"use client"
-import {useForm} from "react-hook-form";
-import {useState} from "react";
+"use client";
+import { useForm } from "react-hook-form";
 
 export default function AddingData() {
     const {
         register,
         handleSubmit,
-        setError,
         formState: { errors, isSubmitting },
     } = useForm();
 
-    const onSubmit = async(data) => {
-        let r = await fetch("http://localhost:3000/",
-            {   method: "POST",
-                headers: {
-                "Content-Type": "application/json"}, body: JSON.stringify(data)
-            }
-        );
-        let res = await r.text()
-        console.log(res,data)
-        // Add your submission logic here
-    };
+    // onSubmit=Handlesubmit not created yet
 
     return (
         <div className="bg-red-400 p-4">
@@ -118,7 +106,7 @@ export default function AddingData() {
                     />
                     {errors.Link && <p className="text-red-600">{errors.Link.message}</p>}
                 </div>
-                
+
                 <div>
                     <label htmlFor="category" className="block mb-2">Category</label>
                     <select
@@ -138,7 +126,7 @@ export default function AddingData() {
                         <option value="Extras">Extras</option>
                     </select>
                     {errors.category && <p className="text-red-600">{errors.category.message}</p>}
-                    </div>
+                </div>
                 <input
                     className="bg-blue-600 text-white p-2 rounded disabled:opacity-50"
                     disabled={isSubmitting}
@@ -148,4 +136,4 @@ export default function AddingData() {
             </form>
         </div>
     );
-};
+}
