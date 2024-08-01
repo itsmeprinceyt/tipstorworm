@@ -118,7 +118,27 @@ export default function AddingData() {
                     />
                     {errors.Link && <p className="text-red-600">{errors.Link.message}</p>}
                 </div>
-
+                
+                <div>
+                    <label htmlFor="category" className="block mb-2">Category</label>
+                    <select
+                        id="category"
+                        {...register("category", {
+                        required: {
+                            value: true,
+                            message: "Select a category"
+                        }
+                        })}
+                        className="block mb-2 p-2 border border-gray-300 rounded"
+                    >
+                        <option value="">Select a category</option>
+                        <option value="Websites">Websites</option>
+                        <option value="Applications">Applications</option>
+                        <option value="Tips & Tricks">Tips & Tricks</option>
+                        <option value="Extras">Extras</option>
+                    </select>
+                    {errors.category && <p className="text-red-600">{errors.category.message}</p>}
+                    </div>
                 <input
                     className="bg-blue-600 text-white p-2 rounded disabled:opacity-50"
                     disabled={isSubmitting}
