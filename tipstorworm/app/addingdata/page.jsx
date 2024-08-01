@@ -11,13 +11,14 @@ export default function AddingData() {
     } = useForm();
 
     const onSubmit = async(data) => {
-        let r = await fetch("http://localhost:3001/",
+        let r = await fetch("http://localhost:3000/",
             {   method: "POST",
                 headers: {
                 "Content-Type": "application/json"}, body: JSON.stringify(data)
             }
         );
         let res = await r.text()
+        console.log(res,data)
         // Add your submission logic here
     };
 
