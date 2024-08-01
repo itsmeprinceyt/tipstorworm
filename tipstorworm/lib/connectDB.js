@@ -2,12 +2,10 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const dotenv = require('dotenv');
 
-// Load environment variables from .env file
 dotenv.config();
-const uri = process.env.DATABASE_URL;
-console.log(uri);
+const password = encodeURIComponent(process.env.DATABASE_URL_PASSWORD); //if the password contains special characters it needs to be decoded. so this will decode the password and then it will store the decoded password in that variable
+const uri = process.env.DATABASE_URL1+password+process.env.DATABASE_URL2; // using mongoDB connection string along with login credentials to connect to mongoDB atlas
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -18,13 +16,10 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
-    // Ensures that the client will close when you finish/error
     await client.close();
   }
 }
