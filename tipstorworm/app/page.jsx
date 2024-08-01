@@ -19,7 +19,7 @@ export default function Home() {
         </div>
         <div className="p-2 flex gap-3 justify-center font-semibold text-white">
         <button className="text-yellow-950 bg-yellow-400 hover:bg-black hover:text-yellow-400 py-2 px-4 rounded w-[130px] shadow-blackcustom hover:shadow-yellowcustom">Websites</button>
-        <button className="text-yellow-950 bg-yellow-400 hover:bg-black hover:text-yellow-400 py-2 px-4 rounded w-[130px] shadow-blackcustom hover:shadow-yellowcustom">Application</button>
+        <button className="text-yellow-950 bg-yellow-400 hover:bg-black hover:text-yellow-400 py-2 px-4 rounded w-[130px] shadow-blackcustom hover:shadow-yellowcustom">Applications</button>
         <button className="text-yellow-950 bg-yellow-400 hover:bg-black hover:text-yellow-400 py-2 px-4 rounded w-[130px] shadow-blackcustom hover:shadow-yellowcustom">Tips & Tricks</button>
         <button className="text-yellow-950 bg-yellow-400 hover:bg-black hover:text-yellow-400 py-2 px-4 rounded w-[130px] shadow-blackcustom hover:shadow-yellowcustom">Extras</button>
         
