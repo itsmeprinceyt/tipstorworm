@@ -3,45 +3,20 @@ const {Schema} = mongoose;
 
 
 const tipstorworm = new Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    photo_description: {
-        type: String,
-        required: true
-    },
-    photo: {
-        type: Buffer,
-        required: true
-    },
-    hyperlink_description: {
-        type: String,
-        required: true
-    },
-    hyperlink: {
-        type: String,
-        required: true,
-        match: /^(ftp|http|https):\/\/[^ "]+$/
-    },
-    category: {
-        type: String,
-        enum: ['Websites', 'Applications', 'Tips&Tricks', 'Extras'],
-        required: true
-    },
-    color: {
-        type: String,
-        required: true
-    }
+    title:String,
+    description: String,
+    photo_description: String,
+    photo: String,
+    hyperlink_description: String,
+    hyperlink: String,
+    category: String,
+    color: String,
     },
     {
         timestamps: true,
     }
 );
 
-const Tipstor = mongoose.models.Tipstor || mongoose.model("tipstorworm",tipstorworm);
+const Tipstor = mongoose.models.Tipstor || mongoose.model('Tipstor', tipstorworm);
+
 module.exports = Tipstor;
