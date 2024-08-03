@@ -47,9 +47,8 @@ const TipstorForm = () => {
         color: formData.color,
       }),
     });
-
-    const data = await result.json();
-    console.log(data);
+    
+    router.replace("/success");
   };
 
   const DefaultDummyData = {
