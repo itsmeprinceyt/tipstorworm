@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "check-db": "node lib/connectDB.js",
-    "dev": "npm run check-db && next dev",
+    "dev": "next dev" ,
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

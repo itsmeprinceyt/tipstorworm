@@ -1,5 +1,6 @@
 import './globals.css'
 import Link from 'next/link';
+import connectDB from ".//(models)/connectDB.js";
 
 export default function Home() {
   return (
@@ -47,3 +48,4 @@ export default function Home() {
     </div>
   );
 }
+connectDB();
