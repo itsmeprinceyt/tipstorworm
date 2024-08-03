@@ -3,3 +3,15 @@ Hermit
 Kinemaster
 PrinterShare
 Unified Remote 
+
+
+
+to-do
+add uploaded by string in mongo db & add time as well
+
+
+so you just add a condition that if you click on a existing data and it has already id of that data then go into edit mode
+so when in edit mode u need to parse that id and get data from mongodb and replace all those data in the field
+if that data exist using ternary operator and then upon sending post request u need to add if else that if sending editmode on post request then u need to send with id and parameters while if sending to add new data then u just simply send to /api/Tipstor route which will add that file new 
+
+u need only 1 [id] and in that just define PUT,GET,DELETE, whatever. and when sending api-request then u need to specify that particular PUT,GET,DELETE so it hit what it needs to hit.
