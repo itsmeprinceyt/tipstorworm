@@ -7,14 +7,15 @@ export default function websites() {
     // fetch the data and see what data has what color then add that color in this ButtonStyle then map all the data one by one and make a html file then put that html file in the return
 
     return (
-        <div className="bg-pink-500 flex flex-col items-center justify-center min-h-screen p-4 gap-4">
+        <div className=" flex flex-col items-center justify-center min-h-screen p-4 gap-4">
             
             <Card 
             url="/cat.jpg"
             alt="Cat"
             title="Title"
-            description="This is a dummy description of the asset which has been uploaded to this page"
+            description="This is a dummy description of the asset which has been uploaded to this page.This is a dummy description of the asset which has been uploaded to this page.This is a dummy description of the asset which has been uploaded to this page."
             credit="by @itsmeprinceyt"
+            color='red'
             />
             <Card 
             url="/cat.jpg"
@@ -22,6 +23,7 @@ export default function websites() {
             title="Title"
             description="This is a dummy description of the asset which has been uploaded to this page"
             credit="by @itsmeprinceyt"
+            color='pink'
             />
             <Card 
             url="/cat.jpg"
@@ -29,6 +31,7 @@ export default function websites() {
             title="Title"
             description="This is a dummy description of the asset which has been uploaded to this page"
             credit="by @itsmeprinceyt"
+            color='red'
             />
 
         </div>
