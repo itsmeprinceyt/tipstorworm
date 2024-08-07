@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Card from "@/app/(components)/card";
 
 
@@ -8,7 +7,7 @@ export default function websites() {
 
     return (
         <div className=" flex flex-col items-center justify-center min-h-screen p-4 gap-4">
-            
+            <div className="grid grid-cols-1 gap-3 boxmd:grid-cols-2">
             <Card 
             url="/cat.jpg"
             alt="Cat"
@@ -33,7 +32,7 @@ export default function websites() {
             credit="by @itsmeprinceyt"
             color='red'
             />
-
+            </div>
         </div>
     )
 }

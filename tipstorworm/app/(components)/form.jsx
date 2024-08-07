@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
+
 const TipstorForm = () => {
   const router = useRouter();
 
@@ -27,8 +28,9 @@ const TipstorForm = () => {
     }
   };
 
+
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault();  
     const result = await fetch("/api/TipstorData", {
       method: "POST",
       headers: {
@@ -37,7 +39,7 @@ const TipstorForm = () => {
         "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
-        title: formData.title, 
+        title: formData.title,
         description: formData.description,
         photo_description: formData.photo_description,
         photo: file, // This will be the base64 string
@@ -47,7 +49,7 @@ const TipstorForm = () => {
         color: formData.color,
       }),
     });
-    
+
     router.replace("/success");
   };
 
@@ -63,6 +65,7 @@ const TipstorForm = () => {
 
   const [formData, setFormData] = useState(DefaultDummyData);
   const [file, setFile] = useState();
+  const [secretCode, setSecretCode] = useState();
 
   const categories = ["Websites", "Applications", "Tips&Tricks", "Extras"];
   const colors = [

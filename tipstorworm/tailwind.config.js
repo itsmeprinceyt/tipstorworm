@@ -7,6 +7,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'boxxs': '600px',
+        'boxmd': '1125px',
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -15,6 +19,7 @@ module.exports = {
       boxShadow: {
         'blackcustom': '4px 4px 0px rgba(0, 0, 0, 1)',
         'yellowcustom': '4px 4px 0px rgba(234, 179, 8, 1)',
+        'yellowcustom2': '0px 0px 30px rgba(255, 145, 0, 0.3)',
         'greencustom': '4px 4px 0px rgba(34, 197, 94, 1)',
       },
       textShadow: {
