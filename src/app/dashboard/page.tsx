@@ -2,7 +2,6 @@
 
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -26,14 +25,6 @@ export default function ProfilePage() {
         <h1 className="text-2xl font-bold mb-2">{user.name}</h1>
         {user.username && <p className="text-gray-600 mb-1">@{user.username}</p>}
         <p className="text-gray-700 mb-1">{user.email}</p>
-
-        {/* Link to Set Password page */}
-        <Link
-          href="/dashboard/set-password"
-          className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-        >
-          Set Password
-        </Link>
 
         <button
           onClick={() => signOut()}

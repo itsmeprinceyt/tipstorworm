@@ -13,8 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      {/* TODO: change this */}
-      <body className="select-text antialiased">
+      <body className="select-none antialiased">
         <Providers>
           <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
           <Navbar/>
