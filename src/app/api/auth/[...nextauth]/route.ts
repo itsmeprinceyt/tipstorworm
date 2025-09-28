@@ -1,11 +1,14 @@
 import NextAuth, { NextAuthOptions, DefaultSession, DefaultUser } from "next-auth";
 import Google, { GoogleProfile } from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 import { initServer, db } from "../../../../lib/initServer";
 import type { Pool } from "mysql2/promise";
 import { v4 as uuidv4 } from "uuid";
 import { MyJWT } from "../../../../types/User/JWT.type";
 import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime";
 import generateUsername from "../../../../utils/Variables/generateUsername";
+import { User } from "../../../../types/User/User.type";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -61,6 +64,37 @@ const authOptions: NextAuthOptions = {
         Google({
             clientId: GOOGLE_CLIENT_ID,
             clientSecret: GOOGLE_CLIENT_SECRET,
+        }),
+        // TODO: fix this , its not letting us login via email and password
+        CredentialsProvider({
+            name: "Email/Password",
+            credentials: {
+                email: { label: "Email", type: "text", placeholder: "you@example.com" },
+                password: { label: "Password", type: "password" },
+            },
+            async authorize(credentials) {
+                if (!credentials?.email || !credentials.password)
+                    throw new Error("Email & password required");
+
+                const pool = await getPool();
+                const [rows] = await pool.execute("SELECT * FROM users WHERE email = ?", [credentials.email]);
+                const user = (rows as User[])[0];
+
+                if (!user) throw new Error("No account found");
+                if (!user.password) throw new Error("Please set a password via Google first");
+
+                const isValid = await bcrypt.compare(credentials.password, user.password);
+                if (!isValid) throw new Error("Invalid password");
+
+                // Return the object that will be saved in the JWT/session
+                return {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    username: user.username,
+                    image: user.image,
+                };
+            },
         }),
     ],
 
@@ -135,7 +169,6 @@ const authOptions: NextAuthOptions = {
             return session;
         },
     },
-
 };
 
 const handler = NextAuth(authOptions);

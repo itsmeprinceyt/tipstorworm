@@ -3,6 +3,7 @@ import "./globals.css";
 
 import { Providers } from "./(components)/Providers/AuthProvider";
 import { Suspense } from "react";
+import Navbar from "./(components)/Navbar";
 
 export const metadata: Metadata = {
   title: "Tipstor Worm | ItsMe Prince",
@@ -12,9 +13,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="select-none antialiased">
+      {/* TODO: change this */}
+      <body className="select-text antialiased">
         <Providers>
           <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
+          <Navbar/>
             {children}
           </Suspense>
         </Providers>
