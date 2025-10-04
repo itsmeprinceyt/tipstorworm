@@ -99,6 +99,16 @@ CREATE TABLE IF NOT EXISTS global_settings (
 );
 
 
+
+
+
+//TODO  CHANGE THIS TO MATCH TIPSTOR WORM
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS audit_logs (
     id CHAR(36) NOT NULL PRIMARY KEY,
     action_type ENUM(
