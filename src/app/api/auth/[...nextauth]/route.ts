@@ -1,14 +1,11 @@
 import NextAuth, { NextAuthOptions, DefaultSession, DefaultUser } from "next-auth";
 import Google, { GoogleProfile } from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
 import { initServer, db } from "../../../../lib/initServer";
 import type { Pool } from "mysql2/promise";
 import { v4 as uuidv4 } from "uuid";
 import { MyJWT } from "../../../../types/User/JWT.type";
 import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime";
 import generateUsername from "../../../../utils/Variables/generateUsername";
-import { User } from "../../../../types/User/User.type";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -46,14 +43,19 @@ declare module "next-auth" {
             username?: string | null;
             email?: string;
             image?: string | null;
+            is_admin?: boolean;
+            is_mod?: boolean;
         } & DefaultSession["user"];
     }
+
     interface User extends DefaultUser {
         id?: string;
         name?: string | null;
         username?: string | null;
         email?: string;
         image?: string | null;
+        is_admin?: boolean;
+        is_mod?: boolean;
     }
 }
 
@@ -64,37 +66,6 @@ const authOptions: NextAuthOptions = {
         Google({
             clientId: GOOGLE_CLIENT_ID,
             clientSecret: GOOGLE_CLIENT_SECRET,
-        }),
-        // TODO: fix this , its not letting us login via email and password
-        CredentialsProvider({
-            name: "Email/Password",
-            credentials: {
-                email: { label: "Email", type: "text", placeholder: "you@example.com" },
-                password: { label: "Password", type: "password" },
-            },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials.password)
-                    throw new Error("Email & password required");
-
-                const pool = await getPool();
-                const [rows] = await pool.execute("SELECT * FROM users WHERE email = ?", [credentials.email]);
-                const user = (rows as User[])[0];
-
-                if (!user) throw new Error("No account found");
-                if (!user.password) throw new Error("Please set a password via Google first");
-
-                const isValid = await bcrypt.compare(credentials.password, user.password);
-                if (!isValid) throw new Error("Invalid password");
-
-                // Return the object that will be saved in the JWT/session
-                return {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    username: user.username,
-                    image: user.image,
-                };
-            },
         }),
     ],
 
@@ -114,7 +85,7 @@ const authOptions: NextAuthOptions = {
             const pool = await getPool();
 
             const [rows] = await pool.execute<MyJWT[]>(
-                "SELECT id, name, username, image FROM users WHERE email = ?",
+                "SELECT id, name, username, email, image, is_admin, is_mod FROM users WHERE email = ?",
                 [email]
             );
 
@@ -125,7 +96,7 @@ const authOptions: NextAuthOptions = {
                 const username = generateUsername(name);
 
                 await pool.execute(
-                    "INSERT INTO users (id, name, username, email, password, image, created_at, updated_at) VALUES (?, ?, ?, ?, NULL, ?, ?, ?)",
+                    "INSERT INTO users (id, name, username, email, image, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
                     [newId, name || undefined, username, email, image || undefined, now, now]
                 );
             } else {
@@ -141,15 +112,47 @@ const authOptions: NextAuthOptions = {
             return true;
         },
 
-        async jwt({ token, user }) {
+        async jwt({ token, user, account, profile }) {
             const t = token as MyJWT;
 
-            if (user) {
-                t.id = (user as MyJWT).id ?? t.id;
-                t.username = (user as MyJWT).username ?? t.username;
-                t.name = user.name ?? t.name;
-                t.email = user.email ?? t.email;
-                t.image = user.image ?? t.image;
+            if (account?.provider === "google" && profile) {
+                const googleProfile = profile as GoogleProfile;
+
+                const pool = await getPool();
+                const [rows] = await pool.execute<MyJWT[]>(
+                    "SELECT id, name, username, email, image, is_admin, is_mod FROM users WHERE email = ?",
+                    [googleProfile.email]
+                );
+
+                if (Array.isArray(rows) && rows.length > 0) {
+                    const dbUser = rows[0];
+                    t.id = dbUser.id ?? t.id;
+                    t.username = dbUser.username ?? null;
+                    t.name = dbUser.name ?? googleProfile.name ?? "";
+                    t.email = dbUser.email ?? googleProfile.email ?? "";
+                    t.image = dbUser.image ?? googleProfile.picture ?? "";
+                    t.is_admin = Boolean(dbUser.is_admin);
+                    t.is_mod = Boolean(dbUser.is_mod);
+                }
+            }
+
+            if (user?.email) {
+                const pool = await getPool();
+                const [rows] = await pool.execute<MyJWT[]>(
+                    "SELECT id, name, username, email, image, is_admin, is_mod FROM users WHERE email = ?",
+                    [user.email]
+                );
+
+                if (Array.isArray(rows) && rows.length > 0) {
+                    const dbUser = rows[0];
+                    t.id = dbUser.id ?? t.id;
+                    t.username = dbUser.username ?? null;
+                    t.name = dbUser.name ?? user.name ?? "";
+                    t.email = dbUser.email ?? user.email ?? "";
+                    t.image = dbUser.image ?? user.image ?? "";
+                    t.is_admin = Boolean(dbUser.is_admin);
+                    t.is_mod = Boolean(dbUser.is_mod);
+                }
             }
 
             return t;
@@ -164,9 +167,18 @@ const authOptions: NextAuthOptions = {
                 session.user.name = t.name;
                 session.user.email = t.email;
                 session.user.image = t.image;
+                session.user.is_admin = Boolean(t.is_admin);
+                session.user.is_mod = Boolean(t.is_mod);
             }
 
             return session;
+        },
+
+        async redirect({ url, baseUrl }) {
+            if (url.startsWith(baseUrl)) {
+                return url;
+            }
+            return baseUrl + "/dashboard";
         },
     },
 };
