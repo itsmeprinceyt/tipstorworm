@@ -136,3 +136,21 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 
     performed_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS reviews (
+    id CHAR(36) PRIMARY KEY,
+    post_id CHAR(36) NOT NULL,
+    user_id CHAR(36) NOT NULL,
+    
+    rating TINYINT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment VARCHAR(250) NULL,
+    status ENUM('active', 'deleted', 'flagged') DEFAULT 'active',
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT ux_review_user_post UNIQUE (user_id, post_id),
+    
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

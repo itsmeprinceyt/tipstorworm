@@ -27,6 +27,13 @@ export const createIndexStatements: string[] = [
   "CREATE INDEX idx_audit_logs_actor_user_id ON audit_logs(actor_user_id)",
   "CREATE INDEX idx_audit_logs_target_user_id ON audit_logs(target_user_id)",
   "CREATE INDEX idx_audit_logs_performed_at ON audit_logs(performed_at)",
+  "CREATE INDEX idx_audit_logs_actor_email ON audit_logs(actor_email)",
+
+  "CREATE INDEX idx_reviews_user_id ON reviews(user_id)",
+  "CREATE INDEX idx_reviews_rating ON reviews(rating)",
+  "CREATE INDEX idx_reviews_status ON reviews(status)",
+  "CREATE INDEX idx_reviews_created_at ON reviews(created_at)",
+  "CREATE INDEX idx_reviews_updated_at ON reviews(updated_at)"
 ];
 
 export const dropIndexStatements: string[] = [
@@ -58,4 +65,11 @@ export const dropIndexStatements: string[] = [
   "DROP INDEX idx_audit_logs_actor_user_id ON audit_logs",
   "DROP INDEX idx_audit_logs_target_user_id ON audit_logs",
   "DROP INDEX idx_audit_logs_performed_at ON audit_logs",
+  "DROP INDEX idx_audit_logs_actor_email ON audit_logs",
+
+  "DROP INDEX idx_reviews_user_id ON reviews",
+  "DROP INDEX idx_reviews_rating ON reviews",
+  "DROP INDEX idx_reviews_status ON reviews",
+  "DROP INDEX idx_reviews_created_at ON reviews",
+  "DROP INDEX idx_reviews_updated_at ON reviews"
 ];
