@@ -98,30 +98,31 @@ CREATE TABLE IF NOT EXISTS global_settings (
     setting_value BOOLEAN NOT NULL
 );
 
-
-
-
-
-//TODO  CHANGE THIS TO MATCH TIPSTOR WORM
-
-
-
-
-
-
 CREATE TABLE IF NOT EXISTS audit_logs (
     id CHAR(36) NOT NULL PRIMARY KEY,
     action_type ENUM(
-        'signup',
-        'enquiry', 
-        'product_add', 
-        'product_update', 
-        'product_remove',
-        'admin_add', 
-        'admin_remove', 
-        'rating',
-        'system',
-        'banned'
+        'user_signup',
+        'user_update',
+        'user_ban',
+        'user_unban',
+        'admin_promote',
+        'admin_demote',
+        'mod_promote', 
+        'mod_demote',
+        'post_create',
+        'post_update',
+        'post_delete',
+        'post_feature',
+        'post_unfeature',
+        'category_create',
+        'category_update',
+        'category_delete',
+        'reaction_create',
+        'reaction_delete',
+        'invite_token_create',
+        'invite_token_deactivate',
+        'settings_update',
+        'system'
     ) NOT NULL,
 
     actor_user_id CHAR(36),
