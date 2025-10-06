@@ -7,13 +7,8 @@ import { MyJWT } from "../../../../types/User/JWT.type";
 import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime";
 import generateUsername from "../../../../utils/Variables/generateUsername";
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-
-if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
-    console.error("Error: GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET is not set in environment variables.");
-    process.exit(1);
-}
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 
 let pool: Pool | null = null;
 async function getPool(): Promise<Pool> {
