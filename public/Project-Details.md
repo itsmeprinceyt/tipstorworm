@@ -17,9 +17,7 @@
 
 # Backend
 
-#### 🔑 1. Authentication & User Management
-
----
+## 🔑 1. Authentication & User Management
 
 **Public APIs**
 1. ⏳ `POST` `/auth/register - User registration with invite token
@@ -51,9 +49,7 @@
 14. ❌ `PATCH` `/admin/routes-access/update/:key` – Update route in DB
 15. ❌ `DELETE` `admin/routes-access/remove/:key` – Remove route from DB
 
-#### 📝 2. Posts Management
-
---- 
+## 📝 2. Posts Management
 
 **Public Post APIs**
 1. ❌ `GET` `/:categoriesId/posts` - List all categories posts (with pagination/filters)
@@ -72,9 +68,7 @@
 1. ❌ `POST` `/posts/:postId/screenshots` - Upload screenshots
 2. ❌ `DELETE` `/posts/:postId/screenshots/:screenshotId` - Delete screenshot
 
-#### 🏷️ 3. Categories Management
-
---- 
+## 🏷️ 3. Categories Management
 
 **Public Category APIs**
 1. ❌ `GET` `/categories` - List all categories
@@ -85,16 +79,12 @@
 2. ❌ `PUT` `/admin/categories/:categoryId` - Update category name
 3. ❌ `DELETE` `/admin/categories/:categoryId` - Delete category
 
-#### ❤️ 4. Reactions System
-
----
+## ❤️ 4. Reactions System
 
 1. ❌ `POST` `/posts/:postId/reactions` - Add reaction to post
 2. ❌ `DELETE` `/posts/:postId/reactions` - Remove reaction from post
 
-#### 🔐 5. Invite System
-
----
+## 🔐 5. Invite System
 
 1. ❌ `POST` `/admin/invites` - Create invite token (admin)
 2. ❌ `GET` `/admin/invites` - List all invite tokens (admin)
@@ -102,18 +92,18 @@
 4. ❌ `GET` `/invites/validate/:token` - Validate invite token
 5. ❌ `GET` `/users/me/invites` - Get user's created invites
 
-#### ⚙️ 6. Settings & System
+## ⚙️ 6. Settings & System
 
 **Audit Logs**
 1. ❌ `POST` `/admin/audit-logs` - Get audit logs (admin)
 
-#### 📊 7. Analytics & Dashboard
+## 📊 7. Analytics & Dashboard
 1. ❌ `GET` `/admin/dashboard` - Admin dashboard analytics
 2. ❌ `GET` `/admin/analytics/posts` - Post analytics (admin)
 3. ❌ `GET` `/admin/analytics/users` - User analytics (admin)
 4. ❌ `GET` `/admin/analytics/categories` - Category analytics (admin)
 
-🔍 8. Search & Discovery
+## 🔍 8. Search & Discovery
 1. ❌ `GET` `/search/posts` - Search posts
 2. ❌ `GET` `/search/users` - Search users
 3. ❌ `GET` `/discover` - Discover content (featured, trending, etc.)
