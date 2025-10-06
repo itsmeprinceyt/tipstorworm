@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
+    "framer-motion": "^12.23.22",
     "mysql2": "^3.15.1",
     "next": "15.5.4",
     "next-auth": "^4.24.11",
