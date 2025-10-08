@@ -75,9 +75,10 @@
 2. ❌ `GET` `/categories/:categoryId` - Get category details
 
 **Admin Category APIs**
-1. ❌ `POST` `/admin/categories` - Create category
-2. ❌ `PUT` `/admin/categories/:categoryId` - Update category name
-3. ❌ `DELETE` `/admin/categories/:categoryId` - Delete category
+1. 📃 `GET` `/admin/category-manager/` - Get all categories & creator data
+2. 📃 `POST` `/admin/category-manager/create` - Create category
+3. ❌ `PUT` `/admin/categories/:categoryId` - Update category name
+4. ❌ `DELETE` `/admin/categories/:categoryId` - Delete category
 
 ## ❤️ 4. Reactions System
 

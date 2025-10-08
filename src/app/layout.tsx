@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import { Providers } from "./(components)/Providers/AuthProvider";
 import { Suspense } from "react";
+import { Toaster } from "react-hot-toast";
+
+import { Providers } from "./(components)/Providers/AuthProvider";
+
 import Navbar from "./(components)/Navbar";
 
 export const metadata: Metadata = {
@@ -16,8 +19,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="select-none antialiased">
         <Providers>
           <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
-          <Navbar/>
+            <Navbar />
             {children}
+            <Toaster
+              position="bottom-left"
+              toastOptions={{ style: { fontSize: "14px" } }}
+            />
           </Suspense>
         </Providers>
       </body>
