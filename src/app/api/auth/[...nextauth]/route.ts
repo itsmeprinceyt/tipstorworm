@@ -43,6 +43,7 @@ declare module "next-auth" {
             username?: string | null;
             email?: string;
             image?: string | null;
+            cover_image?: string | null;
             is_admin?: boolean;
             is_mod?: boolean;
             is_banned?: boolean;
@@ -56,6 +57,7 @@ declare module "next-auth" {
         username?: string | null;
         email?: string;
         image?: string | null;
+        cover_image?: string | null;
         is_admin?: boolean;
         is_mod?: boolean;
         is_banned?: boolean;
@@ -134,7 +136,7 @@ const authOptions: NextAuthOptions = {
 
             if (emailToCheck) {
                 const [rows] = await pool.execute<MyJWT[]>(
-                    "SELECT id, user_id, name, username, email, image, is_admin, is_mod, is_banned FROM users WHERE email = ?",
+                    "SELECT id, user_id, name, username, email, image, cover_image, is_admin, is_mod, is_banned FROM users WHERE email = ?",
                     [emailToCheck]
                 );
 
@@ -146,6 +148,7 @@ const authOptions: NextAuthOptions = {
                     t.name = dbUser.name ?? "";
                     t.email = dbUser.email ?? emailToCheck;
                     t.image = dbUser.image ?? "";
+                    t.cover_image = dbUser.cover_image ?? "";
                     t.is_admin = Boolean(dbUser.is_admin);
                     t.is_mod = Boolean(dbUser.is_mod);
                     t.is_banned = Boolean(dbUser.is_banned);
@@ -166,6 +169,7 @@ const authOptions: NextAuthOptions = {
                 session.user.name = t.name;
                 session.user.email = t.email;
                 session.user.image = t.image;
+                session.user.cover_image = t.cover_image;
                 session.user.is_admin = Boolean(t.is_admin);
                 session.user.is_mod = Boolean(t.is_mod);
                 session.user.is_banned = Boolean(t.is_banned);
