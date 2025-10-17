@@ -108,3 +108,29 @@
 1. ❌ `GET` `/search/posts` - Search posts
 2. ❌ `GET` `/search/users` - Search users
 3. ❌ `GET` `/discover` - Discover content (featured, trending, etc.)
+
+## 🗳️ 9. Suggestions & Reports System
+
+**Public Suggestion APIs**
+1. ❌ `POST` `/suggestions` - Submit new suggestion/report (anonymous or authenticated)
+2. ❌ `GET` `/suggestions/public` - Get public suggestions (feature requests, etc.)
+
+**User Suggestion Management**
+1. ❌ `GET` `/admin/dashboard/user/suggestions` - Get user's submitted suggestions
+2. ❌ `PUT` `/admin/dashboard/user/suggestions/:suggestionId` - Update user's suggestion
+3. ❌ `POST` `/admin/dashboard/user/suggestions/:suggestionId/contact-consent` - Update suggestion
+
+**Admin Suggestion Management**
+1. ❌ `GET` `/admin/suggestions` - List all suggestions (with filters/pagination)
+2. ❌ `GET` `/admin/suggestions/:suggestionId` - Get suggestion details (admin view)
+3. ❌ `POST` `/admin/suggestions/:suggestionId/assign` - Assign suggestion to admin/mod
+4. ❌ `POST` `/admin/suggestions/:suggestionId/unassign` - Unassign suggestion
+5. ❌ `PUT` `/admin/suggestions/:suggestionId/priority` - Update priority
+6. ❌ `POST` `/admin/suggestions/:suggestionId/close` - Close suggestion
+7. ❌ `POST` `/admin/suggestions/:suggestionId/reopen` - Reopen suggestion
+8. ❌ `DELETE` `/admin/suggestions/:suggestionId` - Delete suggestion (admin)
+
+**Suggestion Voting & Engagement (Optional)**
+1. ❌ `POST` `/suggestions/:suggestionId/vote` - Vote on public suggestions
+2. ❌ `DELETE` `/suggestions/:suggestionId/vote` - Remove vote
+3. ❌ `GET` `/suggestions/:suggestionId/votes` - Get vote count
