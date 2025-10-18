@@ -12,6 +12,7 @@
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "framer-motion": "^12.23.22",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.545.0",
     "mysql2": "^3.15.1",
     "next": "15.5.4",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -87,10 +87,10 @@
 
 ## 🔐 5. Invite System
 
-1. ❌ `POST` `/admin/invites` - Create invite token (admin)
-2. ❌ `GET` `/admin/invites` - List all invite tokens (admin)
+1. ⏳ `POST` `/api/admin/invite-code-manager/create` - Create invite token (admin)
+2. ⏳ `GET` `/api/admin/invite-code-manager` - List all invite tokens (admin)
 3. ❌ `POST` `/admin/invites/deactivate/:token` - Deactivate invite token (admin)
-4. ❌ `GET` `/invites/validate/:token` - Validate invite token
+4. ⏳ `GET` `/api/admin/invite-code-manager/validate` - Validate invite token
 5. ❌ `GET` `/users/me/invites` - Get user's created invites
 
 ## ⚙️ 6. Settings & System

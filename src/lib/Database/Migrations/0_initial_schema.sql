@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS invite_tokens (
   CONSTRAINT fk_invite_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
-
 CREATE TABLE IF NOT EXISTS categories (
   id CHAR(36) NOT NULL PRIMARY KEY,
   name VARCHAR(200) NOT NULL,
