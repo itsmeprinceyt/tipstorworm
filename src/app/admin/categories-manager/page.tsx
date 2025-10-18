@@ -1,12 +1,12 @@
 "use client";
 import { useState, useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
-import api from "../../../services/baseApi.service";
 import getAxiosErrorMessage from "../../../utils/Variables/getAxiosError.util";
 import { CategoriesResponse } from "../../../types/Category/Category.type";
 
 import CategoriesList from "../../(components)/Categories/Categories.component";
 import CreateCategoryForm from "../../(components)/Categories/CreateCategories.component";
+import axios from "axios";
 
 export default function CategoryManager() {
     const [categoriesData, setCategoriesData] = useState<CategoriesResponse | null>(null);
@@ -17,8 +17,7 @@ export default function CategoryManager() {
     const fetchCategories = useCallback(async (page = 1) => {
         try {
             setLoading(true);
-            const response = await api.get(
-                `/admin/category-manager?page=${page}&limit=${limit}&include_creator=true`
+            const response = await axios.get(`/api/admin/category-manager?page=${page}&limit=${limit}&include_creator=true`
             );
             setCategoriesData(response.data);
         } catch (err) {

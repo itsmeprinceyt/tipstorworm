@@ -70,7 +70,7 @@ export default function Navbar() {
 
                 <motion.div whileHover={{ y: -1 }} transition={{ type: "spring", stiffness: 400 }}>
                     <Link
-                        href="/dashboard"
+                        href={session?.user.is_admin ? "/admin" : "/dashboard"}
                         className="transition-colors duration-200 font-medium"
                         style={{ color: colors.text }}
                     >

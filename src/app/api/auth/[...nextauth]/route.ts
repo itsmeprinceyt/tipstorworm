@@ -2,10 +2,11 @@ import NextAuth, { NextAuthOptions, DefaultSession, DefaultUser } from "next-aut
 import Google, { GoogleProfile } from "next-auth/providers/google";
 import { initServer, db } from "../../../../lib/initServer";
 import type { Pool } from "mysql2/promise";
-import { v4 as uuidv4 } from "uuid";
 import { MyJWT } from "../../../../types/User/JWT.type";
 import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime";
 import generateUsername from "../../../../utils/Variables/generateUsername";
+import { cookies } from "next/headers";
+import { generateHexId } from "@/utils/Variables/generateHexID.util";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -28,10 +29,6 @@ function sanitizeString(value: unknown, maxLen = 255): string {
 function isValidEmail(email: string): boolean {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
-}
-
-function generateUserId(): string {
-    return uuidv4().replace(/-/g, "").slice(0, 12);
 }
 
 declare module "next-auth" {
@@ -67,7 +64,6 @@ declare module "next-auth" {
 
 const authOptions: NextAuthOptions = {
     session: { strategy: "jwt" },
-
     providers: [
         Google({
             clientId: GOOGLE_CLIENT_ID,
@@ -81,6 +77,10 @@ const authOptions: NextAuthOptions = {
             }
         }),
     ],
+    pages: {
+        signIn: '/login',
+        error: '/login',
+    },
 
     callbacks: {
         async signIn({ profile }) {
@@ -98,32 +98,62 @@ const authOptions: NextAuthOptions = {
             const pool = await getPool();
 
             const [rows] = await pool.execute<MyJWT[]>(
-                "SELECT id, user_id, name, username, email, image, is_admin, is_mod FROM users WHERE email = ?",
+                "SELECT id FROM users WHERE email = ?",
                 [email]
             );
 
-            if (!Array.isArray(rows)) return false;
+            const userExists = Array.isArray(rows) && rows.length > 0;
+            if (userExists) {
+                await pool.execute(
+                    "UPDATE users SET name = ?, image = ?, updated_at = ? WHERE email = ?",
+                    [name, image, now, email]
+                );
+                (await cookies()).set("invite_token", "", { expires: new Date(0) });
+                return true;
+            }
 
-            if (rows.length === 0) {
-                const newId = uuidv4();
-                const userId = generateUserId();
-                const username = generateUsername(name);
+            const cookieStore = cookies();
+            const token = (await cookieStore).get("invite_token")?.value;
+
+            if (!token) {
+                console.log("New user attempted signup without invite token");
+                return false;
+            }
+
+            if (token.length !== 36 || !/^[a-zA-Z0-9-]+$/.test(token)) {
+                console.log("Invalid token format in cookie");
+                return false;
+            }
+
+            try {
+                const [tokenRows] = await pool.execute(
+                    `SELECT * FROM invite_tokens 
+                        WHERE token = ? 
+                        AND active = 0 
+                        AND uses = 1`,
+                    [token]
+                );
+
+                if (!Array.isArray(tokenRows) || tokenRows.length === 0) {
+                    console.log("Token not found or not properly used");
+                    return false;
+                }
+
+                const newId: string = generateHexId(36);
+                const userId: string = generateHexId(12);
+                const username: string = generateUsername(name);
 
                 await pool.execute(
                     "INSERT INTO users (id, user_id, name, username, email, image, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     [newId, userId, name || undefined, username, email, image || undefined, now, now]
                 );
-            } else {
-                const user = rows[0];
-                if ((user.name ?? "") !== name || (user.image ?? "") !== image) {
-                    await pool.execute(
-                        "UPDATE users SET name = ?, image = ?, updated_at = ? WHERE email = ?",
-                        [name || user.name, image || user.image, now, email]
-                    );
-                }
-            }
+                (await cookies()).set("invite_token", "", { expires: new Date(0) });
+                return true;
 
-            return true;
+            } catch (error: unknown) {
+                console.error("Token validation error in signIn:", error);
+                return false;
+            }
         },
 
         async jwt({ token, user, account, profile }) {

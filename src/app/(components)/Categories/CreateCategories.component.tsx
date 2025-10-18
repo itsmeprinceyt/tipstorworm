@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import api from "../../../services/baseApi.service";
 import getAxiosErrorMessage from "../../../utils/Variables/getAxiosError.util";
+import axios from "axios";
 
 export default function CreateCategoryForm({
     onCategoryCreated,
@@ -20,7 +20,7 @@ export default function CreateCategoryForm({
         setMessage("");
 
         try {
-            const response = await api.post("/admin/category-manager/create", formData);
+            const response = await axios.post("/api/admin/category-manager/create", formData);
             if (response.status === 201) {
                 setMessage("Category created successfully!");
                 setFormData({ name: "", description: "" });

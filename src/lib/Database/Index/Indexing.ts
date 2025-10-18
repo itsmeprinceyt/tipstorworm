@@ -33,7 +33,17 @@ export const createIndexStatements: string[] = [
   "CREATE INDEX idx_reviews_rating ON reviews(rating)",
   "CREATE INDEX idx_reviews_status ON reviews(status)",
   "CREATE INDEX idx_reviews_created_at ON reviews(created_at)",
-  "CREATE INDEX idx_reviews_updated_at ON reviews(updated_at)"
+  "CREATE INDEX idx_reviews_updated_at ON reviews(updated_at)",
+
+  "CREATE INDEX idx_suggestions_status ON suggestions_reports(status)",
+  "CREATE INDEX idx_suggestions_type ON suggestions_reports(type)",
+  "CREATE INDEX idx_suggestions_priority ON suggestions_reports(priority)",
+  "CREATE INDEX idx_suggestions_status_priority ON suggestions_reports(status, priority)",
+  "CREATE INDEX idx_suggestions_type_status ON suggestions_reports(type, status)",
+  "CREATE INDEX idx_suggestions_created_at ON suggestions_reports(created_at)",
+  "CREATE INDEX idx_suggestions_updated_at ON suggestions_reports(updated_at)",
+  "CREATE INDEX idx_suggestions_status_created ON suggestions_reports(status, created_at)",
+  "CREATE INDEX idx_suggestions_vote_count ON suggestions_reports(vote_count)"
 ];
 
 export const dropIndexStatements: string[] = [
@@ -71,5 +81,15 @@ export const dropIndexStatements: string[] = [
   "DROP INDEX idx_reviews_rating ON reviews",
   "DROP INDEX idx_reviews_status ON reviews",
   "DROP INDEX idx_reviews_created_at ON reviews",
-  "DROP INDEX idx_reviews_updated_at ON reviews"
+  "DROP INDEX idx_reviews_updated_at ON reviews",
+
+  "DROP INDEX idx_suggestions_status ON suggestions_reports",
+  "DROP INDEX idx_suggestions_type ON suggestions_reports",
+  "DROP INDEX idx_suggestions_priority ON suggestions_reports",
+  "DROP INDEX idx_suggestions_status_priority ON suggestions_reports",
+  "DROP INDEX idx_suggestions_type_status ON suggestions_reports",
+  "DROP INDEX idx_suggestions_created_at ON suggestions_reports",
+  "DROP INDEX idx_suggestions_updated_at ON suggestions_reports",
+  "DROP INDEX idx_suggestions_status_created ON suggestions_reports",
+  "DROP INDEX idx_suggestions_vote_count ON suggestions_reports"
 ];

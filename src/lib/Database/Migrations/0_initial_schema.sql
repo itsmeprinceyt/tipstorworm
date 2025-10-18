@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS invite_tokens (
   CONSTRAINT fk_invite_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
-
 CREATE TABLE IF NOT EXISTS categories (
   id CHAR(36) NOT NULL PRIMARY KEY,
   name VARCHAR(200) NOT NULL,
@@ -122,6 +121,10 @@ CREATE TABLE IF NOT EXISTS audit_logs (
         'reaction_delete',
         'invite_token_create',
         'invite_token_deactivate',
+        'suggestion_create',
+        'suggestion_update',
+        'suggestion_delete',
+        'suggestion_status_change',
         'settings_update',
         'system'
     ) NOT NULL,
@@ -154,4 +157,37 @@ CREATE TABLE IF NOT EXISTS reviews (
     
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS suggestions_reports (
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    user_id CHAR(36) DEFAULT NULL,
+    
+    type ENUM('suggestion', 'bug_report', 'feature_request', 'content_report', 'other') NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    description TEXT NOT NULL,
+    
+    related_post_id CHAR(36) DEFAULT NULL,
+    related_user_id CHAR(36) DEFAULT NULL,
+    
+    vote_count INT NOT NULL DEFAULT 0,
+    status ENUM('open', 'in_review', 'planned', 'in_progress', 'completed', 'rejected', 'duplicate') NOT NULL DEFAULT 'open',
+    priority ENUM('low', 'medium', 'high', 'critical') NOT NULL DEFAULT 'medium',
+    
+    admin_notes TEXT DEFAULT NULL,
+    assigned_to CHAR(36) DEFAULT NULL,
+    
+    allow_contact BOOLEAN DEFAULT FALSE,
+    contact_email VARCHAR(255) DEFAULT NULL,
+    
+    metadata JSON DEFAULT NULL,
+    
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    closed_at DATETIME DEFAULT NULL,
+    
+    CONSTRAINT fk_suggestions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    CONSTRAINT fk_suggestions_post FOREIGN KEY (related_post_id) REFERENCES posts(id) ON DELETE SET NULL,
+    CONSTRAINT fk_suggestions_related_user FOREIGN KEY (related_user_id) REFERENCES users(id) ON DELETE SET NULL,
+    CONSTRAINT fk_suggestions_assigned_to FOREIGN KEY (assigned_to) REFERENCES users(id) ON DELETE SET NULL
 );
