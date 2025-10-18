@@ -38,14 +38,11 @@ export default function LoginPage() {
 
         setLoading(true);
         try {
-            const response = await axios.post('/api/admin/invite-code-manager/validate', { token });
+            const response = await axios.post('/api/public/invite-code-validate', { token });
 
             if (response.data.valid) {
                 setTokenValidated(true);
                 toast.success("Token validated! You can now sign up.");
-            } else {
-                toast.error("Invalid or expired invite token");
-                setTokenValidated(false);
             }
         } catch (error: unknown) {
             toast.error(getAxiosErrorMessage(error, 'Cannot validate token'));
