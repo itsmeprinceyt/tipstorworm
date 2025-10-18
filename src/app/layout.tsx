@@ -3,6 +3,7 @@ import "./globals.css";
 
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
+import { Analytics } from '@vercel/analytics/next';
 
 import { Providers } from "./(components)/Providers/AuthProvider";
 
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
             <Navbar />
             {children}
+            <Analytics/>
             <Toaster
               position="bottom-left"
               toastOptions={{ style: { fontSize: "14px" } }}
