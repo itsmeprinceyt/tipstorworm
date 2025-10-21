@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { initServer, db } from '../../../../../lib/initServer';
 import { getServerSession } from 'next-auth';
 import { MyJWT } from '../../../../../types/User/JWT.type';
-import { getCurrentDateTime } from '../../../../../utils/Variables/getDateTime';
+import { getCurrentDateTime, getExpiryDateTime, getMinutesFromNow } from '../../../../../utils/Variables/getDateTime';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 import { generateHexId } from '../../../../../utils/Variables/generateHexID.util';
 import { logAudit } from '../../../../../utils/Variables/logAudit.type';
@@ -70,6 +70,9 @@ export async function POST(req: Request): Promise<NextResponse> {
             }
         }
 
+        const expiryMinutes = getMinutesFromNow(expires_at);
+        const expiryDateTime = getExpiryDateTime(expiryMinutes);
+        
         await initServer();
         const pool = db();
 
@@ -84,7 +87,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             [
                 token,
                 user.id,
-                expires_at ? expiresAtDate : null,
+                expiryDateTime,
                 now
             ]
         );

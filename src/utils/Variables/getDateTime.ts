@@ -29,6 +29,13 @@ export function getExpiryDateTime(minutes: number): string {
     return getCurrentDateTimeFromDate(now);
 }
 
+export function getMinutesFromNow(isoString: string): number {
+    const future = new Date(isoString);
+    const now = new Date();
+    const diffMs = future.getTime() - now.getTime();
+    return Math.round(diffMs / (1000 * 60));
+}
+
 function getCurrentDateTimeFromDate(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
