@@ -128,9 +128,23 @@ const authOptions: NextAuthOptions = {
             try {
                 const [tokenRows] = await pool.execute(
                     `SELECT * FROM invite_tokens 
-                        WHERE token = ? 
-                        AND active = 0 
-                        AND uses = 1`,
+                    WHERE token = ? 
+                    AND active = 1 
+                    AND (max_uses > uses OR max_uses = 0)
+                    AND (expires_at IS NULL OR expires_at > ?)`,
+                    [token, now]
+                );
+
+                if (!Array.isArray(tokenRows) || tokenRows.length === 0) {
+                    console.log("Invalid or expired token");
+                    return false;
+                }
+
+                await pool.execute(
+                    `UPDATE invite_tokens 
+                        SET uses = uses + 1, 
+                            active = IF(uses + 1 >= max_uses, 0, active)
+                        WHERE token = ?`,
                     [token]
                 );
 

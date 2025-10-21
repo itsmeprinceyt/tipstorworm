@@ -8,6 +8,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { Providers } from "./(components)/Providers/AuthProvider";
 
 import Navbar from "./(components)/Navbar";
+import CustomLoader from "./(components)/utils/Loader";
 
 export const metadata: Metadata = {
   title: "Tipstor Worm | ItsMe Prince",
@@ -19,10 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="select-none antialiased">
         <Providers>
-          <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
+          <Suspense fallback={<CustomLoader fullscreen />}>
             <Navbar />
             {children}
-            <Analytics/>
+            <Analytics />
             <Toaster
               position="bottom-left"
               toastOptions={{ style: { fontSize: "14px" } }}
