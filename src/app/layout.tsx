@@ -7,7 +7,7 @@ import { Analytics } from '@vercel/analytics/next';
 
 import { Providers } from "./(components)/Providers/AuthProvider";
 
-import Navbar from "./(components)/Navbar";
+import Navbar from "./(components)/Navbar/Navbar";
 import CustomLoader from "./(components)/utils/Loader";
 
 export const metadata: Metadata = {
