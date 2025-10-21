@@ -6,6 +6,7 @@ import { useSession, signOut } from "next-auth/react";
 import { motion } from "framer-motion";
 // import { MyJWT } from "../../../types/User/JWT.type";
 import colors from "../../../utils/Colors/Colors.util";
+import Maintenance from "../../(components)/utils/Maintenance";
 
 export default function ProfileDashboard() {
     const { data: session, status } = useSession();
@@ -48,6 +49,10 @@ export default function ProfileDashboard() {
             description: "Keep your profile updated so that recruiters know you better."
         }
     ];
+
+    if (1) {
+        return <Maintenance />
+    }
 
     return (
         <div style={{ backgroundColor: colors.background }} className="min-h-screen p-6">

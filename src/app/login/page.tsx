@@ -93,12 +93,17 @@ export default function LoginPage() {
 
     return (
         <PageWrapper>
-            <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+                {/* Background Effects - Matching HeroSection */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-green-900/10"></div>
+                <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="max-w-md w-full bg-black backdrop-blur-sm border border-stone-800 rounded-xl shadow-lg"
+                    className="max-w-md w-full bg-black/40 backdrop-blur-sm border border-stone-800 rounded-xl shadow-lg z-10"
                 >
                     <div className="p-8">
                         <div className="text-center mb-8">
@@ -106,7 +111,7 @@ export default function LoginPage() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.1 }}
-                                className="text-3xl font-bold text-white mb-2"
+                                className="text-4xl font-bold text-white mb-2"
                             >
                                 {showTokenInput ? "Create Account" : "Welcome Back"}
                             </motion.h1>
@@ -114,7 +119,7 @@ export default function LoginPage() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.2 }}
-                                className="text-gray-300"
+                                className="text-gray-300 text-lg"
                             >
                                 {showTokenInput
                                     ? "Enter your invite token to get started"
@@ -139,7 +144,7 @@ export default function LoginPage() {
                                         whileTap={{ scale: 0.98 }}
                                         onClick={handleGoogleSignIn}
                                         disabled={loading}
-                                        className="w-full flex items-center justify-center gap-3 bg-black backdrop-blur-sm border border-stone-800 text-white py-4 px-6 rounded-xl hover:bg-stone-800/30 transition-all duration-300 disabled:opacity-50"
+                                        className="w-full flex items-center justify-center gap-3 bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-4 px-6 rounded-xl hover:border-emerald-500 hover:bg-emerald-500/20 transition-all duration-300 disabled:opacity-50"
                                     >
                                         <GoogleSVG />
                                         Login with Google
@@ -151,7 +156,7 @@ export default function LoginPage() {
                                             <div className="w-full border-t border-stone-700" />
                                         </div>
                                         <div className="relative flex justify-center text-sm">
-                                            <span className="px-2 bg-black text-gray-400">New to our platform?</span>
+                                            <span className="px-2 bg-black/40 text-gray-400">New to our platform?</span>
                                         </div>
                                     </div>
 
@@ -160,7 +165,7 @@ export default function LoginPage() {
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                         onClick={handleNewUserClick}
-                                        className="w-full bg-black border border-stone-800 text-white py-4 px-6 rounded-xl transition-all duration-300"
+                                        className="w-full bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-4 px-6 rounded-xl hover:border-green-500 hover:bg-green-500/20 transition-all duration-300"
                                     >
                                         I have Invite Token !!
                                     </motion.button>
@@ -187,7 +192,7 @@ export default function LoginPage() {
                                                     value={token}
                                                     onChange={(e) => setToken(e.target.value)}
                                                     placeholder="Enter your 36-character invite token"
-                                                    className="w-full px-4 py-3 bg-black backdrop-blur-sm border border-stone-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-stone-600 transition-all duration-300"
+                                                    className="w-full px-4 py-3 bg-black/40 backdrop-blur-sm border border-stone-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-500 transition-all duration-300"
                                                     maxLength={36}
                                                 />
                                                 <div className="mt-2 text-sm text-gray-400 flex justify-between items-center">
@@ -196,7 +201,7 @@ export default function LoginPage() {
                                                         <motion.span
                                                             initial={{ opacity: 0 }}
                                                             animate={{ opacity: 1 }}
-                                                            className={isValidFormat ? "text-green-400" : "text-red-400"}
+                                                            className={isValidFormat ? "text-emerald-400" : "text-red-400"}
                                                         >
                                                             {isValidFormat ? "✓ Valid format" : "✗ Invalid format"}
                                                         </motion.span>
@@ -211,7 +216,7 @@ export default function LoginPage() {
                                                     whileTap={{ scale: 0.98 }}
                                                     onClick={handleBackToLogin}
                                                     disabled={loading}
-                                                    className="flex-1 bg-black backdrop-blur-sm border border-stone-800 text-white py-3 px-4 rounded-xl hover:bg-stone-800/30 transition-all duration-300 disabled:opacity-50"
+                                                    className="flex-1 bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-3 px-4 rounded-xl hover:border-stone-600 hover:bg-stone-800/30 transition-all duration-300 disabled:opacity-50"
                                                 >
                                                     Back
                                                 </motion.button>
@@ -221,7 +226,7 @@ export default function LoginPage() {
                                                     whileTap={{ scale: 0.98 }}
                                                     onClick={validateToken}
                                                     disabled={!isValidFormat || loading}
-                                                    className="flex-1 bg-black backdrop-blur-sm border border-blue-600 text-white py-3 px-4 rounded-xl hover:bg-blue-600/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="flex-1 bg-black/40 backdrop-blur-sm border border-emerald-600 text-white py-3 px-4 rounded-xl hover:border-emerald-500 hover:bg-emerald-500/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     {loading ? (
                                                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
@@ -237,9 +242,9 @@ export default function LoginPage() {
                                             <motion.div
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: "auto" }}
-                                                className="p-3 bg-green-600/20 border border-green-600 rounded-xl"
+                                                className="p-3 bg-emerald-600/20 border border-emerald-600 rounded-xl"
                                             >
-                                                <p className="text-green-400 text-sm text-center">
+                                                <p className="text-emerald-400 text-sm text-center">
                                                     Token validated! You can now create your account.
                                                 </p>
                                             </motion.div>
@@ -252,7 +257,7 @@ export default function LoginPage() {
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleGoogleSignIn}
                                                 disabled={loading}
-                                                className="w-full flex items-center justify-center gap-3 bg-black backdrop-blur-sm border border-green-600 text-white py-4 px-6 rounded-xl hover:bg-green-600/20 transition-all duration-300 disabled:opacity-50"
+                                                className="w-full flex items-center justify-center gap-3 bg-black/40 backdrop-blur-sm border border-emerald-600 text-white py-4 px-6 rounded-xl hover:border-emerald-500 hover:bg-emerald-500/20 transition-all duration-300 disabled:opacity-50 cursor-pointer"
                                             >
                                                 <GoogleSVG />
                                                 {loading ? "Signing Up..." : "Sign Up with Google"}
@@ -264,7 +269,7 @@ export default function LoginPage() {
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleBackToLogin}
                                                 disabled={loading}
-                                                className="w-full bg-black backdrop-blur-sm border border-stone-800 text-white py-3 px-4 rounded-xl hover:bg-stone-800/30 transition-all duration-300 disabled:opacity-50"
+                                                className="w-full bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-3 px-4 rounded-xl hover:border-stone-600 hover:bg-stone-800/30 transition-all duration-300 disabled:opacity-50 cursor-pointer"
                                             >
                                                 Back
                                             </motion.button>
