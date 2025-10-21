@@ -8,7 +8,7 @@
 - ✅✅  - Updated route to update database changes
 - 🔄    - Need refactoring
 - 📃    - Documentation Pending
-- 🔴    - Audit log needed
+- 🔴    - Audit log enabled
 - 🔴👈  - Audit log checked up until here
 - 🟠    - Page locking enabled
 - 😖    - To be removed in the future
@@ -20,7 +20,7 @@
 ## 🔑 1. Authentication & User Management
 
 **Public APIs**
-1. ⏳ `POST` `/auth/register - User registration with invite token
+1. ⏳ `POST` `/auth/[...nextauth]` - Next-auth 🔴
 
 **User Profile APIs**
 1. ❌ `GET` `/dashboard/user/me` - Get current user profile
@@ -90,7 +90,7 @@
 1. ⏳ `POST` `/api/admin/invite-code-manager/create` - Create invite token (admin)
 2. ⏳ `GET` `/api/admin/invite-code-manager` - List all invite tokens (admin)
 3. ❌ `POST` `/admin/invites/deactivate/:token` - Deactivate invite token (admin)
-4. ⏳ `GET` `/api/public/invite-code-validate` - Validate invite token
+4. ⏳ `GET` `/api/public/invite-code-validate` - Validate invite token and return expiry time
 5. ❌ `GET` `/users/me/invites` - Get user's created invites
 
 ## ⚙️ 6. Settings & System
