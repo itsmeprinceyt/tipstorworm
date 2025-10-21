@@ -48,7 +48,7 @@ export default function CustomLoader({
     if (fullscreen || text || random_text) {
         return (
             <PageWrapper>
-                <div className="z-10 motion-opacity-in-0 motion-blur-in-md inset-0 absolute  flex items-center justify-center">
+                <div className="z-10 min-h-screen motion-opacity-in-0 motion-blur-in-md inset-0 absolute  flex items-center justify-center">
                     <div className="text-center flex items-center justify-center gap-2 -motion-translate-y-loop-50 motion-duration-[2s] motion-ease-spring-smooth bg-black border border-stone-950 px-4 py-2 rounded-full hover:scale-110 duration-1000 transition-all ease-in-out">
                         {spinnerElement}
                         {(text || random_text) && <p className={`font-semibold ${color}`}>{displayText}</p>}
