@@ -10,7 +10,7 @@ export default function SearchBar() {
     };
 
     return (
-        < div className="flex-1 max-w-2xl mx-4" >
+        <div className="flex-1 max-w-2xl mx-4">
             <form onSubmit={handleSearch} className="relative">
                 <input
                     type="text"
@@ -28,6 +28,6 @@ export default function SearchBar() {
                     </svg>
                 </button>
             </form>
-        </div >
-    )
+        </div>
+    );
 }
