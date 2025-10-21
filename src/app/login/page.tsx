@@ -40,8 +40,18 @@ export default function LoginPage() {
         try {
             const response = await axios.post('/api/public/invite-code-validate', { token });
 
-            if (response.data.valid) {
+            if (response.data.success && response.data.data.valid) {
                 setTokenValidated(true);
+                
+                if (response.data.data.expires_at) {
+                    Cookies.set("invite_token", token, {
+                        path: "/",
+                        expires: new Date(response.data.data.expires_at)
+                    });
+                } else {
+                    Cookies.set("invite_token", token, { path: "/" });
+                }
+
                 toast.success("Token validated! You can now sign up.");
             }
         } catch (error: unknown) {
@@ -60,7 +70,6 @@ export default function LoginPage() {
 
         setLoading(true);
         try {
-            Cookies.set("invite_token", token, { path: "/"});
             await signIn("google");
         } catch (error: unknown) {
             toast.error(getAxiosErrorMessage(error, 'Failed to sign in'));

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initServer, db } from '../../../../lib/initServer';
-import { PoolConnection } from 'mysql2/promise';
 import { ErrorResponse, SuccessResponse } from "../../../../types/DTO/Global.DTO";
 import { InviteTokenEntity } from '../../../../types/InviteCode/token.type';
 
@@ -111,19 +110,12 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
             return NextResponse.json(errorResponse, { status: 410 });
         }
 
-        const connection: PoolConnection = await pool.getConnection();
-        await connection.execute(
-            `UPDATE invite_tokens 
-             SET uses = uses + 1, 
-                 active = IF(uses + 1 >= max_uses, 0, active)
-             WHERE token = ?`,
-            [token]
-        );
-        connection.release();
-
-        const successResponse: SuccessResponse<{ valid: boolean }> = {
+        const successResponse: SuccessResponse<{ valid: boolean; expires_at?: string }> = {
             success: true,
-            data: { valid: true },
+            data: {
+                valid: true,
+                expires_at: tokenData.expires_at ? tokenData.expires_at.toISOString() : undefined
+            },
             message: "Token validated successfully"
         };
         return NextResponse.json(successResponse);
