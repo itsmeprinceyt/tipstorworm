@@ -54,7 +54,7 @@ export default function HeroSection() {
                             href="/explore"
                             className="p-3 px-8 rounded-full cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out bg-black/40 backdrop-blur-sm border border-stone-800 text-white hover:border-green-500 hover:bg-green-500/20"
                         >
-                            Explore Tips
+                            I&apos;m feeling lucky today!
                         </Link>
                     </div>
                 </div>
