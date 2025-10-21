@@ -36,11 +36,14 @@ declare module "next-auth" {
         user: {
             id?: string;
             user_id?: string;
-            name?: string | null;
+            name?: string;
             username?: string | null;
             email?: string;
             image?: string | null;
             cover_image?: string | null;
+            bio: string;
+            website: string;
+            visibility: 'public' | 'private';
             is_admin?: boolean;
             is_mod?: boolean;
             is_banned?: boolean;
@@ -50,11 +53,14 @@ declare module "next-auth" {
     interface User extends DefaultUser {
         id?: string;
         user_id?: string;
-        name?: string | null;
+        name?: string;
         username?: string | null;
         email?: string;
         image?: string | null;
         cover_image?: string | null;
+        bio: string;
+        website: string;
+        visibility: 'public' | 'private';
         is_admin?: boolean;
         is_mod?: boolean;
         is_banned?: boolean;
@@ -187,7 +193,7 @@ const authOptions: NextAuthOptions = {
 
             if (emailToCheck) {
                 const [rows] = await pool.execute<MyJWT[]>(
-                    "SELECT id, user_id, name, username, email, image, cover_image, is_admin, is_mod, is_banned FROM users WHERE email = ?",
+                    "SELECT id, user_id, name, username, email, image, cover_image, bio, website, visibility, is_admin, is_mod, is_banned FROM users WHERE email = ?",
                     [emailToCheck]
                 );
 
@@ -195,11 +201,14 @@ const authOptions: NextAuthOptions = {
                     const dbUser = rows[0];
                     t.id = dbUser.id ?? t.id;
                     t.user_id = dbUser.user_id ?? t.user_id;
-                    t.username = dbUser.username ?? null;
                     t.name = dbUser.name ?? "";
+                    t.username = dbUser.username ?? null;
                     t.email = dbUser.email ?? emailToCheck;
                     t.image = dbUser.image ?? "";
                     t.cover_image = dbUser.cover_image ?? "";
+                    t.bio = dbUser.bio ?? "";
+                    t.website = dbUser.website ?? "";
+                    t.visibility = dbUser.visibility ?? "public";
                     t.is_admin = Boolean(dbUser.is_admin);
                     t.is_mod = Boolean(dbUser.is_mod);
                     t.is_banned = Boolean(dbUser.is_banned);
@@ -216,11 +225,14 @@ const authOptions: NextAuthOptions = {
             if (session.user) {
                 session.user.id = t.id;
                 session.user.user_id = t.user_id;
-                session.user.username = t.username ?? null;
                 session.user.name = t.name;
+                session.user.username = t.username ?? null;
                 session.user.email = t.email;
                 session.user.image = t.image;
                 session.user.cover_image = t.cover_image;
+                session.user.bio = t.bio;
+                session.user.website = t.website;
+                session.user.visibility = t.visibility;
                 session.user.is_admin = Boolean(t.is_admin);
                 session.user.is_mod = Boolean(t.is_mod);
                 session.user.is_banned = Boolean(t.is_banned);
