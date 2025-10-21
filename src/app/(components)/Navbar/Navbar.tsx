@@ -1,9 +1,9 @@
 "use client";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import SearchBar from "./NavbarSearchBar";
 import NavbarMenu from "./NavbarMenu";
+import LogoLink from "./NavbarLogo";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -15,9 +15,7 @@ export default function Navbar() {
             >
                 {/* Logo/Brand - Left */}
                 <motion.div className="text-xl font-semibold flex-1">
-                    <Link href="/" className="flex items-center space-x-2 text-white">
-                        <span>Tipstor Worm</span>
-                    </Link>
+                    <LogoLink />
                 </motion.div>
 
                 <SearchBar />

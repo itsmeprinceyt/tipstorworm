@@ -1,3 +1,17 @@
 @import "tailwindcss";
 @import "tailwindcss";
 @plugin "tailwindcss-motion";
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: 200px 0;
+  }
+}
+
+.animate-shimmer {
+  background-size: 400px 100%;
+  animation: shimmer 1.2s linear infinite;
+}
