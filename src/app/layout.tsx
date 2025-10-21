@@ -1311,8 +1311,8 @@ export const metadata: Metadata = {
     canonical: "https://tipstorworm.vercel.app",
   },
   icons: {
-    icon: "/Logo/Logo-smol-smol.svg",
-    apple: "/Logo/Logo-smol-smol.svg",
+    icon: "/Logo/Logo.png",
+    apple: "/Logo/Logo.png",
   },
   openGraph: {
     title: "Tipstor Worm | ItsMe Prince",
@@ -1321,7 +1321,7 @@ export const metadata: Metadata = {
     siteName: "Tipstor Worm",
     images: [
       {
-        url: "/Logo/Logo-smol-smol.svg",
+        url: "/Logo/Logo.png",
         width: 1200,
         height: 630,
         alt: "Tipstor Worm Logo",
@@ -1335,7 +1335,7 @@ export const metadata: Metadata = {
     title: "Tipstor Worm | ItsMe Prince",
     description: "Discover amazing tips, tricks, applications, websites, and cool digital resources. Your ultimate bookmark collection for productivity hacks, tools, and innovative solutions.",
     creator: "@ItsMePrince",
-    images: ["/Logo/Logo-smol-smol.svg"],
+    images: ["/Logo/Logo.png"],
   },
   category: "bookmarks & resources",
 };
