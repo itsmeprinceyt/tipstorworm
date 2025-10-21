@@ -7,6 +7,7 @@ import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime";
 import generateUsername from "../../../../utils/Variables/generateUsername";
 import { cookies } from "next/headers";
 import { generateHexId } from "@/utils/Variables/generateHexID.util";
+import { logAudit } from "../../../../utils/Variables/logAudit.type";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -154,6 +155,8 @@ const authOptions: NextAuthOptions = {
                     [token]
                 );
 
+
+
                 if (!Array.isArray(tokenRows) || tokenRows.length === 0) {
                     console.log("Token not found or not properly used");
                     return false;
@@ -163,9 +166,40 @@ const authOptions: NextAuthOptions = {
                 const userId: string = generateHexId(12);
                 const username: string = generateUsername(name);
 
+                await logAudit(
+                    {
+                        user_id: userId,
+                        email: email,
+                        name: name,
+                    },
+                    "invite_token_deactivate",
+                    `Token (${token}) deactivated as it is used by the user (${email})`,
+                    {
+                        token: token,
+                        user_id: userId,
+                        email: email,
+                        name: name,
+                    }
+                );
+
                 await pool.execute(
                     "INSERT INTO users (id, user_id, name, username, email, image, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     [newId, userId, name || undefined, username, email, image || undefined, now, now]
+                );
+
+                await logAudit(
+                    {
+                        user_id: userId,
+                        email: email,
+                        name: name,
+                    },
+                    "user_signup",
+                    `New user signed up using token`,
+                    {
+                        user_id: userId,
+                        email: email,
+                        name: name,
+                    }
                 );
                 (await cookies()).set("invite_token", "", { expires: new Date(0) });
                 return true;
