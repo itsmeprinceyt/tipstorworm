@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { motion } from "framer-motion";
-import { NavbarMenuProps } from "../../types/Navbar.type";
-import LogoutSVG from "./SVG/Logout";
+import { NavbarMenuProps } from "../../../types/Navbar.type";
+import LogoutSVG from "../SVG/Logout";
 
 export default function NavbarMenu({ isOpen, onClose }: NavbarMenuProps) {
     const { data: session } = useSession();
@@ -40,36 +40,48 @@ export default function NavbarMenu({ isOpen, onClose }: NavbarMenuProps) {
         >
             <div className="p-4 space-y-4">
                 {/* User Info - Only show when logged in */}
-                {session && (
-                    <div className="flex items-center space-x-3 p-3 rounded-lg bg-stone-800/30">
-                        {session.user?.image ? (
-                            <div className={`relative w-10 h-10 rounded-full overflow-hidden border-1 shadow-md/20 ${session.user.is_admin
-                                    ? 'border-amber-600 shadow-amber-500'
-                                    : session.user.is_mod
-                                        ? 'border-green-600 shadow-green-500'
-                                        : session.user.is_banned
-                                            ? 'border-red-600 shadow-red-500'
-                                            : 'border-blue-600 shadow-blue-500'
-                                }`}>
-                                <Image
-                                    src={session.user.image}
-                                    fill
-                                    alt="Profile"
-                                />
-                            </div>
-                        ) : (
-                            <div className="w-10 h-10 rounded-full bg-stone-700 flex items-center justify-center border border-stone-600">
-                                <span className="text-white text-sm font-medium">
-                                    {session.user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                                </span>
-                            </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                            <p className="text-white font-medium text-sm truncate">{session.user?.name}</p>
-                            <p className="text-white/60 text-xs truncate">@{session.user.username}</p>
-                        </div>
-                    </div>
+{session && (
+    <div className="flex items-center space-x-3 p-3 rounded-lg bg-stone-800/30">
+        {session.user?.image ? (
+            <div className={`relative w-10 h-10 rounded-full overflow-hidden border-1 shadow-md/20 ${
+                session.user.is_admin
+                    ? 'border-amber-600 shadow-amber-500'
+                    : session.user.is_mod
+                        ? 'border-green-600 shadow-green-500'
+                        : session.user.is_banned
+                            ? 'border-red-600 shadow-red-500'
+                            : 'border-blue-600 shadow-blue-500'
+            }`}>
+                <Image
+                    src={session.user.image}
+                    fill
+                    alt="Profile"
+                />
+            </div>
+        ) : (
+            <div className="w-10 h-10 rounded-full bg-stone-700 flex items-center justify-center border border-stone-600">
+                <span className="text-white text-sm font-medium">
+                    {session.user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                </span>
+            </div>
+        )}
+        <div className="flex-1 min-w-0">
+            <p className="text-white font-medium text-sm truncate">
+                {session.user?.name}
+                {session.user.is_admin && (
+                    <span className="text-amber-600 text-[10px] font-semibold ml-1">• Admin</span>
                 )}
+                {session.user.is_mod && !session.user.is_admin && (
+                    <span className="text-green-600 text-[10px] font-semibold ml-1">• Mod</span>
+                )}
+                {session.user.is_banned && (
+                    <span className="text-red-600 text-[10px] font-semibold ml-1">• Banned</span>
+                )}
+            </p>
+            <p className="text-white/60 text-xs truncate">@{session.user.username}</p>
+        </div>
+    </div>
+)}
 
                 {/* Menu Items */}
                 <div className="space-y-2">

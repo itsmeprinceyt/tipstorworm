@@ -14,10 +14,7 @@ export default function Navbar() {
                 className="p-4 flex justify-between items-center border-b border-stone-800 bg-black relative"
             >
                 {/* Logo/Brand - Left */}
-                <motion.div
-                    className="text-xl font-semibold flex-1"
-                    whileHover={{ scale: 1.05 }}
-                >
+                <motion.div className="text-xl font-semibold flex-1">
                     <Link href="/" className="flex items-center space-x-2 text-white">
                         <span>Tipstor Worm</span>
                     </Link>
