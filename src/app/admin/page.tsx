@@ -24,7 +24,7 @@ export default function RoleSelectionPage() {
         {
             title: "Moderator",
             description: "Content moderation and user management",
-            href: "/mod/dashboard",
+            href: "/mod",
             icon: UserCheck,
             color: "from-green-500 to-green-500",
             borderColor: "border-green-500/50",
