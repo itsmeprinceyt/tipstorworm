@@ -44,8 +44,10 @@ export default function InviteTokensPage() {
 
     try {
       setCreating(true);
+      const localDate = new Date(expiresAt);
+      const utcDateString = localDate.toISOString();
       await axios.post('/api/admin/invite-code-manager/create', {
-        expires_at: expiresAt
+        expires_at: utcDateString
       });
 
       toast.success('Token created successfully!');
