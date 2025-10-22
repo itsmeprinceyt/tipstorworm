@@ -129,7 +129,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
             success: true,
             data: {
                 valid: true,
-                expires_at: isMasterToken ? undefined : (tokenList[0].expires_at ? tokenList[0].expires_at.toISOString() : undefined),
+                expires_at: isMasterToken ? undefined : (tokenList[0].expires_at ? new Date(tokenList[0].expires_at).toISOString() : undefined),
                 is_master_token: isMasterToken
             },
             message: isMasterToken ? "Master invite token validated successfully" : "Token validated successfully"
