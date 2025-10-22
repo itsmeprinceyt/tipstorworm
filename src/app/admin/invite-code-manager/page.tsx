@@ -90,6 +90,7 @@ export default function InviteTokensPage() {
     }
   };
 
+
   const getStatusInfo = (token: InviteToken) => {
     if (!token.active) {
       return {

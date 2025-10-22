@@ -4,18 +4,7 @@ import { initServer, db } from '../../../../lib/initServer';
 import { getServerSession } from 'next-auth';
 import { MyJWT } from '../../../../types/User/JWT.type';
 import { authOptions } from '../../auth/[...nextauth]/route';
-
-interface InviteTokenResponseDTO {
-    token: string;
-    created_by: string | null;
-    uses: number;
-    max_uses: number;
-    active: boolean;
-    created_at: string;
-    expires_at: string | null;
-    creator_email?: string;
-    creator_name?: string;
-}
+import { InviteToken } from '../../../../types/InviteCode/token.type';
 
 /**
  * @brief Get all invite tokens with details (Admin/Mod only)
@@ -28,7 +17,6 @@ interface InviteTokenResponseDTO {
  *  5. Format response data
  *  6. Return tokens array
  */
-
 export async function GET(): Promise<NextResponse> {
     try {
         const session = await getServerSession(authOptions);
@@ -51,25 +39,23 @@ export async function GET(): Promise<NextResponse> {
         await initServer();
         const pool = db();
 
-        // Fetch all invite tokens with creator information
         const [tokens]: any = await pool.query(`
-      SELECT 
-        it.token,
-        it.created_by,
-        it.uses,
-        it.max_uses,
-        it.active,
-        it.created_at,
-        it.expires_at,
-        u.email as creator_email,
-        u.name as creator_name
-      FROM invite_tokens it
-      LEFT JOIN users u ON it.created_by = u.id
-      ORDER BY it.created_at DESC
-    `);
+            SELECT 
+                it.token,
+                it.created_by,
+                it.uses,
+                it.max_uses,
+                it.active,
+                it.created_at,
+                it.expires_at,
+                u.email as creator_email,
+                u.name as creator_name
+            FROM invite_tokens it
+            LEFT JOIN users u ON it.created_by = u.id
+            ORDER BY it.created_at DESC
+            `);
 
-        // Format the response data
-        const formattedTokens: InviteTokenResponseDTO[] = tokens.map((token: any) => ({
+        const formattedTokens: InviteToken[] = tokens.map((token: any) => ({
             token: token.token,
             created_by: token.created_by,
             uses: token.uses,
