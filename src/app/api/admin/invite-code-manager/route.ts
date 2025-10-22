@@ -17,7 +17,6 @@ import { InviteToken } from '../../../../types/InviteCode/token.type';
  *  5. Format response data
  *  6. Return tokens array
  */
-
 export async function GET(): Promise<NextResponse> {
     try {
         const session = await getServerSession(authOptions);
@@ -40,22 +39,21 @@ export async function GET(): Promise<NextResponse> {
         await initServer();
         const pool = db();
 
-        // Fetch all invite tokens with creator information
         const [tokens]: any = await pool.query(`
-      SELECT 
-        it.token,
-        it.created_by,
-        it.uses,
-        it.max_uses,
-        it.active,
-        it.created_at,
-        it.expires_at,
-        u.email as creator_email,
-        u.name as creator_name
-      FROM invite_tokens it
-      LEFT JOIN users u ON it.created_by = u.id
-      ORDER BY it.created_at DESC
-    `);
+            SELECT 
+                it.token,
+                it.created_by,
+                it.uses,
+                it.max_uses,
+                it.active,
+                it.created_at,
+                it.expires_at,
+                u.email as creator_email,
+                u.name as creator_name
+            FROM invite_tokens it
+            LEFT JOIN users u ON it.created_by = u.id
+            ORDER BY it.created_at DESC
+            `);
 
         const formattedTokens: InviteToken[] = tokens.map((token: any) => ({
             token: token.token,

@@ -2,24 +2,26 @@ import { NextResponse } from 'next/server';
 import { initServer, db } from '../../../../../lib/initServer';
 import { getServerSession } from 'next-auth';
 import { MyJWT } from '../../../../../types/User/JWT.type';
-import { getCurrentDateTime, getExpiryDateTime, getMinutesFromNow } from '../../../../../utils/Variables/getDateTime';
+import { getCurrentDateTime } from '../../../../../utils/Variables/getDateTime';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 import { generateHexId } from '../../../../../utils/Variables/generateHexID.util';
-import { logAudit } from '../../../../../utils/Variables/logAudit.type';
+import { logAudit } from '../../../../../utils/Variables/AuditLogger';
 import { InviteTokenCreateRequestDTO } from '../../../../../types/DTO/InviteToken.DTO';
+
 /**
- * @brief Create a new invite code (Admin/Mod only)
+ * @description
+ * Creates a new invitation token for user registration with optional expiration.
+ * This endpoint is restricted to administrators and moderators and generates
+ * unique invitation codes that can be used for user signup.
  * 
  * @workflow
- *  1. Check user authentication using getServerSession
- *  2. Verify user has admin/mod permissions
- *  3. Validate max_uses and expires_at
- *  4. Generate UUID token (uppercase with hyphens)
- *  5. Create invite token in database
- *  6. Log audit action
- *  7. Return created invite token
+ * 1. Authenticate user session and validate permissions (admin/mod only)
+ * 2. Validate optional expiration date (must be future date if provided)
+ * 3. Generate unique 36-character hexadecimal token
+ * 4. Store token in database with creator info and expiration
+ * 5. Log audit trail for security monitoring
+ * 6. Return success response with generated token
  */
-
 export async function POST(req: Request): Promise<NextResponse> {
     try {
         const session = await getServerSession(authOptions);
@@ -48,27 +50,26 @@ export async function POST(req: Request): Promise<NextResponse> {
 
         const { expires_at }: InviteTokenCreateRequestDTO = await req.json();
 
-        let expiresAtDate: Date | null = null;
+        let expiresAtUTC: string | null = null;
         if (expires_at) {
-            expiresAtDate = new Date(expires_at);
-            if (isNaN(expiresAtDate.getTime())) {
+            const localDate = new Date(expires_at);
+            if (isNaN(localDate.getTime())) {
                 return NextResponse.json(
                     { error: 'Invalid expiration date format' },
                     { status: 400 }
                 );
             }
 
-            if (expiresAtDate <= new Date()) {
+            if (localDate <= new Date()) {
                 return NextResponse.json(
                     { error: 'Expiration date must be in the future' },
                     { status: 400 }
                 );
             }
+
+            expiresAtUTC = localDate.toISOString();
         }
 
-        const expiryMinutes = getMinutesFromNow(expires_at);
-        const expiryDateTime = getExpiryDateTime(expiryMinutes);
-        
         await initServer();
         const pool = db();
 
@@ -83,7 +84,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             [
                 token,
                 user.id,
-                expiryDateTime,
+                expiresAtUTC,
                 now
             ]
         );
@@ -98,7 +99,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             `User ${user.email} created invite code: ${token}`,
             {
                 token: token,
-                expires_at: expires_at || null,
+                expires_at: expiresAtUTC || null,
             }
         );
 

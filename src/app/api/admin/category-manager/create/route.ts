@@ -6,7 +6,7 @@ import { MyJWT } from '../../../../../types/User/JWT.type';
 import { getCurrentDateTime } from '../../../../../utils/Variables/getDateTime';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 import { generateHexId } from '../../../../../utils/Variables/generateHexID.util';
-import { logAudit } from '../../../../../utils/Variables/logAudit.type';
+import { logAudit } from '../../../../../utils/Variables/AuditLogger';
 import { CreateCategoryRequest } from '../../../../../types/Category/CategoryCreate.type';
 
 /**
