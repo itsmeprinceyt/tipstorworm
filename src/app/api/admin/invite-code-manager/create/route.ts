@@ -6,11 +6,7 @@ import { getCurrentDateTime, getExpiryDateTime, getMinutesFromNow } from '../../
 import { authOptions } from '../../../auth/[...nextauth]/route';
 import { generateHexId } from '../../../../../utils/Variables/generateHexID.util';
 import { logAudit } from '../../../../../utils/Variables/logAudit.type';
-
-interface InviteTokenCreateRequestDTO {
-    expires_at: string;
-}
-
+import { InviteTokenCreateRequestDTO } from '../../../../../types/DTO/InviteToken.DTO';
 /**
  * @brief Create a new invite code (Admin/Mod only)
  * 

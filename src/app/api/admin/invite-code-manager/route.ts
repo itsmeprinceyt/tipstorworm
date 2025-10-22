@@ -4,18 +4,7 @@ import { initServer, db } from '../../../../lib/initServer';
 import { getServerSession } from 'next-auth';
 import { MyJWT } from '../../../../types/User/JWT.type';
 import { authOptions } from '../../auth/[...nextauth]/route';
-
-interface InviteTokenResponseDTO {
-    token: string;
-    created_by: string | null;
-    uses: number;
-    max_uses: number;
-    active: boolean;
-    created_at: string;
-    expires_at: string | null;
-    creator_email?: string;
-    creator_name?: string;
-}
+import { InviteToken } from '../../../../types/InviteCode/token.type';
 
 /**
  * @brief Get all invite tokens with details (Admin/Mod only)
@@ -68,8 +57,7 @@ export async function GET(): Promise<NextResponse> {
       ORDER BY it.created_at DESC
     `);
 
-        // Format the response data
-        const formattedTokens: InviteTokenResponseDTO[] = tokens.map((token: any) => ({
+        const formattedTokens: InviteToken[] = tokens.map((token: any) => ({
             token: token.token,
             created_by: token.created_by,
             uses: token.uses,
