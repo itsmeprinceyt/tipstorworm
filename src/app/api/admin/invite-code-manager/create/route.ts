@@ -49,25 +49,16 @@ export async function POST(req: Request): Promise<NextResponse> {
         }
 
         const { expires_at }: InviteTokenCreateRequestDTO = await req.json();
-
-        let expiresAtUTC: string | null = null;
         if (expires_at) {
-            const localDate = new Date(expires_at);
-            if (isNaN(localDate.getTime())) {
-                return NextResponse.json(
-                    { error: 'Invalid expiration date format' },
-                    { status: 400 }
-                );
+            const utcDate = new Date(expires_at);
+            if (isNaN(utcDate.getTime())) {
+                return NextResponse.json({ error: 'Invalid expiration date format' }, { status: 400 });
             }
 
-            if (localDate <= new Date()) {
-                return NextResponse.json(
-                    { error: 'Expiration date must be in the future' },
-                    { status: 400 }
-                );
+            if (utcDate <= new Date()) {
+                return NextResponse.json({ error: 'Expiration date must be in the future' }, { status: 400 });
             }
 
-            expiresAtUTC = localDate.toISOString();
         }
 
         await initServer();
@@ -84,7 +75,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             [
                 token,
                 user.id,
-                expiresAtUTC,
+                expires_at,
                 now
             ]
         );
@@ -99,7 +90,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             `User ${user.email} created invite code: ${token}`,
             {
                 token: token,
-                expires_at: expiresAtUTC || null,
+                expires_at: expires_at || null,
             }
         );
 
