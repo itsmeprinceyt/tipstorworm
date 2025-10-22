@@ -193,8 +193,7 @@ export async function GET(req: Request): Promise<NextResponse<GetAuditLogsRespon
             } : null,
             description: log.description,
             meta: typeof log.meta === 'string' ? JSON.parse(log.meta) : log.meta,
-            performed_at: log.performed_at,
-            timestamp: log.performed_at
+            performed_at: log.performed_at
         }));
 
         const response: GetAuditLogsResponseDTO = {

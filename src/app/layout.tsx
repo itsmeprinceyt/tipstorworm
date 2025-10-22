@@ -1355,8 +1355,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Analytics />
             <Toaster
               position="bottom-left"
-              toastOptions={{ style: { fontSize: "14px" } }}
+              toastOptions={{
+                style: {
+                  fontSize: "14px",
+                  background: "black",
+                  color: "white",
+                },
+              }}
             />
+
           </Suspense>
         </Providers>
 

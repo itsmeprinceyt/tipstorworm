@@ -7,7 +7,7 @@ import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime";
 import generateUsername from "../../../../utils/Variables/generateUsername";
 import { cookies } from "next/headers";
 import { generateHexId } from "@/utils/Variables/generateHexID.util";
-import { logAudit } from "../../../../utils/Variables/logAudit.type";
+import { logAudit } from "../../../../utils/Variables/AuditLogger";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -67,7 +67,6 @@ declare module "next-auth" {
         is_banned?: boolean;
     }
 }
-
 
 const authOptions: NextAuthOptions = {
     session: { strategy: "jwt" },
@@ -133,6 +132,9 @@ const authOptions: NextAuthOptions = {
             }
 
             try {
+                let isValidToken = false;
+                let isMasterToken = false;
+
                 const [tokenRows] = await pool.execute(
                     `SELECT * FROM invite_tokens 
                     WHERE token = ? 
@@ -142,23 +144,37 @@ const authOptions: NextAuthOptions = {
                     [token, now]
                 );
 
-                if (!Array.isArray(tokenRows) || tokenRows.length === 0) {
-                    console.log("Invalid or expired token");
-                    return false;
+                if (Array.isArray(tokenRows) && tokenRows.length > 0) {
+                    isValidToken = true;
+                    isMasterToken = false;
+
+                    await pool.execute(
+                        `UPDATE invite_tokens 
+                         SET uses = uses + 1, 
+                             active = IF(uses + 1 >= max_uses, 0, active)
+                         WHERE token = ?`,
+                        [token]
+                    );
+
+                } else {
+                    const [masterTokenRows] = await pool.execute(
+                        `SELECT * FROM master_invite_token WHERE token = ?`,
+                        [token]
+                    );
+
+                    if (Array.isArray(masterTokenRows) && masterTokenRows.length > 0) {
+                        isValidToken = true;
+                        isMasterToken = true;
+
+                        await pool.execute(
+                            `UPDATE master_invite_token SET uses = uses + 1 WHERE token = ?`,
+                            [token]
+                        );
+                    }
                 }
 
-                await pool.execute(
-                    `UPDATE invite_tokens 
-                        SET uses = uses + 1, 
-                            active = IF(uses + 1 >= max_uses, 0, active)
-                        WHERE token = ?`,
-                    [token]
-                );
-
-
-
-                if (!Array.isArray(tokenRows) || tokenRows.length === 0) {
-                    console.log("Token not found or not properly used");
+                if (!isValidToken) {
+                    console.log("Invalid or expired token");
                     return false;
                 }
 
@@ -166,21 +182,23 @@ const authOptions: NextAuthOptions = {
                 const userId: string = generateHexId(12);
                 const username: string = generateUsername(name);
 
-                await logAudit(
-                    {
-                        user_id: userId,
-                        email: email,
-                        name: name,
-                    },
-                    "invite_token_deactivate",
-                    `Token (${token}) deactivated as it is used by the user (${email})`,
-                    {
-                        token: token,
-                        user_id: userId,
-                        email: email,
-                        name: name,
-                    }
-                );
+                if (!isMasterToken) {
+                    await logAudit(
+                        {
+                            user_id: userId,
+                            email: email,
+                            name: name,
+                        },
+                        "invite_token_deactivate",
+                        `Token (${token}) deactivated as it is used by the user (${email})`,
+                        {
+                            token: token,
+                            user_id: userId,
+                            email: email,
+                            name: name
+                        }
+                    );
+                }
 
                 await pool.execute(
                     "INSERT INTO users (id, user_id, name, username, email, image, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -194,13 +212,15 @@ const authOptions: NextAuthOptions = {
                         name: name,
                     },
                     "user_signup",
-                    `New user signed up using token`,
+                    `New user signed up using ${isMasterToken ? 'master token' : 'token'}`,
                     {
                         user_id: userId,
                         email: email,
                         name: name,
+                        used_master_token: isMasterToken
                     }
                 );
+
                 (await cookies()).set("invite_token", "", { expires: new Date(0) });
                 return true;
 
@@ -252,7 +272,6 @@ const authOptions: NextAuthOptions = {
             return t;
         },
 
-
         async session({ session, token }) {
             const t = token as MyJWT;
 
@@ -271,7 +290,6 @@ const authOptions: NextAuthOptions = {
                 session.user.is_mod = Boolean(t.is_mod);
                 session.user.is_banned = Boolean(t.is_banned);
             }
-
 
             return session;
         },

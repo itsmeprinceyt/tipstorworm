@@ -10,16 +10,18 @@ import { InviteTokenEntity } from '../../../../types/InviteCode/token.type';
  * This endpoint validates invitation tokens by checking:
  * - Token format and length (36 characters UUID)
  * - SQL injection prevention
- * - Token existence and active status
+ * - Token existence and active status in invite_tokens table
  * - Usage limits and expiration dates
+ * - Fallback to master_invite_token table if not found in regular tokens
  * 
  * @workflow
  * 1. Validate request body contains token
  * 2. Check token format and length
  * 3. Scan for SQL injection patterns
- * 4. Query database for valid, active token
- * 5. Increment usage count and update active status
- * 6. Return validation result
+ * 4. Query database for valid, active token in invite_tokens
+ * 5. If not found, check master_invite_token table
+ * 6. Increment usage count and update active status
+ * 7. Return validation result
  */
 export async function POST(request: NextRequest): Promise<NextResponse<ErrorResponse | SuccessResponse<{ valid: boolean }>>> {
     try {
@@ -71,52 +73,66 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
         );
 
         const tokenList = tokens as InviteTokenEntity[];
+        let isMasterToken = false;
 
-        if (!Array.isArray(tokenList) || tokenList.length === 0) {
-            const errorResponse: ErrorResponse = {
-                success: false,
-                message: "Invalid token",
-                code: "TOKEN_INVALID"
-            };
-            return NextResponse.json(errorResponse, { status: 404 });
+        if (Array.isArray(tokenList) && tokenList.length > 0) {
+            const tokenData = tokenList[0];
+
+            if (tokenData.active === 0) {
+                const errorResponse: ErrorResponse = {
+                    success: false,
+                    message: "Token expired",
+                    code: "TOKEN_EXPIRED"
+                };
+                return NextResponse.json(errorResponse, { status: 410 });
+            }
+
+            if (tokenData.uses >= tokenData.max_uses) {
+                const errorResponse: ErrorResponse = {
+                    success: false,
+                    message: `Token already used`,
+                    code: "TOKEN_MAX_USES_EXCEEDED"
+                };
+                return NextResponse.json(errorResponse, { status: 410 });
+            }
+
+            if (tokenData.expires_at && new Date(tokenData.expires_at) <= new Date()) {
+                const errorResponse: ErrorResponse = {
+                    success: false,
+                    message: `Token expired`,
+                    code: "TOKEN_EXPIRED"
+                };
+                return NextResponse.json(errorResponse, { status: 410 });
+            }
+
+        } else {
+            const [masterTokens] = await pool.execute(
+                `SELECT * FROM master_invite_token WHERE token = ?`,
+                [token]
+            );
+
+            const masterTokenList = masterTokens as { token: string; uses: number }[];
+
+            if (!Array.isArray(masterTokenList) || masterTokenList.length === 0) {
+                const errorResponse: ErrorResponse = {
+                    success: false,
+                    message: "Invalid token",
+                    code: "TOKEN_INVALID"
+                };
+                return NextResponse.json(errorResponse, { status: 404 });
+            }
+
+            isMasterToken = true;
         }
 
-        const tokenData = tokenList[0];
-
-        if (tokenData.active === 0) {
-            const errorResponse: ErrorResponse = {
-                success: false,
-                message: "Token expired",
-                code: "TOKEN_EXPIRED"
-            };
-            return NextResponse.json(errorResponse, { status: 410 });
-        }
-
-        if (tokenData.uses >= tokenData.max_uses) {
-            const errorResponse: ErrorResponse = {
-                success: false,
-                message: `Token has reached maximum usage limit (${tokenData.uses}/${tokenData.max_uses})`,
-                code: "TOKEN_MAX_USES_EXCEEDED"
-            };
-            return NextResponse.json(errorResponse, { status: 410 });
-        }
-
-        if (tokenData.expires_at && new Date(tokenData.expires_at) <= new Date()) {
-            const errorResponse: ErrorResponse = {
-                success: false,
-                message: `Token expired on ${new Date(tokenData.expires_at).toLocaleDateString()}`,
-                code: "TOKEN_EXPIRED"
-            };
-            return NextResponse.json(errorResponse, { status: 410 });
-        }
-
-        const successResponse: SuccessResponse<{ valid: boolean; expires_at?: string }> = {
+        const successResponse: SuccessResponse<{ valid: boolean; expires_at?: string; is_master_token?: boolean }> = {
             success: true,
             data: {
                 valid: true,
-                expires_at: tokenData.expires_at ? tokenData.expires_at.toISOString() : undefined
+                expires_at: isMasterToken ? undefined : (tokenList[0].expires_at ? tokenList[0].expires_at.toISOString() : undefined),
+                is_master_token: isMasterToken
             },
-            message: "Token validated successfully"
+            message: isMasterToken ? "Master invite token validated successfully" : "Token validated successfully"
         };
         return NextResponse.json(successResponse);
 

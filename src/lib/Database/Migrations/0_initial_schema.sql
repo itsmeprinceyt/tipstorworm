@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS users (
     is_mod BOOLEAN DEFAULT FALSE,
     is_banned BOOLEAN DEFAULT FALSE,
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at VARCHAR(30) DEFAULT NULL,
+    updated_at VARCHAR(30) DEFAULT NULL
 );
 
 
@@ -29,10 +29,15 @@ CREATE TABLE IF NOT EXISTS invite_tokens (
   max_uses INT NOT NULL DEFAULT 1,
   active TINYINT(1) NOT NULL DEFAULT 1,
 
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  expires_at DATETIME DEFAULT NULL,
+  created_at VARCHAR(30) DEFAULT NULL,
+  expires_at VARCHAR(30) DEFAULT NULL,
 
   CONSTRAINT fk_invite_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS master_invite_token (
+  token CHAR(36) NOT NULL PRIMARY KEY,
+  uses INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS categories (
@@ -40,8 +45,8 @@ CREATE TABLE IF NOT EXISTS categories (
   name VARCHAR(200) NOT NULL,
   description TEXT DEFAULT NULL,
   created_by CHAR(36) DEFAULT NULL,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at VARCHAR(30) DEFAULT NULL,
+  updated_at VARCHAR(30) DEFAULT NULL,
 
   CONSTRAINT fk_category_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
@@ -59,8 +64,8 @@ CREATE TABLE IF NOT EXISTS posts (
   screenshots JSON NOT NULL DEFAULT (JSON_ARRAY()),
 
   created_by CHAR(36) DEFAULT NULL,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at VARCHAR(30) DEFAULT NULL,
+  updated_at VARCHAR(30) DEFAULT NULL,
 
   post_status ENUM('public','private') NOT NULL DEFAULT 'public',
   featured TINYINT(1) NOT NULL DEFAULT 0,
@@ -85,7 +90,7 @@ CREATE TABLE IF NOT EXISTS reactions (
   user_id CHAR(36) NOT NULL,
   post_id CHAR(36) NOT NULL,
   type ENUM('heart','favorite') NOT NULL,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at VARCHAR(30) DEFAULT NULL,
 
   CONSTRAINT ux_reaction_user_post_type UNIQUE (user_id, post_id, type),
   CONSTRAINT fk_reactions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -150,8 +155,8 @@ CREATE TABLE IF NOT EXISTS reviews (
     comment VARCHAR(250) NULL,
     status ENUM('active', 'deleted', 'flagged') DEFAULT 'active',
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at VARCHAR(30) DEFAULT NULL,
+    updated_at VARCHAR(30) DEFAULT NULL,
     
     CONSTRAINT ux_review_user_post UNIQUE (user_id, post_id),
     
@@ -182,9 +187,9 @@ CREATE TABLE IF NOT EXISTS suggestions_reports (
     
     metadata JSON DEFAULT NULL,
     
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    closed_at DATETIME DEFAULT NULL,
+    created_at VARCHAR(30) DEFAULT NULL,
+    updated_at VARCHAR(30) DEFAULT NULL,
+    closed_at VARCHAR(30) DEFAULT NULL,
     
     CONSTRAINT fk_suggestions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
     CONSTRAINT fk_suggestions_post FOREIGN KEY (related_post_id) REFERENCES posts(id) ON DELETE SET NULL,

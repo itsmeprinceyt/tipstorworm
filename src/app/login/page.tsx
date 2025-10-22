@@ -53,7 +53,7 @@ export default function LoginPage() {
                     Cookies.set("invite_token", token, { path: "/" });
                 }
 
-                toast.success("Token validated! You can now sign up.");
+                toast.success(response.data.message);
             }
         } catch (error: unknown) {
             toast.error(getAxiosErrorMessage(error, 'Cannot validate token'));

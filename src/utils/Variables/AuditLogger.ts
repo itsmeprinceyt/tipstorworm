@@ -2,6 +2,7 @@
 import { initServer, db } from "../../lib/initServer";
 import { generateHexId } from "./generateHexID.util";
 import type { AuditActionType, AuditActor } from "../../types/AuditLogger/auditLogger.type";
+import { getCurrentDateTime } from "./getDateTime";
 
 /**
  * @brief
@@ -30,8 +31,9 @@ export async function logAudit(
                 actor_email, 
                 actor_name, 
                 description, 
-                meta
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                meta,
+                performed_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 generateHexId(36),
                 actionType,
@@ -40,7 +42,8 @@ export async function logAudit(
                 actor.email,
                 actor.name,
                 description,
-                meta ? JSON.stringify(meta) : null
+                meta ? JSON.stringify(meta) : null,
+                getCurrentDateTime()
             ]
         );
     } catch (error: unknown) {
