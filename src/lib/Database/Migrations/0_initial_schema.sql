@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     description TEXT,
     meta JSON,
 
-    performed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    performed_at VARCHAR(30) DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS reviews (
