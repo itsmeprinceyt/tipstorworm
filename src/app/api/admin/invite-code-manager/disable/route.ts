@@ -6,11 +6,11 @@ import { MyJWT } from '../../../../../types/User/JWT.type';
 import { getCurrentDateTime } from '../../../../../utils/Variables/getDateTime';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 import { logAudit } from '../../../../../utils/Variables/AuditLogger';
-import { ErrorResponseDTO, SuccessResponseDTO } from '@/types/DTO/Global.DTO';
+import { ErrorResponseDTO, SuccessResponseDTO } from '../../../../../types/DTO/Global.DTO';
 
 /**
  * @description
- * Deactivates an existing invitation token by setting active to 0.
+ * Disable an existing invitation token by setting active to 0.
  * This endpoint is restricted to administrators and moderators.
  * 
  * @workflow
@@ -35,7 +35,7 @@ export async function POST(req: Request): Promise<NextResponse> {
         const user = session.user as MyJWT;
         if (!user.is_admin && !user.is_mod) {
             return NextResponse.json(
-                { error: 'Insufficient permissions to deactivate invite codes' },
+                { error: 'Insufficient permissions to disable invite codes' },
                 { status: 403 }
             );
         }
@@ -75,7 +75,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
         if (!existingToken.active) {
             return NextResponse.json(
-                { error: 'This token is already deactivated' },
+                { error: 'This token is already disabled' },
                 { status: 400 }
             );
         }
@@ -112,7 +112,7 @@ export async function POST(req: Request): Promise<NextResponse> {
                     name: user.name || "Unknown",
                 },
                 "invite_token_deactivate",
-                `User ${user.email} deactivated invite code: ${token}`,
+                `User ${user.email} disabled invite code: ${token}`,
                 {
                     token: token,
                     deactivated_at: getCurrentDateTime(),
@@ -122,7 +122,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             return NextResponse.json<SuccessResponseDTO>(
                 {
                     success: true,
-                    message: 'Invite code deactivated successfully',
+                    message: 'Invite code disabled successfully',
                     status: 200
                 }
             );
@@ -130,7 +130,7 @@ export async function POST(req: Request): Promise<NextResponse> {
             connection.release();
         }
     } catch (error: unknown) {
-        console.error('Error deactivating invite code:', error);
+        console.error('Error disabled invite code:', error);
         return NextResponse.json<ErrorResponseDTO>(
             {
                 error: 'Server error, please try again later',

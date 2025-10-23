@@ -223,7 +223,7 @@ export default function AuditLogsPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setShowFilters(!showFilters)}
-                className="px-4 py-2.5 bg-stone-700 text-white rounded-xl hover:bg-stone-600 transition-all duration-300 flex items-center justify-center gap-2 text-sm"
+                className="px-4 py-2.5 bg-stone-700 text-white rounded-xl hover:bg-stone-600 transition-all duration-300 flex items-center justify-center gap-2 text-sm cursor-pointer"
               >
                 <Filter className="w-4 h-4" />
                 Filters
@@ -273,7 +273,7 @@ export default function AuditLogsPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleSearch}
-                className="px-4 py-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-all duration-300 flex items-center justify-center gap-2 flex-1 text-sm"
+                className="px-4 py-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-all duration-300 flex items-center justify-center gap-2 flex-1 text-sm cursor-pointer"
               >
                 <Search className="w-4 h-4" />
                 Search
@@ -282,7 +282,7 @@ export default function AuditLogsPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleReset}
-                className="px-4 py-2.5 bg-stone-700 text-white rounded-xl hover:bg-stone-600 transition-all duration-300 flex items-center justify-center gap-2 flex-1 text-sm"
+                className="px-4 py-2.5 bg-stone-700 text-white rounded-xl hover:bg-stone-600 transition-all duration-300 flex items-center justify-center gap-2 flex-1 text-sm cursor-pointer"
               >
                 Reset
               </motion.button>
@@ -394,7 +394,7 @@ export default function AuditLogsPage() {
                                 <motion.button
                                   whileHover={{ scale: 1.1 }}
                                   onClick={() => copyToClipboard(log.actor.user_id!)}
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 cursor-pointer"
                                 >
                                   <Copy className="w-3 h-3 text-gray-400 hover:text-white" />
                                 </motion.button>
@@ -412,7 +412,7 @@ export default function AuditLogsPage() {
                                 <motion.button
                                   whileHover={{ scale: 1.1 }}
                                   onClick={() => copyToClipboard(log.target!.user_id)}
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 cursor-pointer"
                                 >
                                   <Copy className="w-3 h-3 text-gray-400 hover:text-white" />
                                 </motion.button>
@@ -475,7 +475,7 @@ export default function AuditLogsPage() {
                             {log.actor.user_id && (
                               <button
                                 onClick={() => copyToClipboard(log.actor.user_id!)}
-                                className="flex-shrink-0 p-1"
+                                className="flex-shrink-0 p-1 cursor-pointer"
                               >
                                 <Copy className="w-3 h-3 text-gray-400 hover:text-white" />
                               </button>
@@ -494,7 +494,7 @@ export default function AuditLogsPage() {
                               </div>
                               <button
                                 onClick={() => copyToClipboard(log.target!.user_id)}
-                                className="flex-shrink-0 p-1"
+                                className="flex-shrink-0 p-1 cursor-pointer"
                               >
                                 <Copy className="w-3 h-3 text-gray-400 hover:text-white" />
                               </button>
@@ -533,7 +533,7 @@ export default function AuditLogsPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => fetchLogs(pagination.page - 1)}
                 disabled={!pagination.hasPrev}
-                className="px-3 py-2 bg-stone-700 text-white rounded-xl hover:bg-stone-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-sm flex-1 sm:flex-none text-center"
+                className="px-3 py-2 bg-stone-700 text-white rounded-xl hover:bg-stone-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-sm flex-1 sm:flex-none text-center cursor-pointer"
               >
                 Previous
               </motion.button>
@@ -545,7 +545,7 @@ export default function AuditLogsPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => fetchLogs(pagination.page + 1)}
                 disabled={!pagination.hasNext}
-                className="px-3 py-2 bg-stone-700 text-white rounded-xl hover:bg-stone-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-sm flex-1 sm:flex-none text-center"
+                className="px-3 py-2 bg-stone-700 text-white rounded-xl hover:bg-stone-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-sm flex-1 sm:flex-none text-center cursor-pointer"
               >
                 Next
               </motion.button>
@@ -556,7 +556,7 @@ export default function AuditLogsPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => fetchLogs(pagination.page)}
-              className="px-4 py-2.5 bg-stone-700 text-white rounded-xl hover:bg-stone-600 transition-all duration-300 flex items-center justify-center gap-2 w-full sm:w-auto text-sm"
+              className="px-4 py-2.5 bg-stone-700 text-white rounded-xl hover:bg-stone-600 transition-all duration-300 flex items-center justify-center gap-2 w-full sm:w-auto text-sm cursor-pointer"
             >
               <RefreshCw className="w-4 h-4" />
               Refresh
