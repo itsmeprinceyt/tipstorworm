@@ -11,7 +11,7 @@ import { Ticket, Copy, RefreshCw, Plus, Calendar, User, Clock, CheckCircle, XCir
 import getAxiosErrorMessage from '../../../utils/Variables/getAxiosError.util';
 import { InviteToken } from '../../../types/InviteCode/InviteToken.type';
 import { InviteTokenResponseDTO } from '../../../types/DTO/InviteToken.DTO';
-import { SuccessResponseDTO } from '@/types/DTO/Global.DTO';
+import { SuccessResponseDTO } from '../../../types/DTO/Global.DTO';
 
 export default function InviteTokensPage() {
   const { data: session } = useSession();
