@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export interface ErrorResponse {
-  success: false;
-  message: string;
-  error?: string;
-  code?: string;
-}
-
-export interface SuccessResponse<T = any> {
-  success: true;
-  data: T;
+export interface ErrorResponseDTO {
   message?: string;
+  status: number;
+  error?: string;
+  success?: boolean;
 }
 
-export type ApiResponse<T = any> = SuccessResponse<T> | ErrorResponse;
+export interface SuccessResponseDTO {
+  message: string;
+  status: number;
+  data?: any;
+  success?: boolean;
+}
+
+export type ApiResponse = SuccessResponseDTO | ErrorResponseDTO;

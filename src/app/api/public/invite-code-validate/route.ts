@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initServer, db } from '../../../../lib/initServer';
 import { ErrorResponse, SuccessResponse } from "../../../../types/DTO/Global.DTO";
-import { InviteTokenEntity } from '../../../../types/InviteCode/token.type';
+import { InviteTokenEntity } from '../../../../types/InviteCode/InviteToken.type';
 
 /**
  * @brief Validates an invite token and increments its usage count

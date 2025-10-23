@@ -1,4 +1,4 @@
-import { InviteToken } from "../InviteCode/token.type";
+import { InviteToken } from "../InviteCode/InviteToken.type";
 
 export interface InviteTokenResponseDTO {
     tokens: InviteToken[];
