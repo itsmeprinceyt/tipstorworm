@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -467,7 +467,7 @@ export default function AuditLogsPage() {
                     </thead>
                     <tbody className="divide-y divide-stone-700">
                       {logs.map((log, index) => (
-                        <>
+                        <React.Fragment key={`${log}-${index}`}>
                           <motion.tr
                             key={`${log.id}-${index}}`}
                             initial={{ opacity: 0, y: 10 }}
@@ -592,7 +592,7 @@ export default function AuditLogsPage() {
                               </motion.tr>
                             )}
                           </AnimatePresence>
-                        </>
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>
