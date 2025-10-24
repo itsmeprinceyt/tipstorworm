@@ -416,7 +416,7 @@ export default function InviteTokensPage() {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => disableToken(token.token)}
-                                className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/20 rounded-full transition-all duration-200 group"
+                                className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/20 rounded-full transition-all duration-200 group cursor-pointer"
                                 title="Disable token"
                               >
                                 <div className="w-6 h-6 rounded-full border border-gray-400 group-hover:border-red-400 flex items-center justify-center transition-colors">
