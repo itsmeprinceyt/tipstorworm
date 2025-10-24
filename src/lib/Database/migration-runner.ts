@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import { setupIndexes } from './createIndexs';
 import MIGRATIONS_TABLE_SQL from './Queries/migration.queries';
 import { getProduction } from '../../utils/Variables/getProduction';
+import { getCurrentDateTime } from '../../utils/Variables/getDateTime';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,7 +53,8 @@ export async function runMigrations(pool: Pool) {
             const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
             console.log(`[MIGRATION] Applying : ${file}...`);
             await conn.query(sql);
-            await conn.query('INSERT INTO migrations (filename) VALUES (?)', [file]);
+            const now = getCurrentDateTime();
+            await conn.query('INSERT INTO migrations (filename, applied_at) VALUES (?, ?)', [file, now]);
             console.log(`[MIGRATION] Applied : ${file}`);
         }
 
