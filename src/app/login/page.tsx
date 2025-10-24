@@ -144,7 +144,7 @@ export default function LoginPage() {
                                         whileTap={{ scale: 0.98 }}
                                         onClick={handleGoogleSignIn}
                                         disabled={loading}
-                                        className="w-full flex items-center justify-center gap-3 bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-4 px-6 rounded-xl hover:border-emerald-500 hover:bg-emerald-500/20 transition-all duration-300 disabled:opacity-50"
+                                        className="w-full flex items-center justify-center gap-3 bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-4 px-6 rounded-xl hover:border-emerald-500 hover:bg-emerald-500/20 transition-all duration-300 disabled:opacity-50 cursor-pointer"
                                     >
                                         <GoogleSVG />
                                         Login with Google
@@ -156,7 +156,7 @@ export default function LoginPage() {
                                             <div className="w-full border-t border-stone-700" />
                                         </div>
                                         <div className="relative flex justify-center text-sm">
-                                            <span className="px-2 bg-black/40 text-gray-400">New to our platform?</span>
+                                            <span className="rounded-lg p-1 px-4 bg-black/80 text-gray-400">New to our platform?</span>
                                         </div>
                                     </div>
 
@@ -165,7 +165,7 @@ export default function LoginPage() {
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                         onClick={handleNewUserClick}
-                                        className="w-full bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-4 px-6 rounded-xl hover:border-green-500 hover:bg-green-500/20 transition-all duration-300"
+                                        className="w-full bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-4 px-6 rounded-xl hover:border-green-500 hover:bg-green-500/20 transition-all duration-300 cursor-pointer"
                                     >
                                         I have Invite Token !!
                                     </motion.button>
@@ -216,7 +216,7 @@ export default function LoginPage() {
                                                     whileTap={{ scale: 0.98 }}
                                                     onClick={handleBackToLogin}
                                                     disabled={loading}
-                                                    className="flex-1 bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-3 px-4 rounded-xl hover:border-stone-600 hover:bg-stone-800/30 transition-all duration-300 disabled:opacity-50"
+                                                    className="flex-1 bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-3 px-4 rounded-xl hover:border-stone-600 hover:bg-stone-800/30 transition-all duration-300 disabled:opacity-50 cursor-pointer"
                                                 >
                                                     Back
                                                 </motion.button>
@@ -226,7 +226,7 @@ export default function LoginPage() {
                                                     whileTap={{ scale: 0.98 }}
                                                     onClick={validateToken}
                                                     disabled={!isValidFormat || loading}
-                                                    className="flex-1 bg-black/40 backdrop-blur-sm border border-emerald-600 text-white py-3 px-4 rounded-xl hover:border-emerald-500 hover:bg-emerald-500/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="flex-1 bg-black/40 backdrop-blur-sm border border-emerald-600 text-white py-3 px-4 rounded-xl hover:border-emerald-500 hover:bg-emerald-500/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                                 >
                                                     {loading ? (
                                                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />

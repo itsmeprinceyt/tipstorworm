@@ -4,7 +4,7 @@ import { initServer, db } from '../../../../lib/initServer';
 import { getServerSession } from 'next-auth';
 import { MyJWT } from '../../../../types/User/JWT.type';
 import { authOptions } from '../../auth/[...nextauth]/route';
-import { InviteToken } from '../../../../types/InviteCode/token.type';
+import { InviteToken } from '../../../../types/InviteCode/InviteToken.type';
 
 /**
  * @brief Get all invite tokens with details (Admin/Mod only)

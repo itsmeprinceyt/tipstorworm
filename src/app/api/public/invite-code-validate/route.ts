@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initServer, db } from '../../../../lib/initServer';
-import { ErrorResponse, SuccessResponse } from "../../../../types/DTO/Global.DTO";
-import { InviteTokenEntity } from '../../../../types/InviteCode/token.type';
+import { ErrorResponseDTO } from "../../../../types/DTO/Global.DTO";
+import { InviteTokenEntity } from '../../../../types/InviteCode/InviteToken.type';
+import { PublicInviteTokenResponseDTO } from '../../../../types/DTO/InviteToken.DTO';
 
 /**
  * @brief Validates an invite token and increments its usage count
@@ -23,12 +24,12 @@ import { InviteTokenEntity } from '../../../../types/InviteCode/token.type';
  * 6. Increment usage count and update active status
  * 7. Return validation result
  */
-export async function POST(request: NextRequest): Promise<NextResponse<ErrorResponse | SuccessResponse<{ valid: boolean }>>> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
     try {
         const { token } = await request.json();
 
         if (!token) {
-            const errorResponse: ErrorResponse = {
+            const errorResponse: ErrorResponseDTO = {
                 success: false,
                 message: "Token is required",
                 code: "TOKEN_REQUIRED"
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
         }
 
         if (token.length !== 36) {
-            const errorResponse: ErrorResponse = {
+            const errorResponse: ErrorResponseDTO = {
                 success: false,
                 message: "Token must be exactly 36 characters long",
                 code: "INVALID_TOKEN_LENGTH"
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
 
         for (const pattern of sqlInjectionPatterns) {
             if (pattern.test(token)) {
-                const errorResponse: ErrorResponse = {
+                const errorResponse: ErrorResponseDTO = {
                     success: false,
                     message: "Invalid token format detected",
                     code: "MALICIOUS_INPUT"
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
             const tokenData = tokenList[0];
 
             if (tokenData.active === 0) {
-                const errorResponse: ErrorResponse = {
+                const errorResponse: ErrorResponseDTO = {
                     success: false,
                     message: "Token expired",
                     code: "TOKEN_EXPIRED"
@@ -88,7 +89,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
             }
 
             if (tokenData.uses >= tokenData.max_uses) {
-                const errorResponse: ErrorResponse = {
+                const errorResponse: ErrorResponseDTO = {
                     success: false,
                     message: `Token already used`,
                     code: "TOKEN_MAX_USES_EXCEEDED"
@@ -97,7 +98,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
             }
 
             if (tokenData.expires_at && new Date(tokenData.expires_at) <= new Date()) {
-                const errorResponse: ErrorResponse = {
+                const errorResponse: ErrorResponseDTO = {
                     success: false,
                     message: `Token expired`,
                     code: "TOKEN_EXPIRED"
@@ -114,7 +115,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
             const masterTokenList = masterTokens as { token: string; uses: number }[];
 
             if (!Array.isArray(masterTokenList) || masterTokenList.length === 0) {
-                const errorResponse: ErrorResponse = {
+                const errorResponse: ErrorResponseDTO = {
                     success: false,
                     message: "Invalid token",
                     code: "TOKEN_INVALID"
@@ -125,7 +126,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
             isMasterToken = true;
         }
 
-        const successResponse: SuccessResponse<{ valid: boolean; expires_at?: string; is_master_token?: boolean }> = {
+        const successResponse: PublicInviteTokenResponseDTO = {
             success: true,
             data: {
                 valid: true,
@@ -139,7 +140,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ErrorResp
     } catch (error: unknown) {
         console.error('Token validation error:', error);
 
-        const errorResponse: ErrorResponse = {
+        const errorResponse: ErrorResponseDTO = {
             success: false,
             message: "Internal server error during validation",
             code: "INTERNAL_ERROR"
