@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface ErrorResponseDTO {
   message?: string;
-  status: number;
+  status?: number;
   error?: string;
   success?: boolean;
+  code?: string;
 }
 
 export interface SuccessResponseDTO {
