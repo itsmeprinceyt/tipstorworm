@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import PageWrapper from "../(components)/PageWrapper";
-import { Shield, UserCheck, Users, ArrowRight, Crown, } from "lucide-react";
+import { UserCheck, Users, ArrowRight, Crown, Sparkles } from "lucide-react";
 
 export default function RoleSelectionPage() {
     const roles = [
@@ -11,9 +11,11 @@ export default function RoleSelectionPage() {
             description: "Full system access with all permissions",
             href: "/admin/dashboard",
             icon: Crown,
-            color: "from-amber-500 to-amber-500",
-            borderColor: "border-amber-500/50",
-            hoverColor: "hover:border-amber-500 hover:bg-amber-500/10",
+            color: "from-amber-500 to-yellow-500",
+            glowColor: "rgba(245, 158, 11, 0.15)",
+            borderColor: "border-amber-500/30",
+            hoverColor: "hover:border-amber-400/50",
+            buttonBorderColor: "group-hover:border-amber-400/60",
             features: [
                 "Manage all users",
                 "System configuration",
@@ -26,9 +28,11 @@ export default function RoleSelectionPage() {
             description: "Content moderation and user management",
             href: "/mod",
             icon: UserCheck,
-            color: "from-green-500 to-green-500",
-            borderColor: "border-green-500/50",
-            hoverColor: "hover:border-green-500 hover:bg-green-500/10",
+            color: "from-emerald-500 to-green-500",
+            glowColor: "rgba(16, 185, 129, 0.15)",
+            borderColor: "border-emerald-500/30",
+            hoverColor: "hover:border-emerald-400/50",
+            buttonBorderColor: "group-hover:border-emerald-400/60",
             features: [
                 "Content moderation",
                 "User reports review",
@@ -41,9 +45,11 @@ export default function RoleSelectionPage() {
             description: "Standard user interface",
             href: "/dashboard",
             icon: Users,
-            color: "from-blue-500 to-blue-500",
-            borderColor: "border-blue-500/50",
-            hoverColor: "hover:border-blue-500 hover:bg-blue-500/10",
+            color: "from-blue-500 to-cyan-500",
+            glowColor: "rgba(59, 130, 246, 0.15)",
+            borderColor: "border-blue-500/30",
+            hoverColor: "hover:border-blue-400/50",
+            buttonBorderColor: "group-hover:border-blue-400/60",
             features: [
                 "Browse content",
                 "Create posts",
@@ -56,36 +62,51 @@ export default function RoleSelectionPage() {
     return (
         <PageWrapper>
             <div className="min-h-screen p-6 relative overflow-hidden">
-                {/* Background Effects */}
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-green-900/10"></div>
-                <div className="absolute top-10 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-10 right-10 w-96 h-96 bg-green-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+                {/* Enhanced Background Effects */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/30 via-black to-blue-900/20"></div>
+                <div className="absolute top-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
 
                 <div className="relative z-10 max-w-6xl mx-auto">
-                    {/* Header */}
+                    {/* Enhanced Header */}
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-center mb-12"
+                        className="text-center mb-16"
                     >
                         <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ delay: 0.2, type: "spring" }}
-                            className="inline-flex items-center gap-3 bg-black/40 backdrop-blur-sm border border-stone-800 rounded-full px-6 py-3 mb-6"
+                            className="inline-flex items-center gap-3 backdrop-blur-xl bg-white/5 border border-white/20 rounded-full px-6 py-3 mb-8 shadow-2xl"
                         >
-                            <Shield className="w-5 h-5 text-emerald-400" />
-                            <span className="text-emerald-400 font-medium">Role Selection</span>
+                            <Sparkles className="w-5 h-5 text-emerald-300" />
+                            <span className="text-emerald-300 font-medium bg-gradient-to-r from-emerald-300 to-green-300 bg-clip-text">
+                                Role Selection
+                            </span>
                         </motion.div>
-                        <h1 className="text-5xl font-bold text-white mb-4">
-                            Choose Your Interface
-                        </h1>
-                        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                            Select the appropriate interface based on mood
-                        </p>
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="text-6xl font-bold mb-6"
+                        >
+                            <span className="bg-gradient-to-r from-white via-emerald-200 to-cyan-200 bg-clip-text text-transparent">
+                                Choose Your Interface
+                            </span>
+                        </motion.h1>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4 }}
+                            className="text-xl text-gray-300 max-w-2xl mx-auto backdrop-blur-sm bg-black/20 rounded-lg py-2 px-4"
+                        >
+                            Select the appropriate interface based on your role and responsibilities
+                        </motion.p>
                     </motion.div>
 
-                    {/* Role Cards Grid */}
+                    {/* Enhanced Role Cards Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {roles.map((role, index) => (
                             <RoleCard
@@ -108,8 +129,10 @@ function RoleCard({ role, index }: {
         href: string;
         icon: React.ComponentType<{ className?: string }>;
         color: string;
+        glowColor: string;
         borderColor: string;
         hoverColor: string;
+        buttonBorderColor: string;
         features: string[];
     };
     index: number;
@@ -121,51 +144,91 @@ function RoleCard({ role, index }: {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 + index * 0.1 }}
-            whileHover={{ scale: 1.02 }}
+            whileHover={{
+                scale: 1.03,
+                y: -5,
+                transition: {
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 25,
+                    duration: 0.6
+                }
+            }}
             className="h-full"
         >
             <Link href={role.href}>
-                <div className={`bg-black/40 backdrop-blur-sm border ${role.borderColor} rounded-xl p-6 ${role.hoverColor} transition-all duration-300 cursor-pointer h-full flex flex-col group`}>
+                <div
+                    className={`relative backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border ${role.borderColor} ${role.hoverColor} rounded-2xl p-8 transition-all duration-500 cursor-pointer h-full flex flex-col group overflow-hidden shadow-2xl`}
+                    style={{
+                        boxShadow: `0 8px 32px 0 ${role.glowColor}`
+                    }}
+                >
                     {/* Icon and Title */}
-                    <div className="text-center mb-6">
-                        <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r ${role.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                            <Icon className="w-8 h-8 text-white" />
-                        </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">
+                    <div className="text-center mb-8 relative z-10">
+                        <motion.div
+                            className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-r ${role.color} mb-6 group-hover:scale-110 transition-transform duration-500 shadow-lg`}
+                            whileHover={{
+                                rotate: 5,
+                                transition: { duration: 0.4 }
+                            }}
+                        >
+                            <Icon className="w-10 h-10 text-white" />
+                        </motion.div>
+                        <h3 className="text-2xl font-bold text-white mb-3">
                             {role.title}
                         </h3>
-                        <p className="text-gray-300">
+                        <p className="text-gray-300 font-light leading-relaxed">
                             {role.description}
                         </p>
                     </div>
 
                     {/* Features List */}
-                    <div className="flex-1 mb-6">
-                        <ul className="space-y-3">
+                    <div className="flex-1 mb-8 relative z-10">
+                        <ul className="space-y-4">
                             {role.features.map((feature, featureIndex) => (
                                 <motion.li
                                     key={feature}
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.5 + index * 0.1 + featureIndex * 0.1 }}
-                                    className="flex items-center gap-3 text-sm text-gray-400"
+                                    transition={{
+                                        delay: 0.5 + index * 0.1 + featureIndex * 0.1,
+                                        type: "spring",
+                                        stiffness: 100
+                                    }}
+                                    className="flex items-center gap-4 text-sm text-gray-300 group-hover:text-gray-200 transition-colors duration-300"
                                 >
-                                    <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${role.color}`} />
-                                    {feature}
+                                    <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${role.color} flex-shrink-0`} />
+                                    <span className="font-medium">{feature}</span>
                                 </motion.li>
                             ))}
                         </ul>
                     </div>
 
-                    {/* Action Button */}
+                    {/* Enhanced Action Button with Colored Border */}
                     <motion.div
-                        whileHover={{ x: 5 }}
-                        className="flex items-center justify-between p-3 rounded-lg bg-black/20 border border-stone-700/50 group-hover:border-stone-600 transition-all duration-300"
+                        whileHover={{ x: 8 }}
+                        className={`relative backdrop-blur-xl bg-white/5 border border-white/20 ${role.buttonBorderColor} rounded-xl p-4 transition-all duration-500 overflow-hidden`}
                     >
-                        <span className="text-white font-medium">
-                            Enter as {role.title}
-                        </span>
-                        <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
+                        {/* Button Background Glow */}
+                        <div
+                            className={`absolute inset-0 bg-gradient-to-r ${role.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-xl`}
+                        />
+
+                        <div className="flex items-center justify-between relative z-10">
+                            <span className="text-white font-semibold text-sm">
+                                Enter as {role.title}
+                            </span>
+                            <motion.div
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{
+                                    duration: 2,
+                                    repeat: Infinity,
+                                    repeatType: "reverse"
+                                }}
+                            >
+                                <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors duration-300" />
+                            </motion.div>
+                        </div>
                     </motion.div>
                 </div>
             </Link>
