@@ -21,6 +21,7 @@
 
 **Public APIs**
 1. ⏳ `POST` `/auth/[...nextauth]` - Next-auth 🔴
+2. ✅ `GET` `/public/heartbeat` - Heartbeat function to check MySQL & Redis Connection
 
 **User Profile APIs**
 1. ❌ `GET` `/dashboard/user/me` - Get current user profile
