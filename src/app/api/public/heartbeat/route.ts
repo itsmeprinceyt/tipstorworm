@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { initServer, db } from '../../../../lib/initServer';
 import { getRedis } from '../../../../lib/Redis/redis';
 import { getCurrentDateTime } from '../../../../utils/Variables/getDateTime';
+import { REDIS_HEARTBEAT_TTL } from '../../../../utils/Redis/redisTTL';
+import getHeartbeatRedisKey from '../../../../utils/Redis/getHeartbeatRedisKey';
 
 /**
  * @brief Health check endpoint to keep MySQL and Redis connections active
@@ -45,7 +47,7 @@ export async function GET(): Promise<NextResponse> {
         `);
 
         await redis.ping();
-        await redis.set('heartbeat:last_check', new Date().toISOString(), 'EX', 3600);
+        await redis.set(getHeartbeatRedisKey(), new Date().toISOString(), 'EX', REDIS_HEARTBEAT_TTL);
 
         return NextResponse.json({
             success: true,
