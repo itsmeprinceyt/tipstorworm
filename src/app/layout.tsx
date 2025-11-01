@@ -9,7 +9,6 @@ import { Providers } from "./(components)/Providers/AuthProvider";
 
 import Navbar from "./(components)/Navbar/Navbar";
 import CustomLoader from "./(components)/utils/Loader";
-import HomePageHeartbeat from "../hooks/HeartBeat";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tipstorworm.vercel.app"),
@@ -1352,7 +1351,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Suspense fallback={<CustomLoader fullscreen />}>
             <Navbar />
-            <HomePageHeartbeat/>
             {children}
             <Analytics />
             <Toaster
