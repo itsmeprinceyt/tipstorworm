@@ -17,7 +17,9 @@ export const devLogsData: DevLog[] = [
       'System heartbeat and health monitoring logic',
       'Redis integration for caching and session management',
       'Redis cache management interface',
-      'Categories management system with CRUD operations'
+      'Categories management system with CRUD operations',
+      'Added footer',
+      'Added public dev logs for users to see'
     ]
   },
   {
