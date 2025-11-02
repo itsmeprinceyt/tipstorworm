@@ -7,7 +7,7 @@ import getAxiosErrorMessage from "../../utils/Variables/getAxiosError.util";
 import { motion, AnimatePresence } from "framer-motion";
 import Cookies from "js-cookie";
 import PageWrapper from "../(components)/PageWrapper";
-import GoogleSVG from "../(components)/SVG/Google";
+import GoogleSVG from "../(components)/Components/SVG/Google";
 
 export default function LoginPage() {
     const [token, setToken] = useState<string>("");

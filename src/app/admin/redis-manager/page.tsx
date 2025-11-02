@@ -10,7 +10,7 @@ import axios from "axios";
 import getAxiosErrorMessage from "../../../utils/Variables/getAxiosError.util";
 import PageWrapper from "../../(components)/PageWrapper";
 import { RedisKey, DeleteModalState, ExpandedKeys } from "../../../types/Redis/RedisKeyDate.type";
-import CustomLoader from "../../(components)/utils/Loader";
+import CustomLoader from "../../(components)/Components/utils/Loader";
 
 export default function RedisCacheManager() {
   const [isLoading, setIsLoading] = useState<boolean>(false);

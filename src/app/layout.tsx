@@ -5,11 +5,11 @@ import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/next";
 
-import { Providers } from "./(components)/Providers/AuthProvider";
+import { Providers } from "./(components)/Components/Providers/AuthProvider";
 
 import Navbar from "./(components)/Navbar/Navbar";
 import Footer from "./(components)/Website/Footer";
-import CustomLoader from "./(components)/utils/Loader";
+import CustomLoader from "./(components)/Components/utils/Loader";
 import HomePageHeartbeat from "../hooks/HeartBeat";
 
 export const metadata: Metadata = {

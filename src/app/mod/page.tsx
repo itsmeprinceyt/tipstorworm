@@ -1,4 +1,4 @@
-import Maintenance from "../(components)/utils/Maintenance";
+import Maintenance from "../(components)/Components/utils/Maintenance";
 
 export default function ModDashboard(){
     return(

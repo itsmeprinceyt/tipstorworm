@@ -1,14 +1,4 @@
 "use client";
-import dynamic from "next/dynamic";
-
-const FloatingParticles = dynamic(
-    () => import("../(components)/utils/FloatingParticle"),
-    {
-        ssr: false,
-        loading: () => null
-    }
-);
-
 export default function FooterWrapper({ children }: { children: React.ReactNode }) {
     return (
         <div className="w-full bg-black relative">
@@ -25,9 +15,6 @@ export default function FooterWrapper({ children }: { children: React.ReactNode 
                     backgroundPosition: "0 0",
                 }}
             />
-
-            {/* This will only load and render on client side */}
-            <FloatingParticles />
         </div>
     );
 }

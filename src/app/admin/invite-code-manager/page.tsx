@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import PageWrapper from '../../(components)/PageWrapper';
-import CustomLoader from '../../(components)/utils/Loader';
+import CustomLoader from '../../(components)/Components/utils/Loader';
 import { Ticket, Copy, RefreshCw, Plus, Calendar, User, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import getAxiosErrorMessage from '../../../utils/Variables/getAxiosError.util';
 import { InviteToken } from '../../../types/InviteCode/InviteToken.type';

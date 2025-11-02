@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
-import PageWrapper from "../PageWrapper";
-import { LoaderProps } from "../../../types/Loader.type";
+import PageWrapper from "../../PageWrapper";
+import { LoaderProps } from "../../../../types/Loader.type";
 import Planet from "../SVG/Planet";
 
 export default function CustomLoader({

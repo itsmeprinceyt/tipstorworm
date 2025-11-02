@@ -12,16 +12,17 @@
 - 🔴👈  - Audit log checked up until here
 - 🟠    - Page locking enabled
 - 😖    - To be removed in the future
-- ⬜    - Reddis Added
+- ⬜    - Reddis connection
 
 
 # Backend
 
-## 🔑 1. Authentication & User Management
+## 1. Authentication & User Management
 
 **Public APIs**
-1. ⏳ `POST` `/auth/[...nextauth]` - Next-auth 🔴
-2. ✅ `GET` `/public/heartbeat` - Heartbeat function to check MySQL & Redis Connection
+1. 📃 `POST` `/auth/[...nextauth]` - Next-auth 🔴
+2. 📃 `GET` `/public/heartbeat` - Heartbeat function to check MySQL & Redis Connection ⬜
+3. 📃 `POST` `/public/single-setting` - Get all global settings
 
 **User Profile APIs**
 1. ❌ `GET` `/dashboard/user/me` - Get current user profile
@@ -44,13 +45,16 @@
 8. ❌ `POST` `/admin/users/:userId/promote-mod` - Promote to moderator
 9. ❌ `POST` `/admin/users/:userId/demote-mod` - Demote from moderator
 10. ❌ `DELETE` `/admin/users/:userId/delete` - Soft delete user
-11. ❌ `GET` `/admin/routes-access` – Get all routes access & status  
-12. ❌ `PATCH` `/admin/routes-access/:key` – Toggle route access
-13. ❌ `POST` `/admin/routes-access/add/:key` – Add a route to DB
-14. ❌ `PATCH` `/admin/routes-access/update/:key` – Update route in DB
-15. ❌ `DELETE` `admin/routes-access/remove/:key` – Remove route from DB
+11. 📃 `GET` `/admin/routes-access` – Get all routes access & status ⬜  
+12. 📃 `PATCH` `/admin/routes-access/:key` – Toggle route access
+13. 📃 `POST` `/admin/routes-access/add/:key` – Add a route to DB
+14. 📃 `PATCH` `/admin/routes-access/update/:key` – Update route in DB
+15. 📃 `DELETE` `/admin/routes-access/remove/:key` – Remove route from DB
+16. 📃 `GET` `/admin/redis-manager` - Get Redis Database
+17. 📃 `POST` `/admin/redis-manager` - Delete a single cache
+18. 📃 `DELETE` `/admin/redis-manager` Flush Redis DB
 
-## 📝 2. Posts Management
+## 2. Posts Management
 
 **Public Post APIs**
 1. ❌ `GET` `/:categoriesId/posts` - List all categories posts (with pagination/filters)
@@ -81,12 +85,12 @@
 3. ❌ `PUT` `/admin/categories/:categoryId` - Update category name
 4. ❌ `DELETE` `/admin/categories/:categoryId` - Delete category
 
-## ❤️ 4. Reactions System
+## 4. Reactions System
 
 1. ❌ `POST` `/posts/:postId/reactions` - Add reaction to post
 2. ❌ `DELETE` `/posts/:postId/reactions` - Remove reaction from post
 
-## 🔐 5. Invite System
+## 5. Invite System
 
 1. ⏳ `POST` `/api/admin/invite-code-manager/create` - Create invite token (admin)
 2. ⏳ `GET` `/api/admin/invite-code-manager` - List all invite tokens (admin)
@@ -94,23 +98,23 @@
 4. ⏳ `GET` `/api/public/invite-code-validate` - Validate invite token and return expiry time
 5. ❌ `GET` `/users/me/invites` - Get user's created invites
 
-## ⚙️ 6. Settings & System
+## 6. Settings & System
 
 **Audit Logs**
-1. ❌ `POST` `/admin/audit-logs` - Get audit logs (admin)
+1. 📃 `POST` `/admin/audit-logs` - Get audit logs (admin)
 
-## 📊 7. Analytics & Dashboard
+## 7. Analytics & Dashboard
 1. ❌ `GET` `/admin/dashboard` - Admin dashboard analytics
 2. ❌ `GET` `/admin/analytics/posts` - Post analytics (admin)
 3. ❌ `GET` `/admin/analytics/users` - User analytics (admin)
 4. ❌ `GET` `/admin/analytics/categories` - Category analytics (admin)
 
-## 🔍 8. Search & Discovery
+## 8. Search & Discovery
 1. ❌ `GET` `/search/posts` - Search posts
 2. ❌ `GET` `/search/users` - Search users
 3. ❌ `GET` `/discover` - Discover content (featured, trending, etc.)
 
-## 🗳️ 9. Suggestions & Reports System
+## 9. Suggestions & Reports System
 
 **Public Suggestion APIs**
 1. ❌ `POST` `/suggestions` - Submit new suggestion/report (anonymous or authenticated)

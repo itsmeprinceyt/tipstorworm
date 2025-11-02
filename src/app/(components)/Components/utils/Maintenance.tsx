@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import PageWrapper from "../PageWrapper";
+import PageWrapper from "../../PageWrapper";
 import { Settings, Wrench, Clock } from "lucide-react";
 
 export default function Maintenance() {

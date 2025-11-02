@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "../../(components)/PageWrapper";
-import CustomLoader from "../../(components)/utils/Loader";
+import CustomLoader from "../../(components)/Components/utils/Loader";
 import {
   Folder,
   Plus,
