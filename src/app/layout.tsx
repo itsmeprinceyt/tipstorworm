@@ -3,18 +3,20 @@ import type { Metadata } from "next";
 
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from "@vercel/analytics/next";
 
 import { Providers } from "./(components)/Providers/AuthProvider";
 
 import Navbar from "./(components)/Navbar/Navbar";
+import Footer from "./(components)/Website/Footer";
 import CustomLoader from "./(components)/utils/Loader";
 import HomePageHeartbeat from "../hooks/HeartBeat";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tipstorworm.vercel.app"),
   title: "Tipstor Worm | ItsMe Prince - Ultimate Tips & Tricks Collection",
-  description: "Discover amazing tips, tricks, applications, websites, and cool digital resources. Your ultimate bookmark collection for productivity hacks, tools, and innovative solutions.",
+  description:
+    "Discover amazing tips, tricks, applications, websites, and cool digital resources. Your ultimate bookmark collection for productivity hacks, tools, and innovative solutions.",
   keywords: [
     "tips and tricks",
     "productivity hacks",
@@ -1302,7 +1304,7 @@ export const metadata: Metadata = {
     "computational resources",
     "data intensive computing",
     "big data tools",
-    "data lake tools"
+    "data lake tools",
   ].join(", "),
   authors: [{ name: "ItsMe Prince a.k.a Mohd Uvaish" }],
   creator: "ItsMe Prince",
@@ -1317,7 +1319,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Tipstor Worm | ItsMe Prince",
-    description: "Discover amazing tips, tricks, applications, websites, and cool digital resources. Your ultimate bookmark collection for productivity hacks, tools, and innovative solutions.",
+    description:
+      "Discover amazing tips, tricks, applications, websites, and cool digital resources. Your ultimate bookmark collection for productivity hacks, tools, and innovative solutions.",
     url: "https://tipstorworm.vercel.app",
     siteName: "Tipstor Worm",
     images: [
@@ -1334,26 +1337,36 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Tipstor Worm | ItsMe Prince",
-    description: "Discover amazing tips, tricks, applications, websites, and cool digital resources. Your ultimate bookmark collection for productivity hacks, tools, and innovative solutions.",
+    description:
+      "Discover amazing tips, tricks, applications, websites, and cool digital resources. Your ultimate bookmark collection for productivity hacks, tools, and innovative solutions.",
     creator: "@ItsMePrince",
     images: ["/Logo/Logo.png"],
   },
   category: "bookmarks & resources",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="select-none antialiased">
         <Providers>
           <Suspense fallback={<CustomLoader fullscreen />}>
             <Navbar />
-            <HomePageHeartbeat/>
+            <HomePageHeartbeat />
             {children}
+            <Footer />
             <Analytics />
             <Toaster
               position="bottom-left"
@@ -1365,7 +1378,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 },
               }}
             />
-
           </Suspense>
         </Providers>
 
@@ -1377,20 +1389,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "@type": "Collection",
               name: "Tipstor Worm",
               url: "https://tipstorworm.vercel.app",
-              description: "Discover amazing tips, tricks, applications, websites, and cool digital resources. Your ultimate bookmark collection for productivity hacks, tools, and innovative solutions.",
+              description:
+                "Discover amazing tips, tricks, applications, websites, and cool digital resources. Your ultimate bookmark collection for productivity hacks, tools, and innovative solutions.",
               author: {
                 "@type": "Person",
                 name: "ItsMe Prince",
-                alternateName: "Mohd Uvaish"
+                alternateName: "Mohd Uvaish",
               },
               publisher: {
                 "@type": "Person",
-                name: "ItsMe Prince"
+                name: "ItsMe Prince",
               },
               mainEntityOfPage: {
                 "@type": "WebPage",
-                "@id": "https://tipstorworm.vercel.app"
-              }
+                "@id": "https://tipstorworm.vercel.app",
+              },
             }),
           }}
         />
