@@ -1,44 +1,76 @@
-'use client';
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import toast from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
-import PageWrapper from '../../(components)/PageWrapper';
-import CustomLoader from '../../(components)/utils/Loader';
-import { Shield, Search, RefreshCw, Calendar, User, Clock, Copy, ChevronDown, ChevronUp, X, SlidersHorizontal, ChevronRight, Code } from 'lucide-react';
-import getAxiosErrorMessage from '../../../utils/Variables/getAxiosError.util';
-import { AuditLog } from '../../../types/AuditLogger/Audit.type';
-import { GetAuditLogsResponseDTO } from '../../../types/DTO/Audit.DTO';
+"use client";
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import PageWrapper from "../../(components)/PageWrapper";
+import CustomLoader from "../../(components)/utils/Loader";
+import {
+  Shield,
+  Search,
+  RefreshCw,
+  Calendar,
+  User,
+  Clock,
+  Copy,
+  ChevronDown,
+  ChevronUp,
+  X,
+  SlidersHorizontal,
+  ChevronRight,
+  Code,
+} from "lucide-react";
+import getAxiosErrorMessage from "../../../utils/Variables/getAxiosError.util";
+import { AuditLog } from "../../../types/AuditLogger/Audit.type";
+import { GetAuditLogsResponseDTO } from "../../../types/DTO/Audit.DTO";
 
 const actionTypeGroups = {
-  'User Management': [
-    'user_signup', 'user_update', 'user_ban', 'user_unban',
-    'admin_promote', 'admin_demote', 'mod_promote', 'mod_demote'
+  "User Management": [
+    "user_signup",
+    "user_update",
+    "user_ban",
+    "user_unban",
+    "admin_promote",
+    "admin_demote",
+    "mod_promote",
+    "mod_demote",
   ],
-  'Content Management': [
-    'post_create', 'post_update', 'post_delete', 'post_feature', 'post_unfeature',
-    'category_create', 'category_update', 'category_delete'
+  "Content Management": [
+    "post_create",
+    "post_update",
+    "post_delete",
+    "post_feature",
+    "post_unfeature",
+    "category_create",
+    "category_update",
+    "category_delete",
   ],
-  'Interactions': [
-    'reaction_create', 'reaction_delete',
-    'suggestion_create', 'suggestion_update', 'suggestion_delete', 'suggestion_status_change'
+  Interactions: [
+    "reaction_create",
+    "reaction_delete",
+    "suggestion_create",
+    "suggestion_update",
+    "suggestion_delete",
+    "suggestion_status_change",
   ],
-  'System': [
-    'invite_token_create', 'invite_token_deactivate',
-    'settings_update', 'system'
-  ]
+  System: [
+    "invite_token_create",
+    "invite_token_deactivate",
+    "settings_update",
+    "system",
+  ],
 };
 
 export default function AuditLogsPage() {
   const { data: session } = useSession();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [search, setSearch] = useState<string>('');
-  const [actionType, setActionType] = useState<string>('');
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
+  const [search, setSearch] = useState<string>("");
+  const [actionType, setActionType] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
@@ -48,14 +80,15 @@ export default function AuditLogsPage() {
     total: 0,
     totalPages: 0,
     hasNext: false,
-    hasPrev: false
+    hasPrev: false,
   });
 
   const updateActiveFilters = useCallback(() => {
     const filters = [];
     if (search) filters.push(`Search: "${search}"`);
     if (actionType) filters.push(`Action: ${formatActionType(actionType)}`);
-    if (startDate) filters.push(`From: ${new Date(startDate).toLocaleDateString()}`);
+    if (startDate)
+      filters.push(`From: ${new Date(startDate).toLocaleDateString()}`);
     if (endDate) filters.push(`To: ${new Date(endDate).toLocaleDateString()}`);
     setActiveFilters(filters);
   }, [search, actionType, startDate, endDate]);
@@ -64,27 +97,32 @@ export default function AuditLogsPage() {
     updateActiveFilters();
   }, [updateActiveFilters]);
 
-  const fetchLogs = useCallback(async (page: number = 1) => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: pagination.limit.toString(),
-        ...(search && { search }),
-        ...(actionType && { action_type: actionType }),
-        ...(startDate && { start_date: startDate }),
-        ...(endDate && { end_date: endDate })
-      });
+  const fetchLogs = useCallback(
+    async (page: number = 1) => {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams({
+          page: page.toString(),
+          limit: pagination.limit.toString(),
+          ...(search && { search }),
+          ...(actionType && { action_type: actionType }),
+          ...(startDate && { start_date: startDate }),
+          ...(endDate && { end_date: endDate }),
+        });
 
-      const response = await axios.get<GetAuditLogsResponseDTO>(`/api/admin/audit-logs?${params}`);
-      setLogs(response.data.audit_logs);
-      setPagination(response.data.pagination);
-    } catch (err: unknown) {
-      toast.error(getAxiosErrorMessage(err, 'Failed to fetch audit logs'));
-    } finally {
-      setLoading(false);
-    }
-  }, [search, actionType, startDate, endDate, pagination.limit]);
+        const response = await axios.get<GetAuditLogsResponseDTO>(
+          `/api/admin/audit-logs?${params}`
+        );
+        setLogs(response.data.audit_logs);
+        setPagination(response.data.pagination);
+      } catch (err: unknown) {
+        toast.error(getAxiosErrorMessage(err, "Failed to fetch audit logs"));
+      } finally {
+        setLoading(false);
+      }
+    },
+    [search, actionType, startDate, endDate, pagination.limit]
+  );
 
   useEffect(() => {
     fetchLogs(1);
@@ -95,24 +133,24 @@ export default function AuditLogsPage() {
   };
 
   const handleReset = () => {
-    setSearch('');
-    setActionType('');
-    setStartDate('');
-    setEndDate('');
+    setSearch("");
+    setActionType("");
+    setStartDate("");
+    setEndDate("");
     setShowFilters(false);
     setExpandedLogId(null);
     fetchLogs(1);
   };
 
   const removeFilter = (filterToRemove: string) => {
-    if (filterToRemove.startsWith('Search:')) {
-      setSearch('');
-    } else if (filterToRemove.startsWith('Action:')) {
-      setActionType('');
-    } else if (filterToRemove.startsWith('From:')) {
-      setStartDate('');
-    } else if (filterToRemove.startsWith('To:')) {
-      setEndDate('');
+    if (filterToRemove.startsWith("Search:")) {
+      setSearch("");
+    } else if (filterToRemove.startsWith("Action:")) {
+      setActionType("");
+    } else if (filterToRemove.startsWith("From:")) {
+      setStartDate("");
+    } else if (filterToRemove.startsWith("To:")) {
+      setEndDate("");
     }
   };
 
@@ -122,56 +160,69 @@ export default function AuditLogsPage() {
 
   const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const formatDateMobile = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const formatActionType = (actionType: string) => {
-    return actionType.split('_').map(word =>
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
+    return actionType
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   const formatActionTypeMobile = (actionType: string) => {
-    const words = actionType.split('_');
-    return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    const words = actionType.split("_");
+    return words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   const getActionColor = (actionType: string) => {
-    if (actionType.includes('create') || actionType.includes('promote')) {
-      return 'text-emerald-400 bg-emerald-500/20 border-emerald-500/50';
+    if (actionType.includes("create") || actionType.includes("promote")) {
+      return "text-emerald-400 bg-emerald-500/20 border-emerald-500/50";
     }
-    if (actionType.includes('delete') || actionType.includes('ban') || actionType.includes('demote')) {
-      return 'text-red-400 bg-red-500/20 border-red-500/50';
+    if (
+      actionType.includes("delete") ||
+      actionType.includes("ban") ||
+      actionType.includes("demote")
+    ) {
+      return "text-red-400 bg-red-500/20 border-red-500/50";
     }
-    if (actionType.includes('update') || actionType.includes('change')) {
-      return 'text-blue-400 bg-blue-500/20 border-blue-500/50';
+    if (actionType.includes("update") || actionType.includes("change")) {
+      return "text-blue-400 bg-blue-500/20 border-blue-500/50";
     }
-    return 'text-gray-400 bg-gray-500/20 border-gray-500/50';
+    return "text-gray-400 bg-gray-500/20 border-gray-500/50";
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success('Copied to clipboard!');
+    toast.success("Copied to clipboard!");
   };
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const formatJSON = (obj: any) => {
+    if (obj === null || obj === undefined) {
+      return "No meta data is available";
+    }
+    if (Object.keys(obj).length === 0) {
+      return "No meta data is available";
+    }
     return JSON.stringify(obj, null, 2);
   };
 
@@ -240,7 +291,7 @@ export default function AuditLogsPage() {
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search logs, users, or descriptions..."
                     className="w-full pl-10 pr-4 py-3 bg-black/40 backdrop-blur-sm border border-stone-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-500 transition-all duration-300 text-sm"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                    onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                   />
                 </div>
               </div>
@@ -255,7 +306,7 @@ export default function AuditLogsPage() {
                   <option value="">All Action Types</option>
                   {Object.entries(actionTypeGroups).map(([category, types]) => (
                     <optgroup key={category} label={category}>
-                      {types.map(type => (
+                      {types.map((type) => (
                         <option key={type} value={type}>
                           {formatActionType(type)}
                         </option>
@@ -270,14 +321,19 @@ export default function AuditLogsPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setShowFilters(!showFilters)}
-                className={`px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm cursor-pointer border ${showFilters
-                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50'
-                  : 'bg-stone-700/50 text-white border-stone-600 hover:bg-stone-600/50'
-                  }`}
+                className={`px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm cursor-pointer border ${
+                  showFilters
+                    ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/50"
+                    : "bg-stone-700/50 text-white border-stone-600 hover:bg-stone-600/50"
+                }`}
               >
                 <SlidersHorizontal className="w-4 h-4" />
                 Filters
-                {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                {showFilters ? (
+                  <ChevronUp className="w-4 h-4" />
+                ) : (
+                  <ChevronDown className="w-4 h-4" />
+                )}
               </motion.button>
             </div>
 
@@ -285,7 +341,7 @@ export default function AuditLogsPage() {
             {activeFilters.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
+                animate={{ opacity: 1, height: "auto" }}
                 className="flex flex-wrap gap-2 mb-4"
               >
                 {activeFilters.map((filter) => (
@@ -312,7 +368,7 @@ export default function AuditLogsPage() {
               {showFilters && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   className="overflow-hidden"
                 >
@@ -330,7 +386,9 @@ export default function AuditLogsPage() {
                             onChange={(e) => setStartDate(e.target.value)}
                             className="w-full px-3 py-2.5 bg-black/40 backdrop-blur-sm border border-stone-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 transition-all duration-300 cursor-pointer text-sm"
                           />
-                          <div className="text-xs text-gray-400 mt-1">Start Date</div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            Start Date
+                          </div>
                         </div>
                         <div>
                           <input
@@ -339,7 +397,9 @@ export default function AuditLogsPage() {
                             onChange={(e) => setEndDate(e.target.value)}
                             className="w-full px-3 py-2.5 bg-black/40 backdrop-blur-sm border border-stone-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 transition-all duration-300 cursor-pointer text-sm"
                           />
-                          <div className="text-xs text-gray-400 mt-1">End Date</div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            End Date
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -390,24 +450,44 @@ export default function AuditLogsPage() {
             className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
           >
             <div className="bg-black/40 backdrop-blur-sm border border-stone-800 rounded-xl p-4 text-center hover:bg-black/50 transition-colors duration-200">
-              <div className="text-2xl font-bold text-white mb-1">{pagination.total}</div>
+              <div className="text-2xl font-bold text-white mb-1">
+                {pagination.total}
+              </div>
               <div className="text-gray-400 text-sm">Total Logs</div>
             </div>
             <div className="bg-black/40 backdrop-blur-sm border border-stone-800 rounded-xl p-4 text-center hover:bg-black/50 transition-colors duration-200">
               <div className="text-2xl font-bold text-emerald-400 mb-1">
-                {logs.filter(log => log.action_type.includes('create') || log.action_type.includes('promote')).length}
+                {
+                  logs.filter(
+                    (log) =>
+                      log.action_type.includes("create") ||
+                      log.action_type.includes("promote")
+                  ).length
+                }
               </div>
               <div className="text-gray-400 text-sm">Create Actions</div>
             </div>
             <div className="bg-black/40 backdrop-blur-sm border border-stone-800 rounded-xl p-4 text-center hover:bg-black/50 transition-colors duration-200">
               <div className="text-2xl font-bold text-red-400 mb-1">
-                {logs.filter(log => log.action_type.includes('delete') || log.action_type.includes('ban')).length}
+                {
+                  logs.filter(
+                    (log) =>
+                      log.action_type.includes("delete") ||
+                      log.action_type.includes("ban")
+                  ).length
+                }
               </div>
               <div className="text-gray-400 text-sm">Delete Actions</div>
             </div>
             <div className="bg-black/40 backdrop-blur-sm border border-stone-800 rounded-xl p-4 text-center hover:bg-black/50 transition-colors duration-200">
               <div className="text-2xl font-bold text-blue-400 mb-1">
-                {logs.filter(log => log.action_type.includes('update') || log.action_type.includes('change')).length}
+                {
+                  logs.filter(
+                    (log) =>
+                      log.action_type.includes("update") ||
+                      log.action_type.includes("change")
+                  ).length
+                }
               </div>
               <div className="text-gray-400 text-sm">Update Actions</div>
             </div>
@@ -437,7 +517,9 @@ export default function AuditLogsPage() {
               <div className="p-8 text-center text-gray-400">
                 <Shield className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <p className="text-lg">No audit logs found</p>
-                <p className="text-sm mt-1">Try adjusting your search filters</p>
+                <p className="text-sm mt-1">
+                  Try adjusting your search filters
+                </p>
               </div>
             ) : (
               <>
@@ -446,8 +528,7 @@ export default function AuditLogsPage() {
                   <table className="w-full">
                     <thead className="bg-black/20 border-b border-stone-700">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-8">
-                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-8"></th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                           Action
                         </th>
@@ -478,7 +559,9 @@ export default function AuditLogsPage() {
                           >
                             <td className="px-6 py-4">
                               <motion.div
-                                animate={{ rotate: expandedLogId === log.id ? 90 : 0 }}
+                                animate={{
+                                  rotate: expandedLogId === log.id ? 90 : 0,
+                                }}
                                 transition={{ duration: 0.2 }}
                                 className="text-gray-400 hover:text-white"
                               >
@@ -486,7 +569,11 @@ export default function AuditLogsPage() {
                               </motion.div>
                             </td>
                             <td className="px-6 py-4">
-                              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs ${getActionColor(log.action_type)}`}>
+                              <div
+                                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs ${getActionColor(
+                                  log.action_type
+                                )}`}
+                              >
                                 <span className="font-medium">
                                   {formatActionType(log.action_type)}
                                 </span>
@@ -497,8 +584,14 @@ export default function AuditLogsPage() {
                                 <div className="flex items-center gap-2 min-w-0 flex-1">
                                   <User className="w-4 h-4 text-gray-400 flex-shrink-0" />
                                   <div className="min-w-0">
-                                    <div className="text-white truncate">{log.actor.display_name || log.actor.name || 'System'}</div>
-                                    <div className="text-gray-400 text-xs truncate">{log.actor.email || 'N/A'}</div>
+                                    <div className="text-white truncate">
+                                      {log.actor.display_name ||
+                                        log.actor.name ||
+                                        "System"}
+                                    </div>
+                                    <div className="text-gray-400 text-xs truncate">
+                                      {log.actor.email || "N/A"}
+                                    </div>
                                   </div>
                                 </div>
                                 {log.actor.user_id && (
@@ -521,8 +614,14 @@ export default function AuditLogsPage() {
                                   <div className="flex items-center gap-2 min-w-0 flex-1">
                                     <User className="w-4 h-4 text-gray-400 flex-shrink-0" />
                                     <div className="min-w-0">
-                                      <div className="text-white truncate">{log.target.name || '--'}</div>
-                                      <div className="text-gray-400 text-xs truncate">{log.target.username ? `@${log.target.username}` : '--'}</div>
+                                      <div className="text-white truncate">
+                                        {log.target.name || "--"}
+                                      </div>
+                                      <div className="text-gray-400 text-xs truncate">
+                                        {log.target.username
+                                          ? `@${log.target.username}`
+                                          : "--"}
+                                      </div>
                                     </div>
                                   </div>
                                   <motion.button
@@ -542,7 +641,7 @@ export default function AuditLogsPage() {
                             </td>
                             <td className="px-6 py-4 max-w-xs">
                               <div className="text-sm text-gray-300 line-clamp-2">
-                                {log.description || 'No description'}
+                                {log.description || "No description"}
                               </div>
                             </td>
                             <td className="px-6 py-4">
@@ -558,7 +657,7 @@ export default function AuditLogsPage() {
                             {expandedLogId === log.id && (
                               <motion.tr
                                 initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
+                                animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
                                 className="bg-black/20 border-b border-stone-700"
                               >
@@ -566,7 +665,9 @@ export default function AuditLogsPage() {
                                   <div className="flex items-start gap-3 mb-3">
                                     <Code className="w-4 h-4 text-emerald-400 mt-1 flex-shrink-0" />
                                     <div>
-                                      <h3 className="text-sm font-medium text-emerald-400 mb-2">Metadata</h3>
+                                      <h3 className="text-sm font-medium text-emerald-400 mb-2">
+                                        Metadata
+                                      </h3>
                                       <div className="bg-black/40 rounded-lg p-4 border border-stone-700">
                                         <pre className="text-xs text-gray-300 whitespace-pre-wrap overflow-x-auto">
                                           {formatJSON(log.meta)}
@@ -612,13 +713,19 @@ export default function AuditLogsPage() {
                         <div className="flex justify-between items-start mb-3">
                           <div className="flex items-center gap-2">
                             <motion.div
-                              animate={{ rotate: expandedLogId === log.id ? 90 : 0 }}
+                              animate={{
+                                rotate: expandedLogId === log.id ? 90 : 0,
+                              }}
                               transition={{ duration: 0.2 }}
                               className="text-gray-400"
                             >
                               <ChevronRight className="w-4 h-4" />
                             </motion.div>
-                            <div className={`inline-flex items-center gap-2 px-2 py-1 rounded-full border text-xs ${getActionColor(log.action_type)}`}>
+                            <div
+                              className={`inline-flex items-center gap-2 px-2 py-1 rounded-full border text-xs ${getActionColor(
+                                log.action_type
+                              )}`}
+                            >
                               <span className="font-medium">
                                 {formatActionTypeMobile(log.action_type)}
                               </span>
@@ -640,8 +747,14 @@ export default function AuditLogsPage() {
                               </div>
                               <div className="flex items-center gap-2 text-sm">
                                 <div className="min-w-0 flex-1">
-                                  <div className="text-white truncate">{log.actor.display_name || log.actor.name || 'System'}</div>
-                                  <div className="text-gray-400 text-xs truncate">{log.actor.email || 'N/A'}</div>
+                                  <div className="text-white truncate">
+                                    {log.actor.display_name ||
+                                      log.actor.name ||
+                                      "System"}
+                                  </div>
+                                  <div className="text-gray-400 text-xs truncate">
+                                    {log.actor.email || "N/A"}
+                                  </div>
                                 </div>
                                 {log.actor.user_id && (
                                   <button
@@ -659,12 +772,20 @@ export default function AuditLogsPage() {
 
                             {/* Target */}
                             <div>
-                              <div className="text-xs text-gray-400 mb-1">Target</div>
+                              <div className="text-xs text-gray-400 mb-1">
+                                Target
+                              </div>
                               {log.target ? (
                                 <div className="flex items-center gap-2 text-sm">
                                   <div className="min-w-0 flex-1">
-                                    <div className="text-white truncate">{log.target.name || '--'}</div>
-                                    <div className="text-gray-400 text-xs truncate">{log.target.username ? `@${log.target.username}` : '--'}</div>
+                                    <div className="text-white truncate">
+                                      {log.target.name || "--"}
+                                    </div>
+                                    <div className="text-gray-400 text-xs truncate">
+                                      {log.target.username
+                                        ? `@${log.target.username}`
+                                        : "--"}
+                                    </div>
                                   </div>
                                   <button
                                     onClick={(e) => {
@@ -684,9 +805,11 @@ export default function AuditLogsPage() {
 
                           {/* Description */}
                           <div>
-                            <div className="text-xs text-gray-400 mb-1">Description</div>
+                            <div className="text-xs text-gray-400 mb-1">
+                              Description
+                            </div>
                             <div className="text-sm text-gray-300 line-clamp-3">
-                              {log.description || 'No description'}
+                              {log.description || "No description"}
                             </div>
                           </div>
                         </div>
@@ -697,7 +820,7 @@ export default function AuditLogsPage() {
                         {expandedLogId === log.id && (
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
+                            animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
                             className="bg-black/20 border-t border-stone-700 overflow-hidden"
                           >
@@ -705,7 +828,9 @@ export default function AuditLogsPage() {
                               <div className="flex items-start gap-3 mb-3">
                                 <Code className="w-4 h-4 text-emerald-400 mt-1 flex-shrink-0" />
                                 <div className="flex-1">
-                                  <h3 className="text-sm font-medium text-emerald-400 mb-2">Metadata</h3>
+                                  <h3 className="text-sm font-medium text-emerald-400 mb-2">
+                                    Metadata
+                                  </h3>
                                   <div className="bg-black/40 rounded-lg p-3 border border-stone-700">
                                     <pre className="text-xs text-gray-300 whitespace-pre-wrap overflow-x-auto">
                                       {formatJSON(log.meta)}

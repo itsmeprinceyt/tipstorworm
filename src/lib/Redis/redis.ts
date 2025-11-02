@@ -1,18 +1,15 @@
-import Redis from "ioredis";
+import { Redis } from "@upstash/redis";
 
 let redis: Redis | null = null;
 
 export function getRedis() {
   if (!redis) {
-    redis = new Redis(process.env.REDIS_URL!);
-
-    redis.on('error', (error) => {
-      console.error('Redis connection error:', error);
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
     });
 
-    redis.on('connect', () => {
-      console.log('✅ Redis connected successfully');
-    });
+    console.log("✅ Upstash Redis client initialized");
   }
   return redis;
 }

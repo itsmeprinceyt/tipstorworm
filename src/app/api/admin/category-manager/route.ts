@@ -135,6 +135,7 @@ export async function GET(req: Request): Promise<NextResponse> {
         });
 
         return NextResponse.json({
+            success: true,
             categories: formattedCategories,
             pagination: {
                 page,
