@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import PageWrapper from "../../(components)/PageWrapper";
 import { useState, useEffect } from "react";
 // import axios from "axios";
-import CustomLoader from "../../(components)/utils/Loader";
+import CustomLoader from "../../(components)/Components/utils/Loader";
 import {
   Users,
   FileText,
@@ -19,6 +19,7 @@ import {
   BookOpen,
   Search,
   Database,
+  NotebookTabs,
 } from "lucide-react";
 
 // TODO
@@ -184,6 +185,12 @@ export default function AdminDashboard() {
       href: "/admin/audit-logs",
       icon: ClipboardList,
     },
+        {
+      title: "Routes Access",
+      description: "Manage Routes & Pages Access",
+      href: "/admin/routes-access",
+      icon: NotebookTabs,
+    },
     {
       title: "Redis",
       description: "View and manage Redis",
@@ -191,6 +198,8 @@ export default function AdminDashboard() {
       icon: Database,
     },
   ];
+
+  
 
   if (loading) {
     return <CustomLoader fullscreen random_text />;

@@ -13,7 +13,7 @@ import {
 import { getDevLogs } from "../../utils/Website/DevLogs.util";
 import { DevLog } from "../../types/Website/DevLogs.type";
 import PageWrapper from "../(components)/PageWrapper";
-import CustomLoader from "../(components)/utils/Loader";
+import CustomLoader from "../(components)/Components/utils/Loader";
 
 export default function DevLogsPage() {
   const [logs, setLogs] = useState<DevLog[]>([]);

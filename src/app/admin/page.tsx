@@ -43,7 +43,7 @@ export default function RoleSelectionPage() {
         {
             title: "User",
             description: "Standard user interface",
-            href: "/dashboard",
+            href: "/user/dashboard",
             icon: Users,
             color: "from-blue-500 to-cyan-500",
             glowColor: "rgba(59, 130, 246, 0.15)",

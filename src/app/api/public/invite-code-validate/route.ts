@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initServer, db } from '../../../../lib/initServer';
 import { ErrorResponseDTO } from "../../../../types/DTO/Global.DTO";
-import { InviteTokenEntity } from '../../../../types/InviteCode/InviteToken.type';
+import { InviteTokenEntity } from '../../../../types/Public/InviteCode/InviteToken.type';
 import { PublicInviteTokenResponseDTO } from '../../../../types/DTO/InviteToken.DTO';
 
 /**

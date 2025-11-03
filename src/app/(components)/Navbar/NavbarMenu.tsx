@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { motion } from "framer-motion";
 import { NavbarMenuProps } from "../../../types/Navbar.type";
-import LogoutSVG from "../SVG/Logout";
+import LogoutSVG from "../Components/SVG/Logout";
 
 export default function NavbarMenu({ isOpen, onClose }: NavbarMenuProps) {
     const { data: session } = useSession();
@@ -16,7 +16,7 @@ export default function NavbarMenu({ isOpen, onClose }: NavbarMenuProps) {
     ];
 
     const authenticatedMenuItems = [
-        { href: session?.user.is_admin ? "/admin" : "/dashboard", label: "Dashboard" }
+        { href: session?.user.is_admin ? "/admin" : "/user/dashboard", label: "Dashboard" }
     ];
 
     const menuItems = session

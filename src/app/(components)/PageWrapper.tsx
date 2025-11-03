@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 
 const FloatingParticles = dynamic(
-    () => import("../(components)/utils/FloatingParticle"),
+    () => import("./Components/utils/FloatingParticle"),
     {
         ssr: false,
         loading: () => null

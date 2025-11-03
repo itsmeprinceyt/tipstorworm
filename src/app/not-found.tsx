@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import PageWrapper from "./(components)/PageWrapper";
-import Planet from "./(components)/SVG/Planet";
+import Planet from "./(components)/Components/SVG/Planet";
 
 export default function Custom404() {
     const [isClient, setIsClient] = useState<boolean>(false);
