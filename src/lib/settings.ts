@@ -1,6 +1,6 @@
 import { initServer, db } from "./initServer";
 import { getRedis } from "./Redis/redis";
-import { SettingRow } from "../types/Settings/setting.type";
+import { SettingRow } from "../types/Admin/Settings/setting.type";
 import getRedisSettingsKey from "../utils/Redis/getSettingsRedisKey";
 import { REDIS_SETTINGS_TTL } from "../utils/Redis/redisTTL";
 
@@ -36,7 +36,8 @@ export async function loadSettings(): Promise<void> {
       multi.del(REDIS_KEY);
 
       for (const { setting_key, setting_value } of rows) {
-        multi.hset(REDIS_KEY, { [setting_key]: setting_value ? "1" : "0" });
+        // Store the actual boolean value, not string "1"/"0"
+        multi.hset(REDIS_KEY, { [setting_key]: setting_value ? 1 : 0 });
       }
       multi.expire(REDIS_KEY, CACHE_TTL_SECONDS);
 
@@ -77,10 +78,13 @@ export async function getSettingCached(key: string): Promise<boolean> {
         return false;
       }
     } else {
-      console.log(`✅ Found "${key}" in Redis with value: ${val}`);
+      console.log(
+        `✅ Found "${key}" in Redis with value: ${val} (type: ${typeof val})`
+      );
     }
 
-    return val === "1";
+    // Handle both string and number values
+    return val === "1" || val === 1 || val === true;
   } catch (error) {
     console.error("⚡ Redis error, falling back to DB:", error);
     await initServer();
@@ -114,7 +118,8 @@ export async function getAllSettingsCached(): Promise<Record<string, boolean>> {
     const result: Record<string, boolean> = {};
 
     for (const [k, v] of Object.entries(all || {})) {
-      result[k] = v === "1";
+      // Handle both string and number values
+      result[k] = v === "1" || v === 1 || v === true;
     }
 
     console.log("📤 Returning settings from Redis:", result);
@@ -157,7 +162,8 @@ export async function updateSettingInCache(
   try {
     console.log(`✏️ Updating "${key}" in Redis cache to: ${value}`);
     const multi = redis.multi();
-    multi.hset(REDIS_KEY, { [key]: value ? "1" : "0" });
+    // Store as number 1/0 instead of string
+    multi.hset(REDIS_KEY, { [key]: value ? 1 : 0 });
     multi.expire(REDIS_KEY, CACHE_TTL_SECONDS);
     await multi.exec();
   } catch (error) {

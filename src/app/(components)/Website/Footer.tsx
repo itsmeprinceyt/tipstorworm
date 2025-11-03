@@ -8,7 +8,7 @@ export default function Footer() {
   return (
     <FooterWrapper>
       <footer className="p-6 py-12 relative overflow-hidden select-text">
-        <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="relative max-w-7xl mx-auto">
           {/* Main footer content */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 lg:gap-12 mb-8">
             {/* Brand & Description */}

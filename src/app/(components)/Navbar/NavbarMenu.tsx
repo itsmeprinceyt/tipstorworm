@@ -16,7 +16,7 @@ export default function NavbarMenu({ isOpen, onClose }: NavbarMenuProps) {
     ];
 
     const authenticatedMenuItems = [
-        { href: session?.user.is_admin ? "/admin" : "/dashboard", label: "Dashboard" }
+        { href: session?.user.is_admin ? "/admin" : "/user/dashboard", label: "Dashboard" }
     ];
 
     const menuItems = session

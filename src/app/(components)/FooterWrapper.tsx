@@ -1,8 +1,8 @@
 "use client";
 export default function FooterWrapper({ children }: { children: React.ReactNode }) {
     return (
-        <div className="w-full bg-black relative">
-            <div className="relative z-1">
+        <div className="w-full bg-black relative" style={{ zIndex: 10 }}>
+            <div className="relative z-10">
                 {children}
             </div>
 
@@ -13,6 +13,7 @@ export default function FooterWrapper({ children }: { children: React.ReactNode 
                     backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px)`,
                     backgroundSize: "50px 50px",
                     backgroundPosition: "0 0",
+                    zIndex: 0,
                 }}
             />
         </div>

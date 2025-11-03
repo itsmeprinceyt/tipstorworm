@@ -9,7 +9,7 @@ import PageWrapper from '../../(components)/PageWrapper';
 import CustomLoader from '../../(components)/Components/utils/Loader';
 import { Ticket, Copy, RefreshCw, Plus, Calendar, User, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import getAxiosErrorMessage from '../../../utils/Variables/getAxiosError.util';
-import { InviteToken } from '../../../types/InviteCode/InviteToken.type';
+import { InviteToken } from '../../../types/Public/InviteCode/InviteToken.type';
 import { InviteTokenResponseDTO } from '../../../types/DTO/InviteToken.DTO';
 import { SuccessResponseDTO } from '../../../types/DTO/Global.DTO';
 

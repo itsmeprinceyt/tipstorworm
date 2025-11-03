@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { initServer, db } from "../../lib/initServer";
 import { generateHexId } from "./generateHexID.util";
-import type { AuditActionType, AuditActor } from "../../types/AuditLogger/auditLogger.type";
+import type { AuditActionType, AuditActor } from "../../types/Admin/AuditLogger/auditLogger.type";
 import { getCurrentDateTime } from "./getDateTime";
 
 /**

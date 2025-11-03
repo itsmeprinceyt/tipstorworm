@@ -23,7 +23,7 @@ import {
   Code,
 } from "lucide-react";
 import getAxiosErrorMessage from "../../../utils/Variables/getAxiosError.util";
-import { AuditLog } from "../../../types/AuditLogger/Audit.type";
+import { AuditLog } from "../../../types/Admin/AuditLogger/Audit.type";
 import { GetAuditLogsResponseDTO } from "../../../types/DTO/Audit.DTO";
 
 const actionTypeGroups = {

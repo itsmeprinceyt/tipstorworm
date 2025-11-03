@@ -22,8 +22,14 @@ import axios from "axios";
 import PageWrapper from "../../(components)/PageWrapper";
 import getAxiosErrorMessage from "../../../utils/Variables/getAxiosError.util";
 import CustomLoader from "../../(components)/Components/utils/Loader";
+import { RouteAccessRowProps } from "../../../types/Admin/Settings/RouteAccessRow.type";
 
-// TODO: not completed
+/**
+ * TODO:
+ * 1. Remove Live
+ * 2. Refresh button
+ * 3. Remove extra refresh button
+ */
 
 function RouteAccessRow({
   id,
@@ -32,16 +38,18 @@ function RouteAccessRow({
   onToggleSuccess,
   onRequestRename,
   onRequestDelete,
-}: any) {
+}: RouteAccessRowProps) {
   const [isToggling, setIsToggling] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editValue, setEditValue] = useState<string>(routeKey);
+  const [currentEnabled, setCurrentEnabled] = useState<boolean>(enabled);
 
   const handleToggle = async () => {
     setIsToggling(true);
     try {
       const res = await axios.patch(`/api/admin/routes-access/${routeKey}`);
       toast.success(res.data?.message || "Toggled successfully");
+      setCurrentEnabled(!currentEnabled);
       onToggleSuccess();
     } catch (err: unknown) {
       toast.error(
@@ -130,12 +138,12 @@ function RouteAccessRow({
           <div className="text-sm font-medium text-gray-400 mb-2">Status</div>
           <div
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${
-              enabled
+              currentEnabled
                 ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
                 : "bg-red-500/20 border-red-500/50 text-red-400"
             }`}
           >
-            {enabled ? (
+            {currentEnabled ? (
               <>
                 <Eye size={14} />
                 Enabled
@@ -183,17 +191,19 @@ function RouteAccessRow({
                   onClick={handleToggle}
                   disabled={isBusy}
                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl border transition-all duration-200 ${
-                    enabled
+                    currentEnabled
                       ? "bg-amber-500/20 text-amber-400 border-amber-500/30 hover:bg-amber-500/30"
                       : "bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30"
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {isBusy ? (
                     <CustomLoader
-                      color={enabled ? "text-amber-400" : "text-emerald-400"}
-                      size={16}
+                      color={
+                        currentEnabled ? "text-amber-400" : "text-emerald-400"
+                      }
+                      size={5}
                     />
-                  ) : enabled ? (
+                  ) : currentEnabled ? (
                     <>
                       <EyeOff size={16} />
                       Disable
@@ -424,16 +434,16 @@ export default function RoutesAccessAdmin() {
                   <Settings className="w-4 h-4" />
                   Route Path
                 </label>
-<input
-  type="text"
-  id="newRoute"
-  value={newRouteId}
-  onChange={(e) => setNewRouteId(e.target.value)}
-  placeholder="Enter route path (e.g., /admin/users)"
-  className="w-full px-4 py-2.5 text-sm border border-stone-700 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-black/30 backdrop-blur-sm transition-all duration-200 text-white placeholder-gray-400"
-  disabled={isFetching}
-  onKeyDown={(e) => e.key === "Enter" && handleAddRoute()}
-/>
+                <input
+                  type="text"
+                  id="newRoute"
+                  value={newRouteId}
+                  onChange={(e) => setNewRouteId(e.target.value)}
+                  placeholder="Enter route path (e.g., /admin/users)"
+                  className="w-full px-4 py-2.5 text-sm border border-stone-700 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-black/30 backdrop-blur-sm transition-all duration-200 text-white placeholder-gray-400"
+                  disabled={isFetching}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddRoute()}
+                />
               </div>
 
               <div className="flex gap-3 w-full lg:w-auto">
@@ -500,19 +510,23 @@ export default function RoutesAccessAdmin() {
             ) : (
               <div className="p-6">
                 <div className="space-y-4">
-                  {Object.entries(settings).map(([key, value], index) => (
-                    <RouteAccessRow
-                      key={key}
-                      id={index}
-                      routeKey={key}
-                      enabled={value}
-                      onToggleSuccess={fetchSettings}
-                      onRequestRename={(oldKey, newKey) =>
-                        setRenameTarget({ oldKey, newKey })
-                      }
-                      onRequestDelete={(rk) => setDeleteTarget(rk)}
-                    />
-                  ))}
+                  {Object.entries(settings)
+                    .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+                    .map(([key, value], index) => (
+                      <RouteAccessRow
+                        key={key}
+                        id={index}
+                        routeKey={key}
+                        enabled={value}
+                        onToggleSuccess={fetchSettings}
+                        onRequestRename={(oldKey: string, newKey: string) =>
+                          setRenameTarget({ oldKey, newKey })
+                        }
+                        onRequestDelete={(routeKey: string) =>
+                          setDeleteTarget(routeKey)
+                        }
+                      />
+                    ))}
                 </div>
               </div>
             )}
@@ -555,6 +569,7 @@ export default function RoutesAccessAdmin() {
         </div>
       </div>
 
+      {/* Delete Confirmation Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <motion.div
@@ -568,7 +583,7 @@ export default function RoutesAccessAdmin() {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-white">
-                  {deleteTarget ? "Delete Route" : "Rename Route"}
+                  Delete Route
                 </h3>
                 <p className="text-sm text-gray-400 mt-1">
                   This action cannot be undone
@@ -577,18 +592,15 @@ export default function RoutesAccessAdmin() {
             </div>
 
             <p className="text-sm text-gray-300 mb-6 pl-16">
-              {deleteTarget
-                ? `Are you sure you want to delete the route "${deleteTarget}"?`
-                : `Are you sure you want to rename "${renameTarget?.oldKey}" to "${renameTarget?.newKey}"?`}
+              Are you sure you want to delete the route &quot;{deleteTarget}
+              &quot;?
             </p>
 
             <div className="flex gap-3 justify-end">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() =>
-                  deleteTarget ? setDeleteTarget(null) : setRenameTarget(null)
-                }
+                onClick={() => setDeleteTarget(null)}
                 className="px-4 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-stone-700 rounded-xl transition-all duration-200 font-medium cursor-pointer"
               >
                 Cancel
@@ -596,23 +608,79 @@ export default function RoutesAccessAdmin() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={
-                  deleteTarget
-                    ? handleDeleteRouteConfirmed
-                    : handleUpdateRouteConfirmed
-                }
-                disabled={isDeleting || isRenaming}
+                onClick={handleDeleteRouteConfirmed}
+                disabled={isDeleting}
                 className="flex items-center gap-2 px-4 py-2.5 text-sm bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl hover:bg-red-500/30 disabled:opacity-50 transition-all duration-200 font-medium cursor-pointer"
               >
-                {isDeleting || isRenaming ? (
+                {isDeleting ? (
                   <>
                     <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-red-400"></div>
-                    {deleteTarget ? "Deleting..." : "Renaming..."}
+                    Deleting...
                   </>
                 ) : (
                   <>
                     <Trash2 className="w-3.5 h-3.5" />
-                    {deleteTarget ? "Delete Route" : "Rename Route"}
+                    Delete Route
+                  </>
+                )}
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Rename Confirmation Modal */}
+      {renameTarget && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-black/80 backdrop-blur-sm border border-stone-700 rounded-xl shadow-2xl max-w-md w-full p-6"
+          >
+            <div className="flex items-center gap-4 mb-5">
+              <div className="p-3 bg-amber-500/20 rounded-xl border border-amber-500/30">
+                <Edit3 className="w-6 h-6 text-amber-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white">
+                  Rename Route
+                </h3>
+                <p className="text-sm text-gray-400 mt-1">
+                  This will update the route key
+                </p>
+              </div>
+            </div>
+
+            <p className="text-sm text-gray-300 mb-6 pl-16">
+              Are you sure you want to rename &quot;{renameTarget.oldKey}&quot;
+              to &quot;{renameTarget.newKey}&quot;?
+            </p>
+
+            <div className="flex gap-3 justify-end">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setRenameTarget(null)}
+                className="px-4 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-stone-700 rounded-xl transition-all duration-200 font-medium cursor-pointer"
+              >
+                Cancel
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleUpdateRouteConfirmed}
+                disabled={isRenaming}
+                className="flex items-center gap-2 px-4 py-2.5 text-sm bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl hover:bg-amber-500/30 disabled:opacity-50 transition-all duration-200 font-medium cursor-pointer"
+              >
+                {isRenaming ? (
+                  <>
+                    <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-amber-400"></div>
+                    Renaming...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3.5 h-3.5" />
+                    Rename Route
                   </>
                 )}
               </motion.button>

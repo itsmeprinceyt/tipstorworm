@@ -1,4 +1,4 @@
-import { AuditLog, FilterInfo, PaginationInfo } from "../AuditLogger/Audit.type";
+import { AuditLog, FilterInfo, PaginationInfo } from "../Admin/AuditLogger/Audit.type";
 
 export interface GetAuditLogsResponseDTO {
     audit_logs: AuditLog[];
