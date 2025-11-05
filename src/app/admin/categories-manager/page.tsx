@@ -423,7 +423,7 @@ export default function CategoryManager() {
                       {categories.map((category, index) => (
                         <>
                           <motion.tr
-                            key={`${category.id}-${index}`}
+                            key={`${category.id}-id`}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05 }}
@@ -493,6 +493,7 @@ export default function CategoryManager() {
                           <AnimatePresence>
                             {expandedCategory === category.id && (
                               <motion.tr
+                                key={`${category.id}-details`}
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}

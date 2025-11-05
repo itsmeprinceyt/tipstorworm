@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { initServer, db } from '../../../../lib/initServer';
+import { NextRequest, NextResponse } from "next/server";
+import { initServer, db } from "../../../../lib/initServer";
 import { ErrorResponseDTO } from "../../../../types/DTO/Global.DTO";
-import { InviteTokenEntity } from '../../../../types/Public/InviteCode/InviteToken.type';
-import { PublicInviteTokenResponseDTO } from '../../../../types/DTO/InviteToken.DTO';
+import { InviteTokenEntity } from "../../../../types/Public/InviteCode/InviteToken.type";
+import { PublicInviteTokenResponseDTO } from "../../../../types/DTO/InviteToken.DTO";
 
 /**
  * @brief Validates an invite token and increments its usage count
- * 
+ *
  * @description
  * This endpoint validates invitation tokens by checking:
  * - Token format and length (36 characters UUID)
@@ -14,7 +14,7 @@ import { PublicInviteTokenResponseDTO } from '../../../../types/DTO/InviteToken.
  * - Token existence and active status in invite_tokens table
  * - Usage limits and expiration dates
  * - Fallback to master_invite_token table if not found in regular tokens
- * 
+ *
  * @workflow
  * 1. Validate request body contains token
  * 2. Check token format and length
@@ -25,126 +25,133 @@ import { PublicInviteTokenResponseDTO } from '../../../../types/DTO/InviteToken.
  * 7. Return validation result
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-    try {
-        const { token } = await request.json();
+  try {
+    const { token } = await request.json();
 
-        if (!token) {
-            const errorResponse: ErrorResponseDTO = {
-                success: false,
-                message: "Token is required",
-                code: "TOKEN_REQUIRED"
-            };
-            return NextResponse.json(errorResponse, { status: 400 });
-        }
-
-        if (token.length !== 36) {
-            const errorResponse: ErrorResponseDTO = {
-                success: false,
-                message: "Token must be exactly 36 characters long",
-                code: "INVALID_TOKEN_LENGTH"
-            };
-            return NextResponse.json(errorResponse, { status: 400 });
-        }
-
-        const sqlInjectionPatterns = [
-            /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|EXEC|ALTER|CREATE|TRUNCATE)\b)/i,
-            /('|"|;|--|\/\*|\*\/|\\\*|\\-)/,
-            /(\b(OR|AND)\b\s+\d+\s*=\s*\d+)/i,
-            /(\b(WAITFOR|DELAY)\b\s+)/i,
-            /(\b(SLEEP)\b\s*\(\s*\d+\s*\))/i
-        ];
-
-        for (const pattern of sqlInjectionPatterns) {
-            if (pattern.test(token)) {
-                const errorResponse: ErrorResponseDTO = {
-                    success: false,
-                    message: "Invalid token format detected",
-                    code: "MALICIOUS_INPUT"
-                };
-                return NextResponse.json(errorResponse, { status: 400 });
-            }
-        }
-
-        await initServer();
-        const pool = db();
-
-        const [tokens] = await pool.execute(
-            `SELECT * FROM invite_tokens WHERE token = ?`,
-            [token]
-        );
-
-        const tokenList = tokens as InviteTokenEntity[];
-        let isMasterToken = false;
-
-        if (Array.isArray(tokenList) && tokenList.length > 0) {
-            const tokenData = tokenList[0];
-
-            if (tokenData.active === 0) {
-                const errorResponse: ErrorResponseDTO = {
-                    success: false,
-                    message: "Token expired",
-                    code: "TOKEN_EXPIRED"
-                };
-                return NextResponse.json(errorResponse, { status: 410 });
-            }
-
-            if (tokenData.uses >= tokenData.max_uses) {
-                const errorResponse: ErrorResponseDTO = {
-                    success: false,
-                    message: `Token already used`,
-                    code: "TOKEN_MAX_USES_EXCEEDED"
-                };
-                return NextResponse.json(errorResponse, { status: 410 });
-            }
-
-            if (tokenData.expires_at && new Date(tokenData.expires_at) <= new Date()) {
-                const errorResponse: ErrorResponseDTO = {
-                    success: false,
-                    message: `Token expired`,
-                    code: "TOKEN_EXPIRED"
-                };
-                return NextResponse.json(errorResponse, { status: 410 });
-            }
-
-        } else {
-            const [masterTokens] = await pool.execute(
-                `SELECT * FROM master_invite_token WHERE token = ?`,
-                [token]
-            );
-
-            const masterTokenList = masterTokens as { token: string; uses: number }[];
-
-            if (!Array.isArray(masterTokenList) || masterTokenList.length === 0) {
-                const errorResponse: ErrorResponseDTO = {
-                    success: false,
-                    message: "Invalid token",
-                    code: "TOKEN_INVALID"
-                };
-                return NextResponse.json(errorResponse, { status: 404 });
-            }
-
-            isMasterToken = true;
-        }
-
-        const successResponse: PublicInviteTokenResponseDTO = {
-            success: true,
-            data: {
-                valid: true,
-                expires_at: isMasterToken ? undefined : (tokenList[0].expires_at ? new Date(tokenList[0].expires_at).toISOString() : undefined),
-                is_master_token: isMasterToken
-            },
-            message: isMasterToken ? "Master invite token validated successfully" : "Token validated successfully"
-        };
-        return NextResponse.json(successResponse);
-
-    } catch (error: unknown) {
-        console.error('Token validation error:', error);
-
-        const errorResponse: ErrorResponseDTO = {
-            success: false,
-            message: "Internal server error during validation",
-            code: "INTERNAL_ERROR"
-        };
-        return NextResponse.json(errorResponse, { status: 500 });
+    if (!token) {
+      const errorResponse: ErrorResponseDTO = {
+        success: false,
+        message: "Token is required",
+        code: "TOKEN_REQUIRED",
+      };
+      return NextResponse.json(errorResponse, { status: 400 });
     }
+
+    if (token.length !== 36) {
+      const errorResponse: ErrorResponseDTO = {
+        success: false,
+        message: "Token must be exactly 36 characters long",
+        code: "INVALID_TOKEN_LENGTH",
+      };
+      return NextResponse.json(errorResponse, { status: 400 });
+    }
+
+    const sqlInjectionPatterns = [
+      /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|EXEC|ALTER|CREATE|TRUNCATE)\b)/i,
+      /('|"|;|--|\/\*|\*\/|\\\*|\\-)/,
+      /(\b(OR|AND)\b\s+\d+\s*=\s*\d+)/i,
+      /(\b(WAITFOR|DELAY)\b\s+)/i,
+      /(\b(SLEEP)\b\s*\(\s*\d+\s*\))/i,
+    ];
+
+    for (const pattern of sqlInjectionPatterns) {
+      if (pattern.test(token)) {
+        const errorResponse: ErrorResponseDTO = {
+          success: false,
+          message: "Invalid token format detected",
+          code: "MALICIOUS_INPUT",
+        };
+        return NextResponse.json(errorResponse, { status: 400 });
+      }
+    }
+
+    await initServer();
+    const pool = db();
+
+    const [tokens] = await pool.execute(
+      `SELECT * FROM invite_tokens WHERE token = ?`,
+      [token]
+    );
+
+    const tokenList = tokens as InviteTokenEntity[];
+    let isMasterToken = false;
+
+    if (Array.isArray(tokenList) && tokenList.length > 0) {
+      const tokenData = tokenList[0];
+
+      if (tokenData.active === 0) {
+        const errorResponse: ErrorResponseDTO = {
+          success: false,
+          message: "Token expired",
+          code: "TOKEN_EXPIRED",
+        };
+        return NextResponse.json(errorResponse, { status: 410 });
+      }
+
+      if (tokenData.uses >= tokenData.max_uses) {
+        const errorResponse: ErrorResponseDTO = {
+          success: false,
+          message: `Token already used`,
+          code: "TOKEN_MAX_USES_EXCEEDED",
+        };
+        return NextResponse.json(errorResponse, { status: 410 });
+      }
+
+      if (
+        tokenData.expires_at &&
+        new Date(tokenData.expires_at) <= new Date()
+      ) {
+        const errorResponse: ErrorResponseDTO = {
+          success: false,
+          message: `Token expired`,
+          code: "TOKEN_EXPIRED",
+        };
+        return NextResponse.json(errorResponse, { status: 410 });
+      }
+    } else {
+      const [masterTokens] = await pool.execute(
+        `SELECT * FROM master_invite_token WHERE token = ?`,
+        [token]
+      );
+
+      const masterTokenList = masterTokens as { token: string; uses: number }[];
+
+      if (!Array.isArray(masterTokenList) || masterTokenList.length === 0) {
+        const errorResponse: ErrorResponseDTO = {
+          success: false,
+          message: "Invalid token",
+          code: "TOKEN_INVALID",
+        };
+        return NextResponse.json(errorResponse, { status: 404 });
+      }
+
+      isMasterToken = true;
+    }
+
+    const successResponse: PublicInviteTokenResponseDTO = {
+      success: true,
+      data: {
+        valid: true,
+        expires_at: isMasterToken
+          ? undefined
+          : tokenList[0].expires_at
+          ? new Date(tokenList[0].expires_at).toISOString()
+          : undefined,
+        is_master_token: isMasterToken,
+      },
+      message: isMasterToken
+        ? "Master invite token validated successfully"
+        : "Token validated successfully",
+    };
+    return NextResponse.json(successResponse);
+  } catch (error: unknown) {
+    console.error("Token validation error:", error);
+
+    const errorResponse: ErrorResponseDTO = {
+      success: false,
+      message: "Internal server error during validation",
+      code: "INTERNAL_ERROR",
+    };
+    return NextResponse.json(errorResponse, { status: 500 });
+  }
 }
