@@ -6,37 +6,39 @@ import { DevLog } from "../../types/Website/DevLogs.type";
  */
 export const devLogsData: DevLog[] = [
   {
-    id: '2',
-    title: 'Admin Dashboard & Management',
-    description: 'Enhanced admin capabilities with comprehensive management panels and system monitoring',
-    date: '2025-11-02',
-    version: 'v1.2.0',
+    id: "2",
+    title: "Admin Dashboard & Management",
+    description:
+      "Enhanced admin capabilities with comprehensive management panels and system monitoring",
+    date: "2025-11-02",
+    version: "v1.2.0",
     changes: [
-      'User profile dashboard with activity tracking',
-      'Complete audit logging system for security monitoring',
-      'System heartbeat and health monitoring logic',
-      'Redis integration for caching and session management',
-      'Redis cache management interface',
-      'Categories management system with CRUD operations',
-      'Added footer',
-      'Added public dev logs for users to see'
-    ]
+      "User profile dashboard with activity tracking",
+      "Complete audit logging system for security monitoring",
+      "System heartbeat and health monitoring logic",
+      "Redis integration for caching and session management",
+      "Redis cache management interface",
+      "Categories management system with CRUD operations",
+      "Added footer",
+      "Added public dev logs for users to see",
+    ],
   },
   {
-    id: '1',
-    title: 'Authentication & Platform Foundation',
-    description: 'Established core authentication system and initial platform structure',
-    date: '2025-10-28',
-    version: 'v1.1.0',
+    id: "1",
+    title: "Authentication & Platform Foundation",
+    description:
+      "Established core authentication system and initial platform structure",
+    date: "2025-10-28",
+    version: "v1.1.0",
     changes: [
-      'Secure login and authentication system',
-      'Invite token generation and management',
-      'Landing page with hero section',
-      'Brand identity and logo design',
-      'User registration flow',
-      'Basic admin permissions system'
-    ]
-  }
+      "Secure login and authentication system",
+      "Invite token generation and management",
+      "Landing page with hero section",
+      "Brand identity and logo design",
+      "User registration flow",
+      "Basic admin permissions system",
+    ],
+  },
 ];
 
 /**
@@ -44,6 +46,6 @@ export const devLogsData: DevLog[] = [
  * Simulates API call with loading delay
  */
 export const getDevLogs = async (): Promise<DevLog[]> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500));
   return devLogsData.sort((a, b) => parseInt(b.id) - parseInt(a.id));
 };

@@ -185,7 +185,7 @@ export default function AdminDashboard() {
       href: "/admin/audit-logs",
       icon: ClipboardList,
     },
-        {
+    {
       title: "Routes Access",
       description: "Manage Routes & Pages Access",
       href: "/admin/routes-access",
@@ -198,8 +198,6 @@ export default function AdminDashboard() {
       icon: Database,
     },
   ];
-
-  
 
   if (loading) {
     return <CustomLoader fullscreen random_text />;

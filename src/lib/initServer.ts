@@ -1,6 +1,6 @@
-import { initializeDatabase } from './Database/init';
-import { getDbPool } from './Database/init';
-import { getProduction } from '../utils/Variables/getProduction';
+import { initializeDatabase } from "./Database/init";
+import { getDbPool } from "./Database/init";
+import { getProduction } from "../utils/Variables/getProduction";
 
 let initializedPromise: Promise<void> | null = null;
 
@@ -14,9 +14,10 @@ export async function initServer() {
     initializedPromise = (async () => {
       await initializeDatabase();
       const isProduction: boolean = getProduction();
-      console.log('[READY] ✅ Database initialized');
-      console.log(`[ENVIRONMENT] ${isProduction ? '✅ Production' : '👩‍💻 Development'}`);
-
+      console.log("[READY] ✅ Database initialized");
+      console.log(
+        `[ENVIRONMENT] ${isProduction ? "✅ Production" : "👩‍💻 Development"}`
+      );
     })();
   }
   return initializedPromise;

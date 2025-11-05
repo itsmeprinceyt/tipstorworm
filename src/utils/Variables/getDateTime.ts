@@ -4,5 +4,5 @@
  * @returns {string} The current date-time in UTC ISO format.
  */
 export function getCurrentDateTime(): string {
-    return new Date().toISOString();
+  return new Date().toISOString();
 }

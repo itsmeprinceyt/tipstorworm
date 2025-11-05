@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { initServer, db } from "../../lib/initServer";
 import { generateHexId } from "./generateHexID.util";
-import type { AuditActionType, AuditActor } from "../../types/Admin/AuditLogger/auditLogger.type";
+import type {
+  AuditActionType,
+  AuditActor,
+} from "../../types/Admin/AuditLogger/auditLogger.type";
 import { getCurrentDateTime } from "./getDateTime";
 
 /**
@@ -10,20 +13,20 @@ import { getCurrentDateTime } from "./getDateTime";
  * This function is intended to track significant user or system actions
  */
 export async function logAudit(
-    actor: AuditActor,
-    actionType: AuditActionType,
-    description: string,
-    meta?: Record<string, any>,
-    targetUserId?: string
+  actor: AuditActor,
+  actionType: AuditActionType,
+  description: string,
+  meta?: Record<string, any>,
+  targetUserId?: string
 ): Promise<void> {
-    await initServer();
-    const pool = db();
+  await initServer();
+  const pool = db();
 
-    const targetId = targetUserId || actor.user_id;
+  const targetId = targetUserId || actor.user_id;
 
-    try {
-        await pool.query(
-            `INSERT INTO audit_logs (
+  try {
+    await pool.query(
+      `INSERT INTO audit_logs (
                 id, 
                 action_type, 
                 actor_user_id, 
@@ -34,19 +37,19 @@ export async function logAudit(
                 meta,
                 performed_at
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-                generateHexId(36),
-                actionType,
-                actor.user_id,
-                targetId,
-                actor.email,
-                actor.name,
-                description,
-                meta ? JSON.stringify(meta) : null,
-                getCurrentDateTime()
-            ]
-        );
-    } catch (error: unknown) {
-        console.error('Failed to log audit action:', error);
-    }
+      [
+        generateHexId(36),
+        actionType,
+        actor.user_id,
+        targetId,
+        actor.email,
+        actor.name,
+        description,
+        meta ? JSON.stringify(meta) : null,
+        getCurrentDateTime(),
+      ]
+    );
+  } catch (error: unknown) {
+    console.error("Failed to log audit action:", error);
+  }
 }

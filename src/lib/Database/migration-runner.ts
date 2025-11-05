@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import fs from 'fs';
-import path from 'path';
-import type { Pool, PoolConnection } from 'mysql2/promise';
-import { fileURLToPath } from 'url';
-import { setupIndexes } from './createIndexs';
-import MIGRATIONS_TABLE_SQL from './Queries/migration.queries';
-import { getProduction } from '../../utils/Variables/getProduction';
-import { getCurrentDateTime } from '../../utils/Variables/getDateTime';
+import fs from "fs";
+import path from "path";
+import type { Pool, PoolConnection } from "mysql2/promise";
+import { fileURLToPath } from "url";
+import { setupIndexes } from "./createIndexs";
+import MIGRATIONS_TABLE_SQL from "./Queries/migration.queries";
+import { getProduction } from "../../utils/Variables/getProduction";
+import { getCurrentDateTime } from "../../utils/Variables/getDateTime";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,41 +28,47 @@ const __dirname = path.dirname(__filename);
  * - In production, `setupIndexes` will only create missing indexes; in development, it may drop and recreate them.
  */
 export async function runMigrations(pool: Pool) {
-    const migrationsDir = path.join(__dirname, 'Migrations');
+  const migrationsDir = path.join(__dirname, "Migrations");
 
-    if (!fs.existsSync(migrationsDir)) {
-        console.warn(`[MIGRATION] Directory not found : ${migrationsDir} — creating it`);
-        fs.mkdirSync(migrationsDir, { recursive: true });
+  if (!fs.existsSync(migrationsDir)) {
+    console.warn(
+      `[MIGRATION] Directory not found : ${migrationsDir} — creating it`
+    );
+    fs.mkdirSync(migrationsDir, { recursive: true });
+  }
+
+  const conn: PoolConnection = await pool.getConnection();
+
+  try {
+    await conn.query(MIGRATIONS_TABLE_SQL);
+
+    const [rows] = await conn.query("SELECT filename FROM migrations");
+    const applied = new Set((rows as any[]).map((r) => r.filename));
+
+    const files = fs
+      .readdirSync(migrationsDir)
+      .filter((f) => f.toLowerCase().endsWith(".sql"))
+      .sort();
+
+    for (const file of files) {
+      if (applied.has(file)) continue;
+
+      const sql = fs.readFileSync(path.join(migrationsDir, file), "utf8");
+      console.log(`[MIGRATION] Applying : ${file}...`);
+      await conn.query(sql);
+      const now = getCurrentDateTime();
+      await conn.query(
+        "INSERT INTO migrations (filename, applied_at) VALUES (?, ?)",
+        [file, now]
+      );
+      console.log(`[MIGRATION] Applied : ${file}`);
     }
 
-    const conn: PoolConnection = await pool.getConnection();
+    console.log(`[MIGRATION] ✅ All migrations processed.`);
 
-    try {
-        await conn.query(MIGRATIONS_TABLE_SQL);
-
-        const [rows] = await conn.query('SELECT filename FROM migrations');
-        const applied = new Set((rows as any[]).map(r => r.filename));
-
-        const files = fs.readdirSync(migrationsDir)
-            .filter(f => f.toLowerCase().endsWith('.sql'))
-            .sort();
-
-        for (const file of files) {
-            if (applied.has(file)) continue;
-
-            const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
-            console.log(`[MIGRATION] Applying : ${file}...`);
-            await conn.query(sql);
-            const now = getCurrentDateTime();
-            await conn.query('INSERT INTO migrations (filename, applied_at) VALUES (?, ?)', [file, now]);
-            console.log(`[MIGRATION] Applied : ${file}`);
-        }
-
-        console.log(`[MIGRATION] ✅ All migrations processed.`);
-
-        const isProduction: boolean = getProduction();
-        await setupIndexes(pool, isProduction);
-    } finally {
-        conn.release();
-    }
+    const isProduction: boolean = getProduction();
+    await setupIndexes(pool, isProduction);
+  } finally {
+    conn.release();
+  }
 }

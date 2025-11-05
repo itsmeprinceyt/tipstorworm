@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { Pool } from 'mysql2/promise';
-import { createIndexStatements, dropIndexStatements } from './Index/Indexing';
+import type { Pool } from "mysql2/promise";
+import { createIndexStatements, dropIndexStatements } from "./Index/Indexing";
 
 /**
  * @brief Checks if a specific index exists in the current database schema.
@@ -10,7 +10,11 @@ import { createIndexStatements, dropIndexStatements } from './Index/Indexing';
  * @param {string} indexName - The name of the index to check.
  * @returns {Promise<boolean>} True if the index exists, false otherwise.
  */
-async function indexExists(connection: Pool, tableName: string, indexName: string): Promise<boolean> {
+async function indexExists(
+  connection: Pool,
+  tableName: string,
+  indexName: string
+): Promise<boolean> {
   const [rows] = await connection.query(
     `SELECT COUNT(*) as count
      FROM information_schema.statistics
@@ -23,14 +27,14 @@ async function indexExists(connection: Pool, tableName: string, indexName: strin
 }
 
 /**
- * @brief Logs all indexes in the current database schema that have recorded **zero usage** 
+ * @brief Logs all indexes in the current database schema that have recorded **zero usage**
  * according to MySQL's `performance_schema.table_io_waits_summary_by_index_usage`.
  *
  * - Skips the PRIMARY index.
  * - Requires `performance_schema` to be enabled in MySQL.
  */
 async function logUnusedIndexes(connection: Pool) {
-  console.log('[INDEX - CHECKING] Detecting unused indexes');
+  console.log("[INDEX - CHECKING] Detecting unused indexes");
 
   try {
     const [unusedRows] = await connection.query(
@@ -50,18 +54,23 @@ async function logUnusedIndexes(connection: Pool) {
     `
     );
 
-    const unusedIndexes = (unusedRows as any[]).filter(row => row.usage_count === 0);
+    const unusedIndexes = (unusedRows as any[]).filter(
+      (row) => row.usage_count === 0
+    );
 
     if (unusedIndexes.length > 0) {
-      console.warn('[INDEX] Unused indexes detected:');
-      unusedIndexes.forEach(row => {
+      console.warn("[INDEX] Unused indexes detected:");
+      unusedIndexes.forEach((row) => {
         console.warn(`  - ${row.table_name}.${row.index_name} → not used`);
       });
     } else {
-      console.log('[INDEX] No unused indexes detected.');
+      console.log("[INDEX] No unused indexes detected.");
     }
   } catch (err: any) {
-    console.error('[INDEX] Failed to detect unused indexes:', err.message || err);
+    console.error(
+      "[INDEX] Failed to detect unused indexes:",
+      err.message || err
+    );
   }
 }
 
@@ -76,10 +85,10 @@ async function logUnusedIndexes(connection: Pool) {
  * @param {boolean} isProduction - If true, indexes are only created (not dropped); if false, all are dropped and recreated.
  */
 export async function setupIndexes(connection: Pool, isProduction: boolean) {
-  console.log('[INDEX] Handling indexes');
+  console.log("[INDEX] Handling indexes");
 
   if (!isProduction) {
-    console.log('[INDEX] Dropping existing indexes');
+    console.log("[INDEX] Dropping existing indexes");
     for (const dropStmt of dropIndexStatements) {
       try {
         await connection.query(dropStmt);
@@ -90,7 +99,7 @@ export async function setupIndexes(connection: Pool, isProduction: boolean) {
     }
   }
 
-  console.log('[INDEX] Creating missing indexes');
+  console.log("[INDEX] Creating missing indexes");
   let createdCount = 0;
   let skippedCount = 0;
 
@@ -102,7 +111,9 @@ export async function setupIndexes(connection: Pool, isProduction: boolean) {
 
       if (await indexExists(connection, tableName, indexName)) {
         skippedCount++;
-        console.log(`[INDEX - SKIP] Index ${indexName} already exists on ${tableName}.`);
+        console.log(
+          `[INDEX - SKIP] Index ${indexName} already exists on ${tableName}.`
+        );
         continue;
       }
     }
@@ -117,7 +128,7 @@ export async function setupIndexes(connection: Pool, isProduction: boolean) {
   }
 
   if (isProduction && createdCount === 0 && skippedCount > 0) {
-    console.log('[INDEX - SKIP] All indexes already exist in production.');
+    console.log("[INDEX - SKIP] All indexes already exist in production.");
   }
 
   await logUnusedIndexes(connection);

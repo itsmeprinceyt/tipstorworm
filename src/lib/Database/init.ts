@@ -1,5 +1,5 @@
-import { ensureDatabaseExists, createPool } from './dbconnection';
-import { runMigrations } from './migration-runner';
+import { ensureDatabaseExists, createPool } from "./dbconnection";
+import { runMigrations } from "./migration-runner";
 
 let poolInstance: ReturnType<typeof createPool> | null = null;
 
@@ -27,6 +27,6 @@ export const initializeDatabase = async () => {
  * - To be used for modules that need database access without reinitializing it.
  */
 export const getDbPool = () => {
-  if (!poolInstance) throw new Error('[ERROR] Database not initialized yet.');
+  if (!poolInstance) throw new Error("[ERROR] Database not initialized yet.");
   return poolInstance;
 };

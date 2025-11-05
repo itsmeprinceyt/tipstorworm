@@ -3,13 +3,24 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { ArrowLeft, Database, RefreshCw, Trash2, Search, Layers } from "lucide-react";
+import {
+  ArrowLeft,
+  Database,
+  RefreshCw,
+  Trash2,
+  Search,
+  Layers,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import axios from "axios";
 
 import getAxiosErrorMessage from "../../../utils/Variables/getAxiosError.util";
 import PageWrapper from "../../(components)/PageWrapper";
-import { RedisKey, DeleteModalState, ExpandedKeys } from "../../../types/Admin/Redis/RedisKeyDate.type";
+import {
+  RedisKey,
+  DeleteModalState,
+  ExpandedKeys,
+} from "../../../types/Admin/Redis/RedisKeyDate.type";
 import CustomLoader from "../../(components)/Components/utils/Loader";
 
 export default function RedisCacheManager() {
@@ -20,7 +31,7 @@ export default function RedisCacheManager() {
   const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
     isOpen: false,
     keyToDelete: null,
-    isBulk: false
+    isBulk: false,
   });
   const [expandedKeys, setExpandedKeys] = useState<ExpandedKeys>({});
 
@@ -45,14 +56,14 @@ export default function RedisCacheManager() {
     setDeleteModal({
       isOpen: true,
       keyToDelete: null,
-      isBulk: true
+      isBulk: true,
     });
   };
 
   const confirmFlushCache = async () => {
     setIsLoading(true);
     try {
-      const { data } = await axios.post('/api/admin/redis-manager');
+      const { data } = await axios.post("/api/admin/redis-manager");
       toast.success(data?.message || "Cache flushed successfully!");
       setRedisData([]);
       setDeleteModal({ isOpen: false, keyToDelete: null, isBulk: false });
@@ -68,7 +79,7 @@ export default function RedisCacheManager() {
     setDeleteModal({
       isOpen: true,
       keyToDelete: key,
-      isBulk: false
+      isBulk: false,
     });
   };
 
@@ -76,9 +87,15 @@ export default function RedisCacheManager() {
     if (!deleteModal.keyToDelete) return;
 
     try {
-      const { data } = await axios.delete(`/api/admin/redis-manager?key=${encodeURIComponent(deleteModal.keyToDelete)}`);
+      const { data } = await axios.delete(
+        `/api/admin/redis-manager?key=${encodeURIComponent(
+          deleteModal.keyToDelete
+        )}`
+      );
       toast.success(data?.message || "Key deleted successfully!");
-      setRedisData(prev => prev.filter(item => item.key !== deleteModal.keyToDelete));
+      setRedisData((prev) =>
+        prev.filter((item) => item.key !== deleteModal.keyToDelete)
+      );
       setDeleteModal({ isOpen: false, keyToDelete: null, isBulk: false });
 
       const newExpandedKeys = { ...expandedKeys };
@@ -90,9 +107,9 @@ export default function RedisCacheManager() {
   };
 
   const toggleExpand = (key: string) => {
-    setExpandedKeys(prev => ({
+    setExpandedKeys((prev) => ({
       ...prev,
-      [key]: !prev[key]
+      [key]: !prev[key],
     }));
   };
 
@@ -112,9 +129,9 @@ export default function RedisCacheManager() {
   const formatSize = (bytes: number) => {
     if (bytes === 0) return "0 B";
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
   };
 
   const formatValuePreview = (item: RedisKey) => {
@@ -122,20 +139,29 @@ export default function RedisCacheManager() {
       if (item.value === null || item.value === undefined) return "null";
 
       switch (item.type) {
-        case 'string':
-          const str = typeof item.value === 'string' ? item.value : JSON.stringify(item.value);
-          return str.length > 80 ? str.substring(0, 80) + '...' : str;
+        case "string":
+          const str =
+            typeof item.value === "string"
+              ? item.value
+              : JSON.stringify(item.value);
+          return str.length > 80 ? str.substring(0, 80) + "..." : str;
 
-        case 'list':
-          return `List [${Array.isArray(item.value) ? item.value.length : 0} items]`;
+        case "list":
+          return `List [${
+            Array.isArray(item.value) ? item.value.length : 0
+          } items]`;
 
-        case 'set':
-          return `Set [${Array.isArray(item.value) ? item.value.length : 0} members]`;
+        case "set":
+          return `Set [${
+            Array.isArray(item.value) ? item.value.length : 0
+          } members]`;
 
-        case 'zset':
-          return `Sorted Set [${Array.isArray(item.value) ? item.value.length / 2 : 0} members]`;
+        case "zset":
+          return `Sorted Set [${
+            Array.isArray(item.value) ? item.value.length / 2 : 0
+          } members]`;
 
-        case 'hash':
+        case "hash":
           return `Hash [${Object.keys(item.value || {}).length} fields]`;
 
         default:
@@ -151,33 +177,53 @@ export default function RedisCacheManager() {
 
     try {
       switch (item.type) {
-        case 'hash':
+        case "hash":
           return (
             <div className="mt-3 p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-stone-700">
-              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">HASH FIELDS</div>
+              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">
+                HASH FIELDS
+              </div>
               <div className="space-y-2">
-                {Object.entries(item.value || {}).map(([field, value], index) => (
-                  <div key={index} className="flex text-sm font-mono bg-black/30 p-2 rounded-lg border border-stone-600">
-                    <span className="text-gray-300 flex-shrink-0 w-32 truncate font-medium" title={field}>
-                      {field}:
-                    </span>
-                    <span className="text-white ml-3 flex-1 truncate" title={String(value)}>
-                      {String(value)}
-                    </span>
-                  </div>
-                ))}
+                {Object.entries(item.value || {}).map(
+                  ([field, value], index) => (
+                    <div
+                      key={index}
+                      className="flex text-sm font-mono bg-black/30 p-2 rounded-lg border border-stone-600"
+                    >
+                      <span
+                        className="text-gray-300 flex-shrink-0 w-32 truncate font-medium"
+                        title={field}
+                      >
+                        {field}:
+                      </span>
+                      <span
+                        className="text-white ml-3 flex-1 truncate"
+                        title={String(value)}
+                      >
+                        {String(value)}
+                      </span>
+                    </div>
+                  )
+                )}
               </div>
             </div>
           );
 
-        case 'list':
+        case "list":
           return (
             <div className="mt-3 p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-stone-700">
-              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">LIST ITEMS</div>
+              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">
+                LIST ITEMS
+              </div>
               <div className="space-y-2">
                 {(item.value || []).map((value: any, index: number) => (
-                  <div key={index} className="text-sm font-mono text-white bg-black/30 p-2 rounded-lg border border-stone-600">
-                    <span className="text-gray-400 text-xs mr-2">[{index}]</span>
+                  <div
+                    key={index}
+                    className="text-sm font-mono text-white bg-black/30 p-2 rounded-lg border border-stone-600"
+                  >
+                    <span className="text-gray-400 text-xs mr-2">
+                      [{index}]
+                    </span>
                     {JSON.stringify(value)}
                   </div>
                 ))}
@@ -185,13 +231,18 @@ export default function RedisCacheManager() {
             </div>
           );
 
-        case 'set':
+        case "set":
           return (
             <div className="mt-3 p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-stone-700">
-              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">SET MEMBERS</div>
+              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">
+                SET MEMBERS
+              </div>
               <div className="space-y-2">
                 {(item.value || []).map((value: any, index: number) => (
-                  <div key={index} className="text-sm font-mono text-white bg-black/30 p-2 rounded-lg border border-stone-600 flex items-center">
+                  <div
+                    key={index}
+                    className="text-sm font-mono text-white bg-black/30 p-2 rounded-lg border border-stone-600 flex items-center"
+                  >
                     <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-3"></div>
                     {JSON.stringify(value)}
                   </div>
@@ -200,20 +251,28 @@ export default function RedisCacheManager() {
             </div>
           );
 
-        case 'zset':
+        case "zset":
           return (
             <div className="mt-3 p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-stone-700">
-              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">SORTED SET (score: value)</div>
+              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">
+                SORTED SET (score: value)
+              </div>
               <div className="space-y-3">
                 {(item.value || []).map((value: any, index: number) => (
                   <div key={index} className="text-sm font-mono text-white">
                     {index % 2 === 0 ? (
                       <div className="bg-black/30 p-2 rounded-lg border border-stone-600">
-                        <span className="text-orange-400 font-medium">Score:</span> {value}
+                        <span className="text-orange-400 font-medium">
+                          Score:
+                        </span>{" "}
+                        {value}
                       </div>
                     ) : (
                       <div className="bg-black/20 p-2 rounded-lg border border-stone-600 ml-4">
-                        <span className="text-green-400 font-medium">Value:</span> {value}
+                        <span className="text-green-400 font-medium">
+                          Value:
+                        </span>{" "}
+                        {value}
                       </div>
                     )}
                   </div>
@@ -225,7 +284,9 @@ export default function RedisCacheManager() {
         default:
           return (
             <div className="mt-3 p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-stone-700">
-              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">FULL VALUE</div>
+              <div className="text-xs font-semibold text-gray-300 mb-3 tracking-wide">
+                FULL VALUE
+              </div>
               <pre className="text-sm font-mono text-white bg-black/30 p-3 rounded-lg border border-stone-600 overflow-x-auto">
                 {JSON.stringify(item.value, null, 2)}
               </pre>
@@ -236,8 +297,18 @@ export default function RedisCacheManager() {
       return (
         <div className="mt-3 p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-stone-700">
           <div className="text-sm text-gray-300 flex items-center">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
             Unable to display expanded value
           </div>
@@ -253,23 +324,25 @@ export default function RedisCacheManager() {
       set: "bg-violet-500/20 text-violet-400 border border-violet-500/30",
       zset: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
       hash: "bg-rose-500/20 text-rose-400 border border-rose-500/30",
-      default: "bg-gray-500/20 text-gray-400 border border-gray-500/30"
+      default: "bg-gray-500/20 text-gray-400 border border-gray-500/30",
     };
     return colors[type as keyof typeof colors] || colors.default;
   };
 
   const getTTLColor = (ttl: number) => {
-    if (ttl === -1) return "bg-gray-500/20 text-gray-400 border border-gray-500/30";
+    if (ttl === -1)
+      return "bg-gray-500/20 text-gray-400 border border-gray-500/30";
     if (ttl < 60) return "bg-red-500/20 text-red-400 border border-red-500/30";
-    if (ttl < 300) return "bg-orange-500/20 text-orange-400 border border-orange-500/30";
+    if (ttl < 300)
+      return "bg-orange-500/20 text-orange-400 border border-orange-500/30";
     return "bg-green-500/20 text-green-400 border border-green-500/30";
   };
 
   const isExpandable = (type: string) => {
-    return ['hash', 'list', 'set', 'zset'].includes(type);
+    return ["hash", "list", "set", "zset"].includes(type);
   };
 
-  const filteredData = redisData.filter(item =>
+  const filteredData = redisData.filter((item) =>
     item.key.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -331,19 +404,21 @@ export default function RedisCacheManager() {
             </div>
             <div className="bg-black/40 backdrop-blur-sm border border-stone-800 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-emerald-400 mb-1">
-                {redisData.filter(item => item.ttl === -1).length}
+                {redisData.filter((item) => item.ttl === -1).length}
               </div>
               <div className="text-gray-400 text-sm">Persistent</div>
             </div>
             <div className="bg-black/40 backdrop-blur-sm border border-stone-800 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-amber-400 mb-1">
-                {redisData.filter(item => item.ttl > 0).length}
+                {redisData.filter((item) => item.ttl > 0).length}
               </div>
               <div className="text-gray-400 text-sm">Expiring</div>
             </div>
             <div className="bg-black/40 backdrop-blur-sm border border-stone-800 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-purple-400 mb-1">
-                {formatSize(redisData.reduce((acc, item) => acc + item.size, 0))}
+                {formatSize(
+                  redisData.reduce((acc, item) => acc + item.size, 0)
+                )}
               </div>
               <div className="text-gray-400 text-sm">Total Size</div>
             </div>
@@ -381,7 +456,9 @@ export default function RedisCacheManager() {
                   disabled={isFetching}
                   className="flex items-center gap-2 px-4 py-2.5 text-sm border border-stone-600 bg-stone-900 text-stone-300 hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-700 cursor-pointer rounded-xl disabled:opacity-50 transition-all duration-200"
                 >
-                  <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+                  <RefreshCw
+                    className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`}
+                  />
                   {isFetching ? "Refreshing..." : "Refresh"}
                 </motion.button>
 
@@ -419,9 +496,13 @@ export default function RedisCacheManager() {
                 <div className="w-16 h-16 bg-stone-700/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Database className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">No keys found</h3>
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  No keys found
+                </h3>
                 <p className="text-gray-400 max-w-sm mx-auto">
-                  {redisData.length === 0 ? "Your Redis cache is empty." : "No keys match your search criteria."}
+                  {redisData.length === 0
+                    ? "Your Redis cache is empty."
+                    : "No keys match your search criteria."}
                 </p>
               </div>
             ) : (
@@ -429,12 +510,24 @@ export default function RedisCacheManager() {
                 <table className="min-w-full divide-y divide-stone-700">
                   <thead className="bg-stone-800/50">
                     <tr>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Key</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Type</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">TTL</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Size</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Value</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Actions</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                        Key
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                        Type
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                        TTL
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                        Size
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                        Value
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-black/20 divide-y divide-stone-700">
@@ -442,17 +535,28 @@ export default function RedisCacheManager() {
                       <React.Fragment key={index}>
                         <tr className="hover:bg-stone-800/30 transition-all duration-200 group">
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-mono text-white max-w-xs truncate group-hover:text-gray-300 transition-colors" title={item.key}>
+                            <div
+                              className="text-sm font-mono text-white max-w-xs truncate group-hover:text-gray-300 transition-colors"
+                              title={item.key}
+                            >
                               {item.key}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getTypeColor(item.type)}`}>
+                            <span
+                              className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getTypeColor(
+                                item.type
+                              )}`}
+                            >
                               {item.type}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getTTLColor(item.ttl)}`}>
+                            <span
+                              className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${getTTLColor(
+                                item.ttl
+                              )}`}
+                            >
                               {formatTTL(item.ttl)}
                             </span>
                           </td>
@@ -461,15 +565,23 @@ export default function RedisCacheManager() {
                           </td>
                           <td className="px-6 py-4">
                             <div
-                              className={`text-sm text-gray-400 font-mono max-w-md truncate cursor-pointer hover:text-white transition-all duration-200 ${isExpandable(item.type) ? 'hover:underline decoration-2 underline-offset-2' : ''
-                                }`}
-                              onClick={() => isExpandable(item.type) && toggleExpand(item.key)}
-                              title={isExpandable(item.type) ? "Click to expand" : ""}
+                              className={`text-sm text-gray-400 font-mono max-w-md truncate cursor-pointer hover:text-white transition-all duration-200 ${
+                                isExpandable(item.type)
+                                  ? "hover:underline decoration-2 underline-offset-2"
+                                  : ""
+                              }`}
+                              onClick={() =>
+                                isExpandable(item.type) &&
+                                toggleExpand(item.key)
+                              }
+                              title={
+                                isExpandable(item.type) ? "Click to expand" : ""
+                              }
                             >
                               {formatValuePreview(item)}
                               {isExpandable(item.type) && (
                                 <span className="ml-2 text-xs text-gray-500 transition-transform duration-200">
-                                  {expandedKeys[item.key] ? '▼' : '▶'}
+                                  {expandedKeys[item.key] ? "▼" : "▶"}
                                 </span>
                               )}
                             </div>
@@ -488,7 +600,10 @@ export default function RedisCacheManager() {
                         </tr>
                         {expandedKeys[item.key] && (
                           <tr className="bg-stone-800/20">
-                            <td colSpan={6} className="px-6 py-4 border-t border-stone-700">
+                            <td
+                              colSpan={6}
+                              className="px-6 py-4 border-t border-stone-700"
+                            >
                               {renderExpandedValue(item)}
                             </td>
                           </tr>
@@ -527,15 +642,20 @@ export default function RedisCacheManager() {
               <p className="text-sm text-gray-300 mb-6 pl-16">
                 {deleteModal.isBulk
                   ? `Are you sure you want to flush the entire Redis cache? This will delete all ${redisData.length} keys.`
-                  : `Are you sure you want to delete the key "${deleteModal.keyToDelete}"?`
-                }
+                  : `Are you sure you want to delete the key "${deleteModal.keyToDelete}"?`}
               </p>
 
               <div className="flex gap-3 justify-end">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setDeleteModal({ isOpen: false, keyToDelete: null, isBulk: false })}
+                  onClick={() =>
+                    setDeleteModal({
+                      isOpen: false,
+                      keyToDelete: null,
+                      isBulk: false,
+                    })
+                  }
                   className="px-4 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-stone-700 rounded-xl transition-all duration-200 font-medium cursor-pointer"
                 >
                   Cancel
@@ -543,7 +663,9 @@ export default function RedisCacheManager() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={deleteModal.isBulk ? confirmFlushCache : confirmDeleteKey}
+                  onClick={
+                    deleteModal.isBulk ? confirmFlushCache : confirmDeleteKey
+                  }
                   disabled={isLoading}
                   className="flex items-center gap-2 px-4 py-2.5 text-sm bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl hover:bg-red-500/30 disabled:opacity-50 transition-all duration-200 font-medium cursor-pointer"
                 >
