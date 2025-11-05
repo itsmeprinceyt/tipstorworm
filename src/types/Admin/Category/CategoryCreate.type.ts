@@ -1,4 +1,4 @@
 export interface CreateCategoryRequest {
-    name: string;
-    description?: string;
+  name: string;
+  description?: string;
 }

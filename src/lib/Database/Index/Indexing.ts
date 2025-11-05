@@ -43,7 +43,7 @@ export const createIndexStatements: string[] = [
   "CREATE INDEX idx_suggestions_created_at ON suggestions_reports(created_at)",
   "CREATE INDEX idx_suggestions_updated_at ON suggestions_reports(updated_at)",
   "CREATE INDEX idx_suggestions_status_created ON suggestions_reports(status, created_at)",
-  "CREATE INDEX idx_suggestions_vote_count ON suggestions_reports(vote_count)"
+  "CREATE INDEX idx_suggestions_vote_count ON suggestions_reports(vote_count)",
 ];
 
 export const dropIndexStatements: string[] = [
@@ -91,5 +91,5 @@ export const dropIndexStatements: string[] = [
   "DROP INDEX idx_suggestions_created_at ON suggestions_reports",
   "DROP INDEX idx_suggestions_updated_at ON suggestions_reports",
   "DROP INDEX idx_suggestions_status_created ON suggestions_reports",
-  "DROP INDEX idx_suggestions_vote_count ON suggestions_reports"
+  "DROP INDEX idx_suggestions_vote_count ON suggestions_reports",
 ];
