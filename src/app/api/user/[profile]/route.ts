@@ -16,6 +16,8 @@ import { MyJWT } from "../../../../types/User/JWT.type";
  * 3. Check profile visibility
  * 4. Return appropriate response based on visibility
  */
+
+// TODO: allow searching through username
 export async function GET(
   req: Request,
   context: { params: Promise<{ profile: string }> }

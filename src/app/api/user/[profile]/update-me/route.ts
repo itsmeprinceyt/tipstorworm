@@ -21,6 +21,8 @@ import { ProfileUpdateRequestDTO } from "../../../../../types/User/Profile/Profi
  * 5. Log audit trail for security
  * 6. Return updated user data
  */
+
+// TODO: check for sql injection and support only underscores & alphabets and numeric.
 export async function PATCH(req: Request): Promise<NextResponse> {
   try {
     const session = await getServerSession(authOptions);
