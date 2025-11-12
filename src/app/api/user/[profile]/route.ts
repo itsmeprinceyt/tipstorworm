@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { initServer, db } from "@/lib/initServer";
-import { MyJWT } from "@/types/User/JWT.type";
+import { initServer, db } from "../../../../lib/initServer";
+import { MyJWT } from "../../../../types/User/JWT.type";
 
 
 /**
