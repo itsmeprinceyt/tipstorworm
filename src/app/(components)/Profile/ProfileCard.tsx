@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import getAxiosErrorMessage from "@/utils/Variables/getAxiosError.util";
+import getAxiosErrorMessage from "../../../utils/Variables/getAxiosError.util";
 
 import { Settings, Lock } from "lucide-react";
 import DefaultCover from "../../../assets/Default-Cover.jpg";
