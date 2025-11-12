@@ -9,8 +9,10 @@ import { getSetting } from "../../../lib/settings-client";
 
 import Maintenance from "../../(components)/Components/utils/Maintenance";
 import CustomLoader from "../../(components)/Components/utils/Loader";
+import { useParams } from "next/navigation";
 
 export default function ProfilePage() {
+  const { profile_id } = useParams();
   const { data: session } = useSession();
 
   const [pageEnabled, setPageEnabled] = useState<boolean | null>(null);
@@ -39,7 +41,7 @@ export default function ProfilePage() {
   return (
     <PageWrapper>
       <div className="min-h-screen flex items-start justify-center p-4 ">
-        <ProfileCard />
+        <ProfileCard profile={profile_id as string} />
       </div>
     </PageWrapper>
   );

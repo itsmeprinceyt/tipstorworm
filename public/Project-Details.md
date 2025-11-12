@@ -25,8 +25,8 @@
 3. 📃 `POST` `/public/single-setting` - Get all global settings
 
 **User Profile APIs**
-1. ❌ `GET` `/dashboard/user/me` - Get current user profile
-2. ❌ `PUT` `/dashboard/user/update-me` - Update current user profile
+1. 📃 `GET` `/user/[profile]` - Get current user profile
+2. 📃 `PUT` `/user/[profile/update-me` - Update current user profile
 3. ❌ `GET` `/dashboard/user/:userId` - Get public user profile
 4. ❌ `GET` `/dashboard/user/:userId/posts` - Get user's posts
 5. ❌ `GET` `/dashboard/user/:userId/fav` - Get user's favourite posts

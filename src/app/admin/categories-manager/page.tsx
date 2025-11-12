@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import getAxiosErrorMessage from "../../../utils/Variables/getAxiosError.util";
 import { CategoriesResponse } from "../../../types/Admin/Category/Category.type";
@@ -419,11 +419,10 @@ export default function CategoryManager() {
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-stone-700">
+                    <tbody>
                       {categories.map((category, index) => (
-                        <>
+                        <React.Fragment key={category.id}>
                           <motion.tr
-                            key={`${category.id}-id`}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05 }}
@@ -690,7 +689,7 @@ export default function CategoryManager() {
                               </motion.tr>
                             )}
                           </AnimatePresence>
-                        </>
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>
