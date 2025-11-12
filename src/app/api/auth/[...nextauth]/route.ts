@@ -10,7 +10,7 @@ import { MyJWT } from "../../../../types/User/JWT.type";
 import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime";
 import generateUsername from "../../../../utils/Variables/generateUsername";
 import { cookies } from "next/headers";
-import { generateHexId } from "@/utils/Variables/generateHexID.util";
+import { generateHexId } from "../../../../utils/Variables/generateHexID.util";
 import { logAudit } from "../../../../utils/Variables/AuditLogger";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
@@ -64,7 +64,7 @@ declare module "next-auth" {
     image?: string | null;
     cover_image?: string | null;
     bio: string;
-    website: string;
+    website: string | null;
     visibility: "public" | "private";
     is_admin?: boolean;
     is_mod?: boolean;
@@ -243,9 +243,35 @@ const authOptions: NextAuthOptions = {
       }
     },
 
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user, account, profile, trigger }) {
       const t = token as MyJWT;
       const pool = await getPool();
+
+      // To make the next-auth trigger an session update from db when we edit the profile
+      if (trigger === "update") {
+        const [rows] = await pool.execute<MyJWT[]>(
+          "SELECT id, user_id, name, username, email, image, cover_image, bio, website, visibility, is_admin, is_mod, is_banned FROM users WHERE email = ?",
+          [t.email]
+        );
+
+        if (Array.isArray(rows) && rows.length > 0) {
+          const dbUser = rows[0];
+          t.id = dbUser.id ?? t.id;
+          t.user_id = dbUser.user_id ?? t.user_id;
+          t.name = dbUser.name ?? "";
+          t.username = dbUser.username ?? null;
+          t.email = dbUser.email ?? t.email;
+          t.image = dbUser.image ?? "";
+          t.cover_image = dbUser.cover_image ?? "";
+          t.bio = dbUser.bio ?? "";
+          t.website = dbUser.website ?? null;
+          t.visibility = dbUser.visibility ?? "public";
+          t.is_admin = Boolean(dbUser.is_admin) ?? false;
+          t.is_mod = Boolean(dbUser.is_mod) ?? false;
+          t.is_banned = Boolean(dbUser.is_banned) ?? false;
+        }
+        return t;
+      }
 
       let emailToCheck: string | null = null;
 
@@ -274,11 +300,11 @@ const authOptions: NextAuthOptions = {
           t.image = dbUser.image ?? "";
           t.cover_image = dbUser.cover_image ?? "";
           t.bio = dbUser.bio ?? "";
-          t.website = dbUser.website ?? "";
+          t.website = dbUser.website ?? null;
           t.visibility = dbUser.visibility ?? "public";
-          t.is_admin = Boolean(dbUser.is_admin);
-          t.is_mod = Boolean(dbUser.is_mod);
-          t.is_banned = Boolean(dbUser.is_banned);
+          t.is_admin = Boolean(dbUser.is_admin) ?? false;
+          t.is_mod = Boolean(dbUser.is_mod) ?? false;
+          t.is_banned = Boolean(dbUser.is_banned) ?? false;
         }
       }
 

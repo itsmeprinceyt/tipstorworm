@@ -91,7 +91,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
     if (expiresAt && expiresAt < now) {
       return NextResponse.json(
-        { error: "This token is already expired" },
+        { error: "Token already expired" },
         { status: 400 }
       );
     }
