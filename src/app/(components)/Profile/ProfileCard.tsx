@@ -141,7 +141,7 @@ export default function ProfileCard({ profile }: { profile: string }) {
         </div>
       )}
 
-      <div className="mt-16 sm:mt-20 relative z-10 flex flex-col items-start gap-4 sm:gap-6">
+      <div className="mt-35 relative z-10 flex flex-col items-start gap-4 sm:gap-6">
         {/* Profile Section */}
         <div className="flex gap-3 sm:gap-4 items-start w-full">
           {/* Profile Picture */}

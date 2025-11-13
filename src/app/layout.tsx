@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/next";
 
 import { Providers } from "./(components)/Components/Providers/AuthProvider";
+import IKProvider from "./(components)/Components/Providers/ImageKitProvider";
 
 import Navbar from "./(components)/Navbar/Navbar";
 import Footer from "./(components)/Website/Footer";
@@ -1363,21 +1364,23 @@ export default function RootLayout({
       <body className="select-none antialiased">
         <Providers>
           <Suspense fallback={<CustomLoader fullscreen />}>
-            <Navbar />
-            <HomePageHeartbeat />
-            {children}
-            <Footer />
-            <Analytics />
-            <Toaster
-              position="bottom-left"
-              toastOptions={{
-                style: {
-                  fontSize: "14px",
-                  background: "black",
-                  color: "white",
-                },
-              }}
-            />
+            <IKProvider>
+              <Navbar />
+              <HomePageHeartbeat />
+              {children}
+              <Footer />
+              <Analytics />
+              <Toaster
+                position="bottom-left"
+                toastOptions={{
+                  style: {
+                    fontSize: "14px",
+                    background: "black",
+                    color: "white",
+                  },
+                }}
+              />
+            </IKProvider>
           </Suspense>
         </Providers>
 
