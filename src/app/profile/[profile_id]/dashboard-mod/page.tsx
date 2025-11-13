@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import PageWrapper from "../(components)/PageWrapper";
-import Maintenance from "../(components)/Components/utils/Maintenance";
-import { getSetting } from "../../lib/settings-client";
-import CustomLoader from "../(components)/Components/utils/Loader";
+import PageWrapper from "../../../(components)/PageWrapper";
+import Maintenance from "../../../(components)/Components/utils/Maintenance";
+import { getSetting } from "../../../../lib/settings-client";
+import CustomLoader from "../../../(components)/Components/utils/Loader";
 
 export default function ModDashboard() {
   const [pageEnabled, setPageEnabled] = useState<boolean | null>(null);

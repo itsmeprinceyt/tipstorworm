@@ -6,6 +6,22 @@ import { DevLog } from "../../types/Website/DevLogs.type";
  */
 export const devLogsData: DevLog[] = [
   {
+    id: "3",
+    title: "More Customization to profile",
+    description:
+      "Added ImageKit so now everyone can update their cover photos and edit their profile",
+    date: "2025-11-13",
+    version: "v1.2.1",
+    changes: [
+      "Integrated ImageKit",
+      "Added feature to change profile visibility",
+      "Added feature to update username",
+      "Added feature to update bio",
+      "Added feature to update special website url",
+      "Added feature to modify cover photo",
+    ],
+  },
+  {
     id: "2",
     title: "Admin Dashboard & Management",
     description:
