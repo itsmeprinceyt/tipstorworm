@@ -2,27 +2,44 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import getAxiosErrorMessage from "../../../../utils/Variables/getAxiosError.util";
 import toast from "react-hot-toast";
 
-import { Globe, Lock, ArrowLeft, Edit3, X, Check, Loader2 } from "lucide-react";
+import {
+  Globe,
+  Lock,
+  ArrowLeft,
+  Edit3,
+  X,
+  Check,
+  Loader2,
+  Image as ImageIcon,
+  Trash2,
+  MoreVertical,
+} from "lucide-react";
 
 import DefaultCover from "../../../../assets/Default-Cover.jpg";
 import DefaultAvatar from "../../../../assets/Default-Avatar.jpg";
 import PageWrapper from "../../../(components)/PageWrapper";
+import UploadButton from "../../../(components)/Components/ImageKit/UploadButton";
+import { UploadResult } from "../../../../types/ImageKit/ImageKitAuthResponse.DTO";
 
 export default function EditableProfileCard() {
   const { data: session, status, update } = useSession();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showEditMenu, setShowEditMenu] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     username: "",
     bio: "",
     website: "",
     visibility: "public",
   });
+
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (status === "loading") {
@@ -41,6 +58,20 @@ export default function EditableProfileCard() {
     }
   }, [session, status]);
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowEditMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -49,6 +80,10 @@ export default function EditableProfileCard() {
   };
 
   const handleEditClick = () => {
+    setShowEditMenu(!showEditMenu);
+  };
+
+  const handleEditProfile = () => {
     if (session?.user) {
       setFormData({
         username: session.user.username || "",
@@ -58,6 +93,7 @@ export default function EditableProfileCard() {
       });
     }
     setIsEditing(true);
+    setShowEditMenu(false);
   };
 
   const handleSave = async () => {
@@ -86,6 +122,51 @@ export default function EditableProfileCard() {
       });
     }
     setIsEditing(false);
+  };
+
+  const handleUploaded = async (file: UploadResult | null) => {
+    if (!file) return;
+    try {
+      await axios.post("/api/user/[profile]/cover-update", {
+        cover_photo: file.url,
+        cover_photo_id: file.fileId,
+      });
+
+      toast.success("Cover photo updated successfully");
+      setShowEditMenu(false);
+    } catch (error: unknown) {
+      toast.error(getAxiosErrorMessage(error, "Could not upload cover photo"));
+      if (file?.fileId) {
+        try {
+          await axios.post("/api/user/[profile]/cover-remove", {
+            userPfpToRemove: session?.user.user_id,
+          });
+        } catch (deleteErr: unknown) {
+          console.error("Rollback failed: ", deleteErr);
+        }
+      }
+    } finally {
+      await update();
+    }
+  };
+
+  const handleRemoveCover = async () => {
+    try {
+      const response = await axios.post("/api/user/[profile]/cover-remove", {
+        userPfpToRemove: session?.user.user_id,
+      });
+
+      if (response.data.success) {
+        if (response.data.isDeletingOwnProfile) {
+          await update();
+        }
+        toast.success("Cover photo removed successfully");
+        setShowEditMenu(false);
+      }
+    } catch (deleteErr: unknown) {
+      console.error("Failed to remove cover photo: ", deleteErr);
+      toast.error("Failed to remove cover photo");
+    }
   };
 
   if (status === "loading" || isLoading) {
@@ -148,31 +229,96 @@ export default function EditableProfileCard() {
                 {/* Save Button */}
                 <button
                   onClick={handleSave}
-                  className="inline-flex backdrop-blur-xl bg-green-500/20 border border-green-400/50 rounded-xl p-2 sm:p-3 shadow-2xl hover:bg-green-500/30 transition-all duration-300 group"
+                  className="inline-flex backdrop-blur-xl border border-green-500/50 rounded-xl p-2 sm:p-3 shadow-2xl hover:bg-green-500/30 transition-all duration-300 group cursor-pointer"
                   title="Save changes"
                 >
-                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 group-hover:text-green-300 transition-colors duration-300" />
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-300 group-hover:text-green-200 transition-colors duration-300" />
                 </button>
 
                 {/* Discard Button */}
                 <button
                   onClick={handleCancel}
-                  className="inline-flex backdrop-blur-xl bg-red-500/20 border border-red-400/50 rounded-xl p-2 sm:p-3 shadow-2xl hover:bg-red-500/30 transition-all duration-300 group"
+                  className="inline-flex backdrop-blur-xl border border-red-400/50 rounded-xl p-2 sm:p-3 shadow-2xl hover:bg-red-500/30 transition-all duration-300 group cursor-pointer"
                   title="Discard changes"
                 >
-                  <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 group-hover:text-red-300 transition-colors duration-300" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-300 group-hover:text-red-200 transition-colors duration-300" />
                 </button>
+
+                {/* Go Back Button */}
+                <Link
+                  href={`/profile/${session.user.user_id}`}
+                  className="inline-flex backdrop-blur-xl border border-white/20 rounded-xl p-2 sm:p-3 shadow-2xl hover:bg-white/10 transition-all duration-300 group"
+                  title="Go back to profile"
+                >
+                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-white/70 group-hover:text-white transition-colors duration-300" />
+                </Link>
               </div>
             ) : (
-              <div className="flex gap-2">
-                {/* Edit Button */}
-                <button
-                  onClick={handleEditClick}
-                  className="inline-flex backdrop-blur-xl bg-blue-500/20 border border-blue-400/50 rounded-xl p-2 sm:p-3 shadow-2xl hover:bg-blue-500/30 transition-all duration-300 group"
-                  title="Edit profile"
-                >
-                  <Edit3 className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 group-hover:text-blue-300 transition-colors duration-300" />
-                </button>
+              <div className="flex gap-2" ref={menuRef}>
+                {/* Edit Menu Button */}
+                <div className="relative">
+                  <button
+                    onClick={handleEditClick}
+                    className="inline-flex backdrop-blur-xl bg-blue-500/20 border border-blue-400/50 rounded-xl p-2 sm:p-3 shadow-2xl hover:bg-blue-500/30 transition-all duration-300 group"
+                    title="Edit options"
+                  >
+                    <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 group-hover:text-blue-300 transition-colors duration-300" />
+                  </button>
+
+                  {/* Edit Menu Dropdown */}
+                  <AnimatePresence>
+                    {showEditMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute top-full right-0 mt-2 w-48 backdrop-blur-xl bg-white/5 border border-white/20 rounded-xl shadow-2xl overflow-hidden z-30"
+                      >
+                        <div className="p-1">
+                          {/* Edit Profile Option */}
+                          <button
+                            onClick={handleEditProfile}
+                            className="w-full flex items-center gap-3 px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300 group"
+                          >
+                            <Edit3 className="w-4 h-4 text-blue-200 group-hover:text-blue-300" />
+                            <span className="text-sm">Edit Profile</span>
+                          </button>
+
+                          {/* Upload Cover Photo Option */}
+                          <UploadButton
+                            folder={`/tipstor-worm/users/${session.user.user_id}/cover-image`}
+                            isPrivateFile={false}
+                            onUploaded={(file) => handleUploaded(file)}
+                            renderButton={({ onClick, disabled, busy }) => (
+                              <button
+                                onClick={onClick}
+                                disabled={disabled || busy}
+                                className="w-full flex items-center gap-3 px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <ImageIcon className="w-4 h-4 text-green-200 group-hover:text-green-300" />
+                                <span className="text-sm">
+                                  {busy ? "Uploading..." : "Upload Cover"}
+                                </span>
+                              </button>
+                            )}
+                          />
+
+                          {/* Remove Cover Photo Option */}
+                          {session.user.cover_image && (
+                            <button
+                              onClick={handleRemoveCover}
+                              className="w-full flex items-center gap-3 px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300 group"
+                            >
+                              <Trash2 className="w-4 h-4 text-red-200 group-hover:text-red-300" />
+                              <span className="text-sm">Remove Cover</span>
+                            </button>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
                 {/* Go Back Button */}
                 <Link
@@ -186,7 +332,7 @@ export default function EditableProfileCard() {
             )}
           </div>
 
-          <div className="mt-16 sm:mt-20 relative z-10 flex flex-col items-start gap-4 sm:gap-6">
+          <div className="mt-35 relative z-10 flex flex-col items-start gap-4 sm:gap-6">
             {/* Profile Section */}
             <div className="flex gap-3 sm:gap-4 items-start w-full">
               {/* Profile Picture - Not Editable */}
@@ -244,7 +390,6 @@ export default function EditableProfileCard() {
               </div>
             </div>
 
-            {/* Rest of your component remains the same... */}
             {/* Bio & Website Section */}
             <div className="backdrop-blur-xl bg-white/5 border border-white/20 rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-2xl w-full">
               {/* Bio - Editable */}
