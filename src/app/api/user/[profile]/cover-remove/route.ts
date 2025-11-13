@@ -79,8 +79,6 @@ export async function POST(req: Request): Promise<NextResponse> {
         console.warn(
           "File not found in ImageKit, proceeding with database cleanup"
         );
-      } else {
-        throw imageKitError;
       }
     }
 
