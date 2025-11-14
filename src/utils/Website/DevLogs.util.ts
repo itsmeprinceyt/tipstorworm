@@ -5,6 +5,18 @@ import { DevLog } from "../../types/Website/DevLogs.type";
  * Sorted by ID in descending order (newest first)
  */
 export const devLogsData: DevLog[] = [
+    {
+    id: "4",
+    title: "Quality Of Life",
+    description:
+      "Security and profile updates",
+    date: "2025-11-14",
+    version: "v1.2.2",
+    changes: [
+      "Updated security to enhance checking data being sent back when editing profile",
+      "Added feature to view user's profile via username",
+    ],
+  },
   {
     id: "3",
     title: "More Customization to profile",
