@@ -12,6 +12,7 @@ import generateUsername from "../../../../utils/Variables/generateUsername";
 import { cookies } from "next/headers";
 import { generateHexId } from "../../../../utils/Variables/generateHexID.util";
 import { logAudit } from "../../../../utils/Variables/AuditLogger";
+import { GOOGLEAUTH_SESSION_TTL } from "../../../../utils/TTL";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -73,7 +74,10 @@ declare module "next-auth" {
 }
 
 const authOptions: NextAuthOptions = {
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: GOOGLEAUTH_SESSION_TTL,
+  },
   providers: [
     Google({
       clientId: GOOGLE_CLIENT_ID,
