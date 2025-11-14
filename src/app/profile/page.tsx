@@ -14,7 +14,7 @@ export default function ProfileRedirect() {
     if (!session) {
       router.push("/");
     } else {
-      router.push(`/profile/${session.user.user_id}`);
+      router.push(`/profile/${session.user.username}`);
     }
   }, [session, status, router]);
 

@@ -10,19 +10,36 @@ import { ProfileUpdateRequestDTO } from "../../../../../types/User/Profile/Profi
 
 /**
  * @description
- * Updates the authenticated user's profile information.
- * Allows users to modify their username, bio, website, and profile visibility.
+ * Updates the authenticated user's profile information with comprehensive security validation.
+ * Allows users to modify their username, bio, website, and profile visibility while enforcing
+ * strict input validation and SQL injection protection.
+ *
+ * @security
+ * - Parameterized queries prevent SQL injection attacks
+ * - Field whitelisting restricts updates to allowed fields only
+ * - Username validation with regex pattern: ^[a-zA-Z0-9_]+$
+ * - SQL injection pattern detection in username field
+ * - Input length constraints for all fields
+ * - Audit logging for security monitoring
+ *
+ * @validation
+ * - Username: max 20 chars, alphanumeric and underscores only
+ * - Bio: max 160 characters
+ * - Website: max 100 characters
+ * - Visibility: must be 'public' or 'private'
+ * - Username uniqueness check against existing users
  *
  * @workflow
- * 1. Authenticate user session
- * 2. Validate request body and field constraints
- * 3. Check username availability if being changed
- * 4. Update user record in database
- * 5. Log audit trail for security
- * 6. Return updated user data
+ * 1. Authenticate user session and check ban status
+ * 2. Validate request body structure and field constraints
+ * 3. Apply comprehensive username security validation
+ * 4. Check username availability if being changed
+ * 5. Build safe parameterized update query with field whitelisting
+ * 6. Update user record in database using parameterized queries
+ * 7. Log audit trail for security monitoring
+ * 8. Return appropriate response with success/error messages
+ *
  */
-
-// TODO: check for sql injection and support only underscores & alphabets and numeric.
 export async function PATCH(req: Request): Promise<NextResponse> {
   try {
     const session = await getServerSession(authOptions);
@@ -52,11 +69,40 @@ export async function PATCH(req: Request): Promise<NextResponse> {
       );
     }
 
-    if (body.username && body.username.length > 20) {
-      return NextResponse.json(
-        { error: "Username must be 20 characters or less" },
-        { status: 400 }
-      );
+    if (body.username) {
+      if (body.username.length > 20) {
+        return NextResponse.json(
+          { error: "Username must be 20 characters or less" },
+          { status: 400 }
+        );
+      }
+
+      const usernameRegex = /^[a-zA-Z0-9_]+$/;
+      if (!usernameRegex.test(body.username)) {
+        return NextResponse.json(
+          {
+            error:
+              "Username can only contain letters, numbers, and underscores",
+          },
+          { status: 400 }
+        );
+      }
+
+      const sqlInjectionPatterns = [
+        /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|EXEC|ALTER|CREATE|TRUNCATE)\b)/i,
+        /('|"|`|--|#|\/\*|\*\/|;)/,
+        /(\b(OR|AND)\b\s+\d+\s*=\s*\d+)/i,
+        /(UNION\s+ALL)/i,
+      ];
+
+      for (const pattern of sqlInjectionPatterns) {
+        if (pattern.test(body.username)) {
+          return NextResponse.json(
+            { error: "Invalid username format" },
+            { status: 400 }
+          );
+        }
+      }
     }
 
     if (body.bio && body.bio.length > 160) {
@@ -101,29 +147,20 @@ export async function PATCH(req: Request): Promise<NextResponse> {
     const updateValues: any[] = [];
     const updatedAt = getCurrentDateTime();
 
-    if (body.username !== undefined) {
-      updateFields.push("username = ?");
-      updateValues.push(body.username);
-    }
+    const allowedFields = ["username", "bio", "website", "visibility"];
 
-    if (body.bio !== undefined) {
-      updateFields.push("bio = ?");
-      updateValues.push(body.bio);
-    }
-
-    if (body.website !== undefined) {
-      updateFields.push("website = ?");
-      updateValues.push(body.website);
-    }
-
-    if (body.visibility !== undefined) {
-      updateFields.push("visibility = ?");
-      updateValues.push(body.visibility);
-    }
+    Object.keys(body).forEach((field) => {
+      if (
+        allowedFields.includes(field) &&
+        body[field as keyof ProfileUpdateRequestDTO] !== undefined
+      ) {
+        updateFields.push(`${field} = ?`);
+        updateValues.push(body[field as keyof ProfileUpdateRequestDTO]);
+      }
+    });
 
     updateFields.push("updated_at = ?");
     updateValues.push(updatedAt);
-
     updateValues.push(user.id);
 
     const query = `UPDATE users SET ${updateFields.join(", ")} WHERE id = ?`;
@@ -139,7 +176,9 @@ export async function PATCH(req: Request): Promise<NextResponse> {
       "user_update",
       `User ${user.email} updated their profile`,
       {
-        updated_fields: Object.keys(body),
+        updated_fields: Object.keys(body).filter((field) =>
+          allowedFields.includes(field)
+        ),
         previous_username: user.username,
         new_username: body.username,
         visibility_changed: body.visibility !== user.visibility,
