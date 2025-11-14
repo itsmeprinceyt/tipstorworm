@@ -17,7 +17,7 @@ export default function NavbarMenu({ isOpen, onClose }: NavbarMenuProps) {
     {
       href: session?.user.is_admin
         ? "/admin"
-        : `/profile/${session?.user.user_id}`,
+        : `/profile/${session?.user.username}`,
       label: "Dashboard",
     },
   ];
