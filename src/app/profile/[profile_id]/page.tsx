@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 
 import PageWrapper from "../../(components)/PageWrapper";
 import ProfileCard from "../../(components)/Profile/ProfileCard";
@@ -13,7 +12,6 @@ import { useParams } from "next/navigation";
 
 export default function ProfilePage() {
   const { profile_id } = useParams();
-  const { data: session } = useSession();
 
   const [pageEnabled, setPageEnabled] = useState<boolean | null>(null);
   useEffect(() => {
@@ -36,7 +34,6 @@ export default function ProfilePage() {
   if (!pageEnabled) {
     return <Maintenance />;
   }
-  if (!session) return;
 
   return (
     <PageWrapper>

@@ -21,7 +21,6 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at VARCHAR(30) DEFAULT NULL
 );
 
-
 CREATE TABLE IF NOT EXISTS invite_tokens (
   token CHAR(36) NOT NULL PRIMARY KEY,
   created_by CHAR(36) DEFAULT NULL,
@@ -62,7 +61,6 @@ CREATE TABLE IF NOT EXISTS posts (
 
   icon VARCHAR(1000) DEFAULT NULL,
   icon_id VARCHAR(100) DEFAULT NULL,
-  screenshots JSON NOT NULL DEFAULT (JSON_ARRAY()),
 
   created_by CHAR(36) DEFAULT NULL,
   created_at VARCHAR(30) DEFAULT NULL,
@@ -76,6 +74,19 @@ CREATE TABLE IF NOT EXISTS posts (
   CONSTRAINT fk_posts_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS post_screenshots (
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    post_id CHAR(36) NOT NULL,
+
+    url VARCHAR(1000) NOT NULL,
+    file_id VARCHAR(255) DEFAULT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+
+    created_at VARCHAR(30) DEFAULT NULL,
+    updated_at VARCHAR(30) DEFAULT NULL,
+
+    CONSTRAINT fk_post_screenshots_post FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS post_categories (
   post_id CHAR(36) NOT NULL,

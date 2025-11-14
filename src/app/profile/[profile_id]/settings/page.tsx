@@ -246,7 +246,7 @@ export default function EditableProfileCard() {
 
                 {/* Go Back Button */}
                 <Link
-                  href={`/profile/${session.user.user_id}`}
+                  href={`/profile/${session.user.username}`}
                   className="inline-flex backdrop-blur-xl border border-white/20 rounded-xl p-2 sm:p-3 shadow-2xl hover:bg-white/10 transition-all duration-300 group"
                   title="Go back to profile"
                 >
