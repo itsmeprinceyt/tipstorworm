@@ -39,12 +39,23 @@ export async function uploadToImageKit(
     abortSignal,
     ...rest
   } = opts;
-  
+
   if (!folder) {
     return null;
   }
-  
-  const { token, expire, signature, publicKey } = await ImageKitAuthGenerate();
+
+  const { token, expire, signature, publicKey, value } =
+    await ImageKitAuthGenerate();
+  let finalFolder: string = folder;
+
+  if (!value) {
+    finalFolder = `/tipstor-worm-${value}/${finalFolder}`;
+  } else {
+    finalFolder = `/tipstor-worm/${finalFolder}`;
+  }
+
+  if (!value) {
+  }
 
   const fallbackOriginalName = (file as File)?.name ?? `upload`;
   const { base: originalBase, ext } = splitNameAndExt(fallbackOriginalName);
@@ -62,7 +73,7 @@ export async function uploadToImageKit(
       file,
       fileName: finalFileName,
 
-      folder: folder,
+      folder: finalFolder,
       isPrivateFile,
 
       ...rest,

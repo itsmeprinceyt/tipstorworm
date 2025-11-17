@@ -287,7 +287,7 @@ export default function EditableProfileCard() {
 
                           {/* Upload Cover Photo Option */}
                           <UploadButton
-                            folder={`/tipstor-worm/users/${session.user.user_id}/cover-image`}
+                            folder={`users/${session.user.user_id}/cover-image`}
                             isPrivateFile={false}
                             onUploaded={(file) => handleUploaded(file)}
                             renderButton={({ onClick, disabled, busy }) => (
