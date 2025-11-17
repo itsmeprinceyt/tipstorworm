@@ -33,5 +33,6 @@ export default async function ImageKitAuthGenerate(): Promise<UploadAuthResponse
     expire: expireNum,
     signature: data.signature,
     publicKey: data.publicKey,
+    value: data.value
   };
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { getUploadAuth } from "../../../../utils/Imagekit/ImageKitAuth.server";
+import { getProduction } from "../../../../utils/Variables/getProduction";
 
 /**
  * @brief NEEDED FOR CLIENT SIDE UPLOADING : Generates secure ImageKit upload authentication for authenticated users
@@ -26,7 +27,8 @@ export async function GET() {
     }
 
     const auth = getUploadAuth();
-    return NextResponse.json({ ...auth }, { status: 200 });
+    const value: boolean = getProduction();
+    return NextResponse.json({ ...auth, value }, { status: 200 });
   } catch (error: unknown) {
     console.error("Image Kit Auth Generation Error: ", error);
     return NextResponse.json(

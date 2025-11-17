@@ -7,4 +7,5 @@ export type UploadAuthResponse = {
   expire: number;
   signature: string;
   publicKey: string;
+  value: boolean;
 };
