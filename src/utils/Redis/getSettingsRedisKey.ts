@@ -1,5 +1,5 @@
-import { getProduction } from "../Variables/getProduction";
-import { getDBName } from "../Variables/getDBName";
+import { getProduction } from "../Variables/getProduction.util";
+import { getDBName } from "../Variables/getDBName.util";
 
 export default function getRedisSettingsKey(): string {
   const value: boolean = getProduction();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState, useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -6,7 +7,6 @@ import { CategoriesResponse } from "@/types/Admin/Category/Category.type";
 import axios from "axios";
 import { motion } from "framer-motion";
 import PageWrapper from "../../(components)/PageWrapper";
-import CustomLoader from "../../(components)/Components/utils/Loader";
 import {
   FileText,
   Plus,
@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 interface PostCreateRequestDTO {
   title: string;
@@ -38,10 +37,8 @@ interface PostCreateRequestDTO {
 
 export default function PostCreator() {
   const { data: session } = useSession();
-  const router = useRouter();
   const [categoriesData, setCategoriesData] =
     useState<CategoriesResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const [createLoading, setCreateLoading] = useState<boolean>(false);
   const [categoriesLoading, setCategoriesLoading] = useState<boolean>(true);
 
@@ -73,7 +70,6 @@ export default function PostCreator() {
       toast.error(getAxiosErrorMessage(err, "Failed to fetch categories"));
     } finally {
       setCategoriesLoading(false);
-      setLoading(false);
     }
   }, []);
 
@@ -197,11 +193,11 @@ export default function PostCreator() {
 
                 {/* Go Back Button */}
                 <Link
-                  href="/user/dashboard"
+                  href="/mod-dashboard"
                   className="inline-flex items-center gap-2 px-4 py-2 mt-4 text-black rounded-full transition-all duration-300 text-xs bg-white shadow-xl/10 shadow-white"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  Back to Dashboard
+                  Back to Mod Dashboard
                 </Link>
               </div>
             </div>
@@ -384,21 +380,28 @@ export default function PostCreator() {
                   <label className="text-sm font-medium text-gray-300 mb-3 block">
                     Post Status
                   </label>
-                  <select
-                    name="post_status"
-                    value={formData.post_status}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-3 bg-black/40 backdrop-blur-sm border border-stone-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 transition-all duration-300"
-                  >
-                    <option value="public" className="bg-black text-white">
-                      <Globe className="w-4 h-4 inline mr-2" />
-                      Public
-                    </option>
-                    <option value="private" className="bg-black text-white">
-                      <Lock className="w-4 h-4 inline mr-2" />
-                      Private
-                    </option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="post_status"
+                      value={formData.post_status}
+                      onChange={handleFormChange}
+                      className="w-full px-4 py-3 bg-black/40 backdrop-blur-sm border border-stone-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 transition-all duration-300 appearance-none"
+                    >
+                      <option value="public" className="bg-black text-white">
+                        Public
+                      </option>
+                      <option value="private" className="bg-black text-white">
+                        Private
+                      </option>
+                    </select>
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                      {formData.post_status === "public" ? (
+                        <Globe className="w-4 h-4 text-gray-400" />
+                      ) : (
+                        <Lock className="w-4 h-4 text-gray-400" />
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Featured Post */}
@@ -550,11 +553,16 @@ export default function PostCreator() {
                   <div className="flex gap-4 text-sm text-gray-400">
                     <div className="flex items-center gap-1">
                       {formData.post_status === "public" ? (
-                        <Globe className="w-4 h-4" />
+                        <>
+                          <Globe className="w-4 h-4" />
+                          Public
+                        </>
                       ) : (
-                        <Lock className="w-4 h-4" />
+                        <>
+                          <Lock className="w-4 h-4" />
+                          Private
+                        </>
                       )}
-                      {formData.post_status === "public" ? "Public" : "Private"}
                     </div>
                     {formData.featured && (
                       <div className="flex items-center gap-1 text-yellow-400">

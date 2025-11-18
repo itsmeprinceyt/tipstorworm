@@ -1,6 +1,6 @@
 import { initializeDatabase } from "./Database/init";
 import { getDbPool } from "./Database/init";
-import { getProduction } from "../utils/Variables/getProduction";
+import { getProduction } from "../utils/Variables/getProduction.util";
 
 let initializedPromise: Promise<void> | null = null;
 

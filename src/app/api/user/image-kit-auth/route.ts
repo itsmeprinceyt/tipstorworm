@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { getUploadAuth } from "../../../../utils/Imagekit/ImageKitAuth.server";
-import { getProduction } from "../../../../utils/Variables/getProduction";
+import { getProduction } from "../../../../utils/Variables/getProduction.util";
 
 /**
  * @brief NEEDED FOR CLIENT SIDE UPLOADING : Generates secure ImageKit upload authentication for authenticated users

@@ -1,4 +1,5 @@
 export const InstagramLink = "https://www.instagram.com/itsmeprinceyt";
+export const YouTubeLink = "https://www.youtube.com/@itsmeprinceyt";
 
 export const quickLinks = [
   {

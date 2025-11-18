@@ -3,23 +3,11 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]/route";
 import { initServer, db } from "../../../../../lib/initServer";
-import { getCurrentDateTime } from "../../../../../utils/Variables/getDateTime";
+import { getCurrentDateTime } from "../../../../../utils/Variables/getDateTime.util";
 import { MyJWT } from "../../../../../types/User/JWT.type";
-import { logAudit } from "../../../../../utils/Variables/AuditLogger";
-import { v4 as uuidv4 } from "uuid";
-
-interface PostCreateRequestDTO {
-  title: string;
-  slug: string;
-  description?: string;
-  content?: string;
-  categories?: string[];
-  icon?: string;
-  icon_id?: string;
-  post_status?: "public" | "private";
-  featured?: boolean;
-  metadata?: Record<string, any>;
-}
+import { logAudit } from "../../../../../utils/Variables/AuditLogger.util";
+import { generateHexId } from "../../../../../utils/Variables/generateHexID.util";
+import { PostCreateRequestDTO } from "../../../../../types/DTO/Post/PostCreate.DTO";
 
 /**
  * @description
@@ -152,7 +140,7 @@ export async function POST(req: Request): Promise<NextResponse> {
       }
     }
 
-    const postId = uuidv4();
+    const postId = generateHexId(36);
     const createdAt = getCurrentDateTime();
 
     // Insert post
@@ -229,7 +217,6 @@ export async function POST(req: Request): Promise<NextResponse> {
   } catch (error: unknown) {
     console.error("Error creating post:", error);
 
-    // Handle specific database errors
     if (error instanceof Error) {
       if (error.message.includes("Duplicate entry")) {
         return NextResponse.json(

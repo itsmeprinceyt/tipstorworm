@@ -7,11 +7,11 @@ import Google, { GoogleProfile } from "next-auth/providers/google";
 import { initServer, db } from "../../../../lib/initServer";
 import type { Pool } from "mysql2/promise";
 import { MyJWT } from "../../../../types/User/JWT.type";
-import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime";
-import generateUsername from "../../../../utils/Variables/generateUsername";
+import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime.util";
+import generateUsername from "../../../../utils/Variables/generateUsername.util";
 import { cookies } from "next/headers";
 import { generateHexId } from "../../../../utils/Variables/generateHexID.util";
-import { logAudit } from "../../../../utils/Variables/AuditLogger";
+import { logAudit } from "../../../../utils/Variables/AuditLogger.util";
 import { GOOGLEAUTH_SESSION_TTL } from "../../../../utils/TTL";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;

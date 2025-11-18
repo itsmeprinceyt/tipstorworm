@@ -12,6 +12,7 @@ import Navbar from "./(components)/Navbar/Navbar";
 import Footer from "./(components)/Website/Footer";
 import CustomLoader from "./(components)/Components/utils/Loader";
 import HomePageHeartbeat from "../hooks/HeartBeat";
+import FloatingInstagram from "./(components)/Components/utils/FloatingInstagram";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tipstorworm.vercel.app"),
@@ -1368,6 +1369,7 @@ export default function RootLayout({
               <Navbar />
               <HomePageHeartbeat />
               {children}
+              <FloatingInstagram/>
               <Footer />
               <Analytics />
               <Toaster

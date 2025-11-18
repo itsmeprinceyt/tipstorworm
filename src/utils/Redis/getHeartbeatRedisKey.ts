@@ -1,5 +1,5 @@
-import { getDBName } from "../Variables/getDBName";
-import { getProduction } from "../Variables/getProduction";
+import { getDBName } from "../Variables/getDBName.util";
+import { getProduction } from "../Variables/getProduction.util";
 
 export default function getHeartbeatRedisKey(): string {
   const value = getProduction();

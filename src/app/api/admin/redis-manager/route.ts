@@ -5,7 +5,7 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 
 import { getRedis } from "../../../../lib/Redis/redis";
 import { RedisKey } from "../../../../types/Admin/Redis/RedisKeyDate.type";
-import { logAudit } from "../../../../utils/Variables/AuditLogger";
+import { logAudit } from "../../../../utils/Variables/AuditLogger.util";
 
 /**
  * @description

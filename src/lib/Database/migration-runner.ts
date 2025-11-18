@@ -6,8 +6,8 @@ import type { Pool, PoolConnection } from "mysql2/promise";
 import { fileURLToPath } from "url";
 import { setupIndexes } from "./createIndexs";
 import MIGRATIONS_TABLE_SQL from "./Queries/migration.queries";
-import { getProduction } from "../../utils/Variables/getProduction";
-import { getCurrentDateTime } from "../../utils/Variables/getDateTime";
+import { getProduction } from "../../utils/Variables/getProduction.util";
+import { getCurrentDateTime } from "../../utils/Variables/getDateTime.util";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
