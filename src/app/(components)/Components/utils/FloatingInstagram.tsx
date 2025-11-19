@@ -8,6 +8,7 @@ import {
 } from "../../../../utils/Website/Footer.util";
 import InstagramSVG from "../SVG/Instagram";
 import YouTubeSVG from "../SVG/YouTube";
+
 // TODO : work in progress
 interface HideUntilData {
   timestamp: number;
@@ -48,7 +49,7 @@ const socialPlatforms: SocialPlatform[] = [
   },
 ];
 
-// Animation variants
+// Animation variants - Fixed types
 const containerVariants = {
   hidden: {
     opacity: 0,
@@ -100,8 +101,8 @@ const iconVariants = {
     },
   },
   switch: {
-    scale: [1, 1.2, 1],
-    rotate: [0, -15, 0],
+    scale: [1, 1.2, 1] as [number, number, number],
+    rotate: [0, -15, 0] as [number, number, number],
     transition: {
       duration: 0.6,
       ease: "easeInOut",
@@ -137,8 +138,8 @@ const textVariants = {
 
 const pingVariants = {
   animate: {
-    scale: [1, 1.5, 1],
-    opacity: [0.2, 0, 0.2],
+    scale: [1, 1.5, 1] as [number, number, number],
+    opacity: [0.2, 0, 0.2] as [number, number, number],
     transition: {
       duration: 2,
       repeat: Infinity,
