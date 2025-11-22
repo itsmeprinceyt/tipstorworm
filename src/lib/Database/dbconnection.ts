@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import mysql from "mysql2/promise";
-import { getProduction } from "../../utils/Variables/getProduction";
+import { getProduction } from "../../utils/Variables/getProduction.util";
 
 const isProduction: boolean = getProduction();
 

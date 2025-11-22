@@ -9,7 +9,7 @@ import {
 import type { UploadOptions } from "../../types/ImageKit/UploadOptions.type";
 import { UploadResult } from "../../types/ImageKit/ImageKitAuthResponse.DTO";
 import ImageKitAuthGenerate from "./ImageKitAuth.client";
-import { getCurrentDateTime } from "../Variables/getDateTime";
+import { getCurrentDateTime } from "../Variables/getDateTime.util";
 
 /**
  * @brief Uploads files to ImageKit with secure authentication and standardized filename formatting

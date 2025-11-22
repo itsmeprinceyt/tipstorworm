@@ -5,7 +5,7 @@ import type {
   AuditActionType,
   AuditActor,
 } from "../../types/Admin/AuditLogger/auditLogger.type";
-import { getCurrentDateTime } from "./getDateTime";
+import { getCurrentDateTime } from "./getDateTime.util";
 
 /**
  * @brief

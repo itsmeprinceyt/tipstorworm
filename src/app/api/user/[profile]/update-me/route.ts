@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]/route";
 import { initServer, db } from "../../../../../lib/initServer";
-import { getCurrentDateTime } from "../../../../../utils/Variables/getDateTime";
+import { getCurrentDateTime } from "../../../../../utils/Variables/getDateTime.util";
 import { MyJWT } from "../../../../../types/User/JWT.type";
-import { logAudit } from "../../../../../utils/Variables/AuditLogger";
+import { logAudit } from "../../../../../utils/Variables/AuditLogger.util";
 import { ProfileUpdateRequestDTO } from "../../../../../types/User/Profile/ProfileEdit.DTO";
 
 /**

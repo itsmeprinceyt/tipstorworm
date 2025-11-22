@@ -4,7 +4,7 @@ import { initServer, db } from "../../../../../lib/initServer";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../api/auth/[...nextauth]/route";
 import imageKitConfig from "../../../../..//utils/Imagekit/ImageKit.config";
-import { getCurrentDateTime } from "../../../../../utils/Variables/getDateTime";
+import { getCurrentDateTime } from "../../../../../utils/Variables/getDateTime.util";
 
 /**
  * @description Deletes a user's profile photo from both ImageKit storage and database records.

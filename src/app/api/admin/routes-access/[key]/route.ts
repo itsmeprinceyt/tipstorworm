@@ -3,7 +3,7 @@ import { initServer, db } from "../../../../../lib/initServer";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../api/auth/[...nextauth]/route";
 import { loadSettings } from "../../../../../lib/settings";
-import { logAudit } from "../../../../../utils/Variables/AuditLogger";
+import { logAudit } from "../../../../../utils/Variables/AuditLogger.util";
 import { SettingRow } from "../../../../../types/Admin/Settings/setting.type";
 import { getRedis } from "../../../../../lib/Redis/redis";
 import getRedisSettingsKey from "../../../../../utils/Redis/getSettingsRedisKey";

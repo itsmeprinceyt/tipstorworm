@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 import { initServer, db } from "../../../../../lib/initServer";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../api/auth/[...nextauth]/route";
-import { getCurrentDateTime } from "../../../../../utils/Variables/getDateTime";
+import { getCurrentDateTime } from "../../../../../utils/Variables/getDateTime.util";
 import imageKitConfig from "../../../../..//utils/Imagekit/ImageKit.config";
-import { logAudit } from "../../../.../../../../utils/Variables/AuditLogger";
+import { logAudit } from "../../../../../utils/Variables/AuditLogger.util";
 
 /**
  * @description Handles uploading or updating user profile photo with automatic cleanup of existing cover photo.

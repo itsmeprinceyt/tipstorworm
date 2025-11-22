@@ -1,8 +1,13 @@
 "use client";
 import Link from "next/link";
-import { Instagram } from "lucide-react";
-import { InstagramLink, quickLinks } from "../../../utils/Website/Footer.util";
+import {
+  InstagramLink,
+  quickLinks,
+  YouTubeLink,
+} from "../../../utils/Website/Footer.util";
 import FooterWrapper from "../FooterWrapper";
+import InstagramSVG from "../Components/SVG/Instagram";
+import YouTubeSVG from "../Components/SVG/YouTube";
 
 export default function Footer() {
   return (
@@ -30,13 +35,17 @@ export default function Footer() {
                 <div className="flex gap-3">
                   <Link
                     href={InstagramLink}
-                    className="bg-stone-700/50 p-2 rounded-lg hover:bg-pink-500/20 border border-stone-600 hover:border-pink-500/30 transition-all duration-300 flex items-center justify-center"
+                    className="bg-stone-700/50 p-1 text-stone-400 hover:text-stone-100 rounded-lg hover:bg-pink-500/20 border border-stone-600 hover:border-pink-500/30 transition-all duration-300 flex items-center justify-center"
                     aria-label="Follow us on Instagram"
                   >
-                    <Instagram
-                      size={18}
-                      className="text-gray-400 hover:text-pink-400"
-                    />
+                    <InstagramSVG />
+                  </Link>
+                  <Link
+                    href={YouTubeLink}
+                    className="bg-stone-700/50 p-1 text-stone-400 hover:text-stone-100 rounded-lg hover:bg-red-500/20 border border-stone-600 hover:border-red-500/30 transition-all duration-300 flex items-center justify-center"
+                    aria-label="Follow us on Instagram"
+                  >
+                    <YouTubeSVG />
                   </Link>
                 </div>
               </div>
