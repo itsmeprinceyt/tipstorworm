@@ -2,54 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import {
-  InstagramLink,
-  YouTubeLink,
-} from "../../../../utils/Website/Footer.util";
-import InstagramSVG from "../SVG/Instagram";
-import YouTubeSVG from "../SVG/YouTube";
+import socialPlatforms from "../../../../utils/Website/SocialPlatforms.util";
+import { HideUntilData } from "../../../../types/Website/SocialPlatforms.type";
 
-// TODO : work in progress
-interface HideUntilData {
-  timestamp: number;
-  duration: number;
-}
-
-interface SocialPlatform {
-  name: "instagram" | "youtube";
-  icon: React.ComponentType<{ className?: string }>;
-  link: string;
-  gradient: string;
-  hoverGradient: string;
-  title: string;
-  subtitle: string;
-  pingColor: string;
-}
-
-const socialPlatforms: SocialPlatform[] = [
-  {
-    name: "instagram",
-    icon: InstagramSVG,
-    link: InstagramLink,
-    gradient: "from-purple-500 via-pink-500 to-orange-500",
-    hoverGradient: "from-purple-600 via-pink-600 to-orange-600",
-    title: "Follow us",
-    subtitle: "See our latest updates!",
-    pingColor: "from-purple-500 via-pink-500 to-orange-500",
-  },
-  {
-    name: "youtube",
-    icon: YouTubeSVG,
-    link: YouTubeLink,
-    gradient: "from-red-500 to-red-600",
-    hoverGradient: "from-red-600 to-red-700",
-    title: "Subscribe",
-    subtitle: "Watch our videos!",
-    pingColor: "from-red-500 to-red-600",
-  },
-];
-
-// Animation variants - Fixed types
 const containerVariants = {
   hidden: {
     opacity: 0,
@@ -182,7 +137,6 @@ export default function FloatingSocial() {
     }
   }, []);
 
-  // Cycle through platforms every 5 seconds, pause on hover
   useEffect(() => {
     if (!isVisible || isHovered) return;
 
