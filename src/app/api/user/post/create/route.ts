@@ -53,6 +53,13 @@ export async function POST(req: Request): Promise<NextResponse> {
 
     const user = session.user as MyJWT;
 
+    if (!user.is_mod && !user.is_admin) {
+      return NextResponse.json(
+        { error: "You cannot create posts" },
+        { status: 403 }
+      );
+    }
+
     if (user.is_banned) {
       return NextResponse.json(
         { error: "Your account has been restricted" },
