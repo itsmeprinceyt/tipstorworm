@@ -1,70 +1,77 @@
 import { DevLog } from "../../types/Website/DevLogs.type";
 
 /**
- * Development logs data - manually maintained changelog
+ * Development logs data - public friendly changelog
  * Sorted by ID in descending order (newest first)
  */
 export const devLogsData: DevLog[] = [
   {
+    id: "5",
+    title: "Suggestions Feature Added",
+    description:
+      "You can now share your ideas and suggestions directly with us! Help shape future features by submitting anything you want to see.",
+    date: "2025-12-01",
+    version: "v1.3.0",
+    changes: [
+      "Added suggestions panel for all users",
+      "Introduced a simple way to submit ideas or improvements",
+    ],
+  },
+  {
     id: "4",
-    title: "Security & Profile Updates",
-    description: "Security and profile updates",
+    title: "Profile Improvements",
+    description:
+      "We improved the profile system to make it safer and easier to browse and view user profiles.",
     date: "2025-11-14",
     version: "v1.2.2",
     changes: [
-      "Updated security to enhance checking data being sent back when editing profile",
-      "Added feature to view user's profile via username",
-      "Added middleware",
+      "Better protection and handling of profile data",
+      "You can now view someone's profile using their username",
+      "General improvements for smoother experience",
     ],
   },
   {
     id: "3",
-    title: "More Customization to profile",
+    title: "Better Profile Customization",
     description:
-      "Added ImageKit so now everyone can update their cover photos and edit their profile",
+      "Profiles now feel more personal — you can update your cover photo, bio, username, and more!",
     date: "2025-11-13",
     version: "v1.2.1",
     changes: [
-      "Integrated ImageKit",
-      "Added feature to change profile visibility",
-      "Added feature to update username",
-      "Added feature to update bio",
-      "Added feature to update special website url",
-      "Added feature to modify cover photo",
+      "Upload & update cover photos",
+      "Edit your username",
+      "Edit your bio",
+      "Control who can view your profile",
+      "Add a personal website link",
     ],
   },
   {
     id: "2",
-    title: "Admin Dashboard & Management",
+    title: "Admin & Platform Enhancements",
     description:
-      "Enhanced admin capabilities with comprehensive management panels and system monitoring",
+      "We polished the platform with better management tools, improved browsing, and a cleaner interface.",
     date: "2025-11-02",
     version: "v1.2.0",
     changes: [
-      "User profile dashboard with activity tracking",
-      "Complete audit logging system for security monitoring",
-      "System heartbeat and health monitoring logic",
-      "Redis integration for caching and session management",
-      "Redis cache management interface",
-      "Categories management system with CRUD operations",
-      "Added footer",
-      "Added public dev logs for users to see",
+      "Better user management for admins",
+      "Improved categories system",
+      "Added footer and other design improvements",
+      "Added public development logs you’re reading now",
     ],
   },
   {
     id: "1",
-    title: "Authentication & Platform Foundation",
+    title: "Platform Launched!",
     description:
-      "Established core authentication system and initial platform structure",
+      "We launched the platform with login, sign-up, profiles, and the basic foundation of everything!",
     date: "2025-10-28",
     version: "v1.1.0",
     changes: [
-      "Secure login and authentication system",
-      "Invite token generation and management",
-      "Landing page with hero section",
-      "Brand identity and logo design",
-      "User registration flow",
-      "Basic admin permissions system",
+      "User login & sign-up",
+      "Invite-based registration",
+      "Homepage published",
+      "Branding and logo added",
+      "Basic admin controls",
     ],
   },
 ];
