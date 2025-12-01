@@ -8,9 +8,10 @@ CREATE TABLE IF NOT EXISTS users (
 
     image VARCHAR(500) DEFAULT NULL,
     cover_image VARCHAR(500) DEFAULT NULL,
-    cover_image_id VARCHAR(500) DEFAULT NULL,
+    cover_image_id CHAR(24) DEFAULT NULL,
     bio VARCHAR(160) DEFAULT NULL,
     website VARCHAR(100) DEFAULT NULL,
+
 
     visibility ENUM('public','private') NOT NULL DEFAULT 'public',
     is_admin BOOLEAN DEFAULT FALSE,
@@ -55,12 +56,12 @@ CREATE TABLE IF NOT EXISTS categories (
 CREATE TABLE IF NOT EXISTS posts (
   id CHAR(36) NOT NULL PRIMARY KEY,
   title VARCHAR(500) NOT NULL,
-  slug VARCHAR(255) NOT NULL UNIQUE,
-  description TEXT DEFAULT NULL,
-  content LONGTEXT DEFAULT NULL,
+  short_description VARCHAR(255) NOT NULL UNIQUE,
+  long_description TEXT DEFAULT NULL,
+  markdown_description LONGTEXT DEFAULT NULL, 
 
-  icon VARCHAR(1000) DEFAULT NULL,
-  icon_id VARCHAR(100) DEFAULT NULL,
+  icon_url VARCHAR(500) DEFAULT NULL,
+  icon_id CHAR(24) DEFAULT NULL,
 
   created_by CHAR(36) DEFAULT NULL,
   created_at VARCHAR(30) DEFAULT NULL,
@@ -78,9 +79,8 @@ CREATE TABLE IF NOT EXISTS post_screenshots (
     id CHAR(36) NOT NULL PRIMARY KEY,
     post_id CHAR(36) NOT NULL,
 
-    url VARCHAR(1000) NOT NULL,
-    file_id VARCHAR(255) DEFAULT NULL,
-    sort_order INT NOT NULL DEFAULT 0,
+    file_url VARCHAR(500) NOT NULL,
+    file_id CHAR(24) DEFAULT NULL,
 
     created_at VARCHAR(30) DEFAULT NULL,
     updated_at VARCHAR(30) DEFAULT NULL,

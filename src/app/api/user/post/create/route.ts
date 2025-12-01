@@ -12,20 +12,20 @@ import { PostCreateRequestDTO } from "../../../../../types/DTO/Post/PostCreate.D
 /**
  * @description
  * Creates a new post with comprehensive validation and security checks.
- * Handles post creation including title, slug (simple description), detailed description, content, categories, and metadata.
+ * Handles post creation including title, short_description, long_description, markdown_description, categories, and metadata.
  *
  * @security
  * - Parameterized queries prevent SQL injection attacks
  * - Input validation and sanitization for all fields
- * - Title and slug length constraints
+ * - Title and short_description length constraints
  * - Category ownership validation
  * - User authentication and ban status check
  *
  * @validation
  * - Title: required, max 500 characters
- * - Slug: required, max 255 characters (simple description)
- * - Description: optional, text format (detailed description)
- * - Content: optional, longtext format
+ * - Short Description: required, max 255 characters, UNIQUE constraint
+ * - Long Description: optional, text format
+ * - Markdown Description: optional, longtext format
  * - Categories: optional array of valid category IDs
  * - Post Status: must be 'public' or 'private'
  * - Featured: boolean value
@@ -33,7 +33,7 @@ import { PostCreateRequestDTO } from "../../../../../types/DTO/Post/PostCreate.D
  * @workflow
  * 1. Authenticate user session and check ban status
  * 2. Validate request body and required fields
- * 3. Validate slug format
+ * 3. Validate short_description format
  * 4. Validate category IDs if provided
  * 5. Create post record in database
  * 6. Handle post-category relationships if categories provided
@@ -77,9 +77,9 @@ export async function POST(req: Request): Promise<NextResponse> {
       );
     }
 
-    if (!body.slug || body.slug.trim() === "") {
+    if (!body.short_description || body.short_description.trim() === "") {
       return NextResponse.json(
-        { error: "Slug (simple description) is required" },
+        { error: "Short description is required" },
         { status: 400 }
       );
     }
@@ -92,18 +92,18 @@ export async function POST(req: Request): Promise<NextResponse> {
       );
     }
 
-    // Validate slug length
-    if (body.slug.length > 255) {
+    // Validate short description length
+    if (body.short_description.length > 255) {
       return NextResponse.json(
-        { error: "Slug must be 255 characters or less" },
+        { error: "Short description must be 255 characters or less" },
         { status: 400 }
       );
     }
 
-    // Validate description length if provided
-    if (body.description && body.description.length > 65535) {
+    // Validate long description length if provided
+    if (body.long_description && body.long_description.length > 65535) {
       return NextResponse.json(
-        { error: "Detailed description is too long" },
+        { error: "Long description is too long" },
         { status: 400 }
       );
     }
@@ -150,21 +150,22 @@ export async function POST(req: Request): Promise<NextResponse> {
     const postId = generateHexId(36);
     const createdAt = getCurrentDateTime();
 
-    // Insert post
+    // Insert post with updated field names
     const postQuery = `
       INSERT INTO posts (
-        id, title, slug, description, content, icon, icon_id,
-        created_by, created_at, updated_at, post_status, featured, metadata
+        id, title, short_description, long_description, markdown_description, 
+        icon_url, icon_id, created_by, created_at, updated_at, 
+        post_status, featured, metadata
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const postValues = [
       postId,
       body.title.trim(),
-      body.slug.trim(),
-      body.description?.trim() || null,
-      body.content || null,
-      body.icon || null,
+      body.short_description.trim(),
+      body.long_description?.trim() || null,
+      body.markdown_description || null,
+      body.icon_url || null,
       body.icon_id || null,
       user.id,
       createdAt,
@@ -203,7 +204,7 @@ export async function POST(req: Request): Promise<NextResponse> {
       {
         post_id: postId,
         post_title: body.title,
-        slug: body.slug,
+        short_description: body.short_description,
         categories_count: validCategories.length,
         post_status: body.post_status || "public",
         featured: body.featured || false,
@@ -225,9 +226,12 @@ export async function POST(req: Request): Promise<NextResponse> {
     console.error("Error creating post:", error);
 
     if (error instanceof Error) {
-      if (error.message.includes("Duplicate entry")) {
+      if (
+        error.message.includes("Duplicate entry") &&
+        error.message.includes("short_description")
+      ) {
         return NextResponse.json(
-          { error: "A post with similar details already exists" },
+          { error: "A post with this short description already exists" },
           { status: 409 }
         );
       }

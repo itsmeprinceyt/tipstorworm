@@ -24,11 +24,11 @@ import Link from "next/link";
 
 interface PostCreateRequestDTO {
   title: string;
-  slug: string;
-  description?: string;
-  content?: string;
+  short_description: string;
+  long_description?: string;
+  markdown_description?: string;
   categories?: string[];
-  icon?: string;
+  icon_url?: string;
   icon_id?: string;
   post_status?: "public" | "private";
   featured?: boolean;
@@ -44,9 +44,9 @@ export default function PostCreator() {
 
   const [formData, setFormData] = useState<PostCreateRequestDTO>({
     title: "",
-    slug: "",
-    description: "",
-    content: "",
+    short_description: "",
+    long_description: "",
+    markdown_description: "",
     categories: [],
     post_status: "public",
     featured: false,
@@ -87,6 +87,7 @@ export default function PostCreator() {
       const postData = {
         ...formData,
         categories: selectedCategories,
+        icon_url: formData.icon_url || undefined,
       };
 
       const response = await axios.post("/api/user/post/create", postData);
@@ -96,9 +97,9 @@ export default function PostCreator() {
 
         setFormData({
           title: "",
-          slug: "",
-          description: "",
-          content: "",
+          short_description: "",
+          long_description: "",
+          markdown_description: "",
           categories: [],
           post_status: "public",
           featured: false,
@@ -138,9 +139,9 @@ export default function PostCreator() {
   const handleFormReset = () => {
     setFormData({
       title: "",
-      slug: "",
-      description: "",
-      content: "",
+      short_description: "",
+      long_description: "",
+      markdown_description: "",
       categories: [],
       post_status: "public",
       featured: false,
@@ -237,7 +238,7 @@ export default function PostCreator() {
             )}
 
             <form onSubmit={handleCreatePost} className="space-y-8">
-              {/* Title & Slug Row */}
+              {/* Title & Short Description Row */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Title */}
                 <div>
@@ -259,15 +260,15 @@ export default function PostCreator() {
                   </div>
                 </div>
 
-                {/* Slug (Simple Description) */}
+                {/* Short Description */}
                 <div>
                   <label className="text-sm font-medium text-gray-300 mb-3 block">
-                    Simple Description *
+                    Short Description *
                   </label>
                   <input
                     type="text"
-                    name="slug"
-                    value={formData.slug}
+                    name="short_description"
+                    value={formData.short_description}
                     onChange={handleFormChange}
                     required
                     className="w-full px-4 py-3 bg-black/40 backdrop-blur-sm border border-stone-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-500 transition-all duration-300"
@@ -275,45 +276,45 @@ export default function PostCreator() {
                     maxLength={255}
                   />
                   <div className="text-xs text-gray-400 mt-2">
-                    {formData.slug.length}/255 characters
+                    {formData.short_description.length}/255 characters
                   </div>
                 </div>
               </div>
 
-              {/* Detailed Description */}
+              {/* Long Description */}
               <div>
                 <label className="text-sm font-medium text-gray-300 mb-3 block">
-                  Detailed Description
+                  Long Description
                 </label>
                 <textarea
-                  name="description"
-                  value={formData.description}
+                  name="long_description"
+                  value={formData.long_description}
                   onChange={handleFormChange}
                   rows={4}
                   className="w-full px-4 py-3 bg-black/40 backdrop-blur-sm border border-stone-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-500 transition-all duration-300 resize-vertical"
-                  placeholder="Enter detailed description (optional)"
+                  placeholder="Enter long description (optional)"
                   maxLength={65535}
                 />
                 <div className="text-xs text-gray-400 mt-2">
-                  {formData.description?.length || 0}/65535 characters
+                  {formData.long_description?.length || 0}/65535 characters
                 </div>
               </div>
 
-              {/* Content */}
+              {/* Markdown Description */}
               <div>
                 <label className="text-sm font-medium text-gray-300 mb-3 block">
-                  Content
+                  Content (Markdown)
                 </label>
                 <textarea
-                  name="content"
-                  value={formData.content}
+                  name="markdown_description"
+                  value={formData.markdown_description}
                   onChange={handleFormChange}
                   rows={8}
                   className="w-full px-4 py-3 bg-black/40 backdrop-blur-sm border border-stone-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-500 transition-all duration-300 resize-vertical font-mono text-sm"
                   placeholder="Enter your post content (supports markdown)"
                 />
                 <div className="text-xs text-gray-400 mt-2">
-                  Post content (supports rich text/markdown)
+                  Post content (supports markdown formatting)
                 </div>
               </div>
 
@@ -435,9 +436,11 @@ export default function PostCreator() {
                   </div>
                   <div className="space-y-1 text-xs text-gray-400">
                     <div>Title: {formData.title.length}/500</div>
-                    <div>Slug: {formData.slug.length}/255</div>
                     <div>
-                      Description: {formData.description?.length || 0}/65535
+                      Short Desc: {formData.short_description.length}/255
+                    </div>
+                    <div>
+                      Long Desc: {formData.long_description?.length || 0}/65535
                     </div>
                   </div>
                 </div>
@@ -452,7 +455,7 @@ export default function PostCreator() {
                   disabled={
                     createLoading ||
                     !formData.title.trim() ||
-                    !formData.slug.trim()
+                    !formData.short_description.trim()
                   }
                   className="px-8 py-4 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 flex-1 text-lg font-semibold"
                 >
@@ -484,7 +487,9 @@ export default function PostCreator() {
             </form>
 
             {/* Preview Section */}
-            {(formData.title || formData.slug || formData.description) && (
+            {(formData.title ||
+              formData.short_description ||
+              formData.long_description) && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -507,22 +512,24 @@ export default function PostCreator() {
                     </div>
                   )}
 
-                  {formData.slug && (
+                  {formData.short_description && (
                     <div>
                       <div className="text-emerald-400 text-sm font-medium mb-1">
-                        Simple Description
+                        Short Description
                       </div>
-                      <div className="text-gray-300">{formData.slug}</div>
+                      <div className="text-gray-300">
+                        {formData.short_description}
+                      </div>
                     </div>
                   )}
 
-                  {formData.description && (
+                  {formData.long_description && (
                     <div>
                       <div className="text-emerald-400 text-sm font-medium mb-1">
-                        Detailed Description
+                        Long Description
                       </div>
                       <div className="text-gray-300 leading-relaxed">
-                        {formData.description}
+                        {formData.long_description}
                       </div>
                     </div>
                   )}

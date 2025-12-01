@@ -25,5 +25,9 @@ export type AuditActionType =
   | "reaction_delete"
   | "invite_token_create"
   | "invite_token_deactivate"
+  | "suggestion_create"
+  | "suggestion_update"
+  | "suggestion_delete"
+  | "suggestion_status_change"
   | "settings_update"
   | "system";

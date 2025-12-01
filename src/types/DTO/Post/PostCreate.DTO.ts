@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface PostCreateRequestDTO {
   title: string;
-  slug: string;
-  description?: string;
-  content?: string;
+  short_description: string;
+  long_description?: string;
+  markdown_description?: string;
   categories?: string[];
-  icon?: string;
+  icon_url?: string;
   icon_id?: string;
   post_status?: "public" | "private";
   featured?: boolean;

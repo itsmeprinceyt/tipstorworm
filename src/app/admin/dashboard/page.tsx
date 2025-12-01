@@ -170,7 +170,7 @@ export default function AdminDashboard() {
     {
       title: "Public Suggestions",
       description: "Review reported content",
-      href: "/admin/reports",
+      href: "/admin/suggestions-manager",
       icon: Flag,
     },
     {
