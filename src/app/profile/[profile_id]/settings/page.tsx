@@ -195,7 +195,7 @@ export default function EditableProfileCard() {
   return (
     <PageWrapper>
       <div className="min-h-screen flex items-start justify-center p-4">
-        <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 shadow-2xl mx-auto">
+        <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-linear-to-br from-white/10 to-white/5 shadow-2xl mx-auto">
           {/* Background Image*/}
           <div className="absolute inset-0 z-0">
             {session.user.cover_image ? (
@@ -218,8 +218,8 @@ export default function EditableProfileCard() {
               />
             )}
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-2xl md:rounded-3xl" />
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 rounded-2xl md:rounded-3xl" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent rounded-2xl md:rounded-3xl" />
+            <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 via-transparent to-purple-500/5 rounded-2xl md:rounded-3xl" />
           </div>
 
           {/* Action Icons */}
@@ -336,7 +336,7 @@ export default function EditableProfileCard() {
             {/* Profile Section */}
             <div className="flex gap-3 sm:gap-4 items-start w-full">
               {/* Profile Picture - Not Editable */}
-              <div className="relative flex-shrink-0">
+              <div className="relative shrink-0">
                 <div className="relative h-16 w-16 sm:h-20 sm:w-20 border-2 border-white/10 rounded-full shadow-2xl">
                   {session.user.image ? (
                     <Image
@@ -361,7 +361,7 @@ export default function EditableProfileCard() {
               {/* Profile Details */}
               <div className="backdrop-blur-xl bg-white/5 border border-white/20 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-2xl flex-1 min-w-0">
                 {/* Name - Not Editable */}
-                <h1 className="font-semibold text-white text-lg sm:text-xl leading-tight tracking-tight break-words">
+                <h1 className="font-semibold text-white text-lg sm:text-xl leading-tight tracking-tight wrap-break-word">
                   {session.user.name}
                 </h1>
 
@@ -383,7 +383,7 @@ export default function EditableProfileCard() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-white/70 text-xs sm:text-sm mt-1 font-light break-words">
+                  <p className="text-white/70 text-xs sm:text-sm mt-1 font-light wrap-break-word">
                     @{formData.username || session.user.username}
                   </p>
                 )}
@@ -412,7 +412,7 @@ export default function EditableProfileCard() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-white/90 text-sm leading-relaxed font-light break-words">
+                  <p className="text-white/90 text-sm leading-relaxed font-light wrap-break-word">
                     {formData.bio || session.user.bio || "No bio yet"}
                   </p>
                 )}
@@ -446,7 +446,7 @@ export default function EditableProfileCard() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span className="bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent group-hover:from-white group-hover:to-white transition-all duration-300 break-all">
+                    <span className="bg-linear-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent group-hover:from-white group-hover:to-white transition-all duration-300 break-all">
                       {formData.website || session.user.website}
                     </span>
                   </Link>

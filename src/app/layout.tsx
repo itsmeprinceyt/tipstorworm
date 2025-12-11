@@ -1362,7 +1362,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="select-none antialiased">
+      <body>
         <Providers>
           <Suspense fallback={<CustomLoader fullscreen />}>
             <IKProvider>

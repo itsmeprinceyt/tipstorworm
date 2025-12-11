@@ -6,6 +6,17 @@ import { DevLog } from "../../types/Website/DevLogs.type";
  */
 export const devLogsData: DevLog[] = [
   {
+    id: "6",
+    title: "Token Raffle System",
+    description:
+      "We've launched a token raffle system! Now you can get an invite code to sign up - one code available every 24 hours, refreshing when used.",
+    date: "2025-12-12",
+    version: "v1.4.0",
+    changes: [
+      "Added token raffle page for invite code generation"
+    ],
+  },
+  {
     id: "5",
     title: "Suggestions Feature Added",
     description:

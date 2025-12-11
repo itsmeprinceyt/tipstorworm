@@ -67,7 +67,7 @@ export default function RoleSelectionPage() {
     <PageWrapper>
       <div className="min-h-screen p-6 relative overflow-hidden">
         {/* Enhanced Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/30 via-black to-blue-900/20"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-emerald-900/30 via-black to-blue-900/20"></div>
         <div className="absolute top-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
@@ -86,7 +86,7 @@ export default function RoleSelectionPage() {
               className="inline-flex items-center gap-3 backdrop-blur-xl bg-white/5 border border-white/20 rounded-full px-6 py-3 mb-8 shadow-2xl"
             >
               <Sparkles className="w-5 h-5 text-emerald-300" />
-              <span className="text-emerald-300 font-medium bg-gradient-to-r from-emerald-300 to-green-300 bg-clip-text">
+              <span className="text-emerald-300 font-medium bg-linear-to-r from-emerald-300 to-green-300 bg-clip-text">
                 Role Selection
               </span>
             </motion.div>
@@ -96,7 +96,7 @@ export default function RoleSelectionPage() {
               transition={{ delay: 0.3 }}
               className="text-6xl font-bold mb-6"
             >
-              <span className="bg-gradient-to-r from-white via-emerald-200 to-cyan-200 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-white via-emerald-200 to-cyan-200 bg-clip-text text-transparent">
                 Choose Your Interface
               </span>
             </motion.h1>
@@ -162,7 +162,7 @@ function RoleCard({
     >
       <Link href={role.href}>
         <div
-          className={`relative backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border ${role.borderColor} ${role.hoverColor} rounded-2xl p-8 transition-all duration-500 cursor-pointer h-full flex flex-col group overflow-hidden shadow-2xl`}
+          className={`relative backdrop-blur-xl bg-linear-to-br from-white/10 to-white/5 border ${role.borderColor} ${role.hoverColor} rounded-2xl p-8 transition-all duration-500 cursor-pointer h-full flex flex-col group overflow-hidden shadow-2xl`}
           style={{
             boxShadow: `0 8px 32px 0 ${role.glowColor}`,
           }}
@@ -170,7 +170,7 @@ function RoleCard({
           {/* Icon and Title */}
           <div className="text-center mb-8 relative z-10">
             <motion.div
-              className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-r ${role.color} mb-6 group-hover:scale-110 transition-transform duration-500 shadow-lg`}
+              className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-linear-to-r ${role.color} mb-6 group-hover:scale-110 transition-transform duration-500 shadow-lg`}
               whileHover={{
                 rotate: 5,
                 transition: { duration: 0.4 },
@@ -200,7 +200,7 @@ function RoleCard({
                   className="flex items-center gap-4 text-sm text-gray-300 group-hover:text-gray-200 transition-colors duration-300"
                 >
                   <div
-                    className={`w-2 h-2 rounded-full bg-gradient-to-r ${role.color} flex-shrink-0`}
+                    className={`w-2 h-2 rounded-full bg-linear-to-r ${role.color} shrink-0`}
                   />
                   <span className="font-medium">{feature}</span>
                 </motion.li>
@@ -215,7 +215,7 @@ function RoleCard({
           >
             {/* Button Background Glow */}
             <div
-              className={`absolute inset-0 bg-gradient-to-r ${role.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-xl`}
+              className={`absolute inset-0 bg-linear-to-r ${role.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-xl`}
             />
 
             <div className="flex items-center justify-between relative z-10">

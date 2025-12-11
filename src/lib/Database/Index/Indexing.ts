@@ -11,6 +11,7 @@ export const createIndexStatements: string[] = [
   // Invite tokens table indexes
   "CREATE INDEX idx_invite_tokens_active ON invite_tokens(active)",
   "CREATE INDEX idx_invite_tokens_expires_at ON invite_tokens(expires_at)",
+  "CREATE INDEX idx_invite_tokens_raffle ON invite_tokens(raffle)",
 
   // Categories table indexes
   "CREATE INDEX idx_categories_name ON categories(name)",
@@ -68,6 +69,7 @@ export const dropIndexStatements: string[] = [
   // Invite tokens table indexes
   "DROP INDEX idx_invite_tokens_active ON invite_tokens",
   "DROP INDEX idx_invite_tokens_expires_at ON invite_tokens",
+  "DROP INDEX idx_invite_tokens_raffle ON invite_tokens",
 
   // Categories table indexes
   "DROP INDEX idx_categories_name ON categories",

@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS invite_tokens (
   created_at VARCHAR(30) DEFAULT NULL,
   expires_at VARCHAR(30) DEFAULT NULL,
 
+  raffle TINYINT(1) NOT NULL DEFAULT 0,
+
   CONSTRAINT fk_invite_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
@@ -55,9 +57,13 @@ CREATE TABLE IF NOT EXISTS categories (
 
 CREATE TABLE IF NOT EXISTS posts (
   id CHAR(36) NOT NULL PRIMARY KEY,
+  -- Title
   title VARCHAR(500) NOT NULL,
+  -- Short description which will be shown publicly
   short_description VARCHAR(255) NOT NULL UNIQUE,
+  -- Brief Description
   long_description TEXT DEFAULT NULL,
+  -- Brief Description ( markdown version for showing links and code and what not )
   markdown_description LONGTEXT DEFAULT NULL, 
 
   icon_url VARCHAR(500) DEFAULT NULL,

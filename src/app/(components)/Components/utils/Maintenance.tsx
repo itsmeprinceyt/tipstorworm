@@ -48,7 +48,7 @@ export default function Maintenance() {
 
           {/* Status Message */}
           <div className="flex items-center justify-center text-base sm:text-lg text-gray-300 motion-opacity-in-0 motion-delay-500 bg-black/40 backdrop-blur-sm py-3 px-4 sm:px-6 rounded-full border border-stone-800 mx-2 sm:mx-0">
-            <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0" />
+            <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 shrink-0" />
             <span className="text-sm sm:text-base">
               We&apos;ll be back shortly. Thank you for your patience.
             </span>

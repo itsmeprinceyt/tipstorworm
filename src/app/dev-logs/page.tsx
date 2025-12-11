@@ -58,7 +58,7 @@ export default function DevLogsPage() {
     <PageWrapper>
       <div className="min-h-screen p-6 relative overflow-hidden select-text">
         {/* Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-indigo-900/10"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-emerald-900/20 via-black to-indigo-900/10"></div>
         <div className="absolute top-10 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
@@ -150,7 +150,7 @@ export default function DevLogsPage() {
                               key={changeIndex}
                               className="flex items-start gap-3 text-gray-300"
                             >
-                              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
+                              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2 shrink-0" />
                               <span>{change}</span>
                             </li>
                           ))}

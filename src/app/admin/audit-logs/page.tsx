@@ -238,7 +238,7 @@ export default function AuditLogsPage() {
     <PageWrapper>
       <div className="min-h-screen p-4 sm:p-6 relative overflow-hidden select-text">
         {/* Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 via-black to-green-900/5"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-emerald-900/10 via-black to-green-900/5"></div>
         <div className="absolute top-4 left-4 w-48 h-48 bg-emerald-500/5 rounded-full blur-2xl animate-pulse"></div>
         <div className="absolute bottom-4 right-4 w-64 h-64 bg-green-500/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
 
@@ -582,7 +582,7 @@ export default function AuditLogsPage() {
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3 text-sm">
                                 <div className="flex items-center gap-2 min-w-0 flex-1">
-                                  <User className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                                  <User className="w-4 h-4 text-gray-400 shrink-0" />
                                   <div className="min-w-0">
                                     <div className="text-white truncate">
                                       {log.actor.display_name ||
@@ -601,7 +601,7 @@ export default function AuditLogsPage() {
                                       e.stopPropagation();
                                       copyToClipboard(log.actor.user_id!);
                                     }}
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 cursor-pointer p-1 hover:bg-white/10 rounded"
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 cursor-pointer p-1 hover:bg-white/10 rounded"
                                   >
                                     <Copy className="w-3 h-3 text-gray-400 hover:text-white" />
                                   </motion.button>
@@ -612,7 +612,7 @@ export default function AuditLogsPage() {
                               {log.target ? (
                                 <div className="flex items-center gap-3 text-sm">
                                   <div className="flex items-center gap-2 min-w-0 flex-1">
-                                    <User className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                                    <User className="w-4 h-4 text-gray-400 shrink-0" />
                                     <div className="min-w-0">
                                       <div className="text-white truncate">
                                         {log.target.name || "--"}
@@ -630,7 +630,7 @@ export default function AuditLogsPage() {
                                       e.stopPropagation();
                                       copyToClipboard(log.target!.user_id);
                                     }}
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 cursor-pointer p-1 hover:bg-white/10 rounded"
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 cursor-pointer p-1 hover:bg-white/10 rounded"
                                   >
                                     <Copy className="w-3 h-3 text-gray-400 hover:text-white" />
                                   </motion.button>
@@ -663,7 +663,7 @@ export default function AuditLogsPage() {
                               >
                                 <td colSpan={6} className="px-6 py-4">
                                   <div className="flex items-start gap-3 mb-3">
-                                    <Code className="w-4 h-4 text-emerald-400 mt-1 flex-shrink-0" />
+                                    <Code className="w-4 h-4 text-emerald-400 mt-1 shrink-0" />
                                     <div>
                                       <h3 className="text-sm font-medium text-emerald-400 mb-2">
                                         Metadata
@@ -762,7 +762,7 @@ export default function AuditLogsPage() {
                                       e.stopPropagation();
                                       copyToClipboard(log.actor.user_id!);
                                     }}
-                                    className="flex-shrink-0 p-1 hover:bg-white/10 rounded cursor-pointer"
+                                    className="shrink-0 p-1 hover:bg-white/10 rounded cursor-pointer"
                                   >
                                     <Copy className="w-3 h-3 text-gray-400 hover:text-white" />
                                   </button>
@@ -792,7 +792,7 @@ export default function AuditLogsPage() {
                                       e.stopPropagation();
                                       copyToClipboard(log.target!.user_id);
                                     }}
-                                    className="flex-shrink-0 p-1 hover:bg-white/10 rounded cursor-pointer"
+                                    className="shrink-0 p-1 hover:bg-white/10 rounded cursor-pointer"
                                   >
                                     <Copy className="w-3 h-3 text-gray-400 hover:text-white" />
                                   </button>
@@ -826,7 +826,7 @@ export default function AuditLogsPage() {
                           >
                             <div className="p-4">
                               <div className="flex items-start gap-3 mb-3">
-                                <Code className="w-4 h-4 text-emerald-400 mt-1 flex-shrink-0" />
+                                <Code className="w-4 h-4 text-emerald-400 mt-1 shrink-0" />
                                 <div className="flex-1">
                                   <h3 className="text-sm font-medium text-emerald-400 mb-2">
                                     Metadata

@@ -37,30 +37,30 @@ import GenerateHexIdOptions from "../../types/generateHexID.type";
  *
  * ## BASIC USAGE
  *
- * // Default full UUID
+ * Default full UUID
  * generateHexId() // "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
  *
- * // Simple length specification
+ * Simple length specification
  * generateHexId(8)  // "a1b2c3d4"
  * generateHexId(12) // "a1b2c3d4e5f6"
  * generateHexId(20) // "a1b2c3d4-e5f6-7890-ab"
  *
  * ## INVITE CODES & TOKENS
  *
- * // Standard invite token (36 chars, uppercase, with hyphens)
+ * Standard invite token (36 chars, uppercase, with hyphens)
  * generateHexId({
  *   length: 36,
  *   uppercase: true
  * }) // "A1B2C3D4-E5F6-7890-ABCD-EF1234567890"
  *
- * // Compact token (16 chars, uppercase, no hyphens)
+ * Compact token (16 chars, uppercase, no hyphens)
  * generateHexId({
  *   length: 16,
  *   uppercase: true,
  *   includeHyphens: false
  * }) // "A1B2C3D4E5F67890"
  *
- * // Prefixed invite code
+ * Prefixed invite code
  * generateHexId({
  *   uppercase: true,
  *   prefix: "INV_"
@@ -68,13 +68,13 @@ import GenerateHexIdOptions from "../../types/generateHexID.type";
  *
  * ## DATABASE IDS
  *
- * // Short ID for database primary key
+ * Short ID for database primary key
  * generateHexId(12) // "a1b2c3d4e5f6"
  *
- * // Full UUID for external references
+ * Full UUID for external references
  * generateHexId() // "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
  *
- * // Custom length with prefix
+ * Custom length with prefix
  * generateHexId({
  *   length: 20,
  *   prefix: "usr_"
@@ -82,7 +82,7 @@ import GenerateHexIdOptions from "../../types/generateHexID.type";
  *
  * ## API TOKENS & SECRETS
  *
- * // API key format
+ * API key format
  * generateHexId({
  *   length: 32,
  *   uppercase: true,
@@ -90,7 +90,7 @@ import GenerateHexIdOptions from "../../types/generateHexID.type";
  *   prefix: "sk_"
  * }) // "sk_A1B2C3D4E5F67890ABCDEF1234567890"
  *
- * // Session token
+ * Session token
  * generateHexId({
  *   length: 48,
  *   uppercase: false,
@@ -99,14 +99,14 @@ import GenerateHexIdOptions from "../../types/generateHexID.type";
  *
  * ## FILE NAMES & SLUGS
  *
- * // Unique file name
+ * Unique file name
  * generateHexId({
  *   length: 16,
  *   prefix: "file_",
  *   suffix: ".jpg"
  * }) // "file_a1b2c3d4e5f67890.jpg"
  *
- * // URL-safe slug
+ * URL-safe slug
  * generateHexId({
  *   length: 12,
  *   prefix: "item-"
@@ -116,43 +116,43 @@ import GenerateHexIdOptions from "../../types/generateHexID.type";
  *
  * ## LENGTH-BASED VARIANTS
  *
- * // Ultra-short (4-8 chars): Quick references, mini-codes
+ * Ultra-short (4-8 chars): Quick references, mini-codes
  * generateHexId(6)  // "a1b2c3"
  * generateHexId(8)  // "a1b2c3d4"
  *
- * // Standard short (9-16 chars): Database IDs, compact tokens
+ * Standard short (9-16 chars): Database IDs, compact tokens
  * generateHexId(12) // "a1b2c3d4e5f6"
  * generateHexId(16) // "a1b2c3d4e5f67890"
  *
- * // Medium (17-32 chars): Session IDs, temporary tokens
+ * Medium (17-32 chars): Session IDs, temporary tokens
  * generateHexId(24) // "a1b2c3d4-e5f6-7890-abcd-ef"
  * generateHexId(32) // "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
  *
- * // Full UUID (36 chars): External references, invite codes
+ * Full UUID (36 chars): External references, invite codes
  * generateHexId(36) // "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
  *
- * // Extended (>36 chars): Very long tokens, concatenated IDs
+ * Extended (>36 chars): Very long tokens, concatenated IDs
  * generateHexId(48) // "a1b2c3d4-e5f6-7890-abcd-ef1234567890-a1b2c3d4-e5f6"
  *
  * ## USE CASE PATTERNS
  *
- * // Pattern 1: Database Entities
+ * Pattern 1: Database Entities
  * generateHexId(12) // Short, efficient primary keys
  *
- * // Pattern 2: User-Facing Codes
+ * Pattern 2: User-Facing Codes
  * generateHexId({
  *   length: 12,
  *   uppercase: true
  * }) // "A1B2C3D4E5F6" - Easy to read/type
  *
- * // Pattern 3: System Tokens
+ * Pattern 3: System Tokens
  * generateHexId({
  *   length: 32,
  *   uppercase: true,
  *   includeHyphens: false
  * }) // "A1B2C3D4E5F67890ABCDEF1234567890" - Machine-readable
  *
- * // Pattern 4: External References
+ * Pattern 4: External References
  * generateHexId() // Full UUID for APIs and external systems
  *
  * @notes

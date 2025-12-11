@@ -98,7 +98,7 @@ export default function LoginPage() {
     <PageWrapper>
       <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
         {/* Background Effects - Matching HeroSection */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-green-900/10"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-emerald-900/20 via-black to-green-900/10"></div>
         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
@@ -164,7 +164,6 @@ export default function LoginPage() {
                     </div>
                   </div>
 
-                  {/* New User Button */}
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -173,6 +172,15 @@ export default function LoginPage() {
                   >
                     I have Invite Token !!
                   </motion.button>
+
+                  <motion.a
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    href="/token-raffle"
+                    className="block text-center w-full bg-black/40 backdrop-blur-sm border border-stone-800 text-white py-4 px-6 rounded-xl hover:border-amber-500 hover:bg-amber-500/20 transition-all duration-300 cursor-pointer"
+                  >
+                    Token Raffle !!
+                  </motion.a>
                 </motion.div>
               ) : (
                 <motion.div

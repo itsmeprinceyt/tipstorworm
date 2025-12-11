@@ -23,6 +23,7 @@
 1. 📃 `POST` `/auth/[...nextauth]` - Next-auth 🔴
 2. 📃 `GET` `/public/heartbeat` - Heartbeat function to check MySQL & Redis Connection ⬜
 3. 📃 `POST` `/public/single-setting` - Get all global settings
+4. 📃 `POST` `/public/invite-code-raffle` - Give a token every 24 hours & new token if current one is used
 
 **User Profile APIs**
 1. 📃 `GET` `/user/[profile]` - Get current user profile
