@@ -95,7 +95,7 @@ export default function SendSuggestionPage() {
     <PageWrapper>
       <div className="min-h-screen p-6 relative overflow-hidden text-white">
         {/* Background Effects (matches dashboards) */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-green-900/10"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-emerald-900/20 via-black to-green-900/10"></div>
         <div className="absolute top-10 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-green-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
@@ -244,7 +244,7 @@ export default function SendSuggestionPage() {
                 animate={{ opacity: 1 }}
                 className="flex items-start gap-3 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg"
               >
-                <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-blue-400 font-medium mb-1">
                     Important Information

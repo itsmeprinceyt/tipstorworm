@@ -13,6 +13,8 @@ interface DataInfo {
   valid: boolean;
   expires_at: string | undefined;
   is_master_token: boolean;
+  token?: string;
+  is_raffle_token?: boolean;
 }
 
 export interface PublicInviteTokenResponseDTO {

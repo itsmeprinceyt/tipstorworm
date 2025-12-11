@@ -12,6 +12,7 @@ import DefaultCover from "../../../assets/Default-Cover.jpg";
 import DefaultAvatar from "../../../assets/Default-Avatar.jpg";
 
 import { PublicProfileData } from "../../../types/User/Profile/PublicProfile.type";
+import CustomLoader from "../Components/utils/Loader";
 
 export default function ProfileCard({ profile }: { profile: string }) {
   const { data: session } = useSession();
@@ -64,9 +65,9 @@ export default function ProfileCard({ profile }: { profile: string }) {
 
   if (loading) {
     return (
-      <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 shadow-2xl mx-auto">
+      <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-linear-to-br from-black to-stone-950 shadow-2xl mx-auto">
         <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          <CustomLoader size={5} />
         </div>
       </div>
     );
@@ -74,9 +75,9 @@ export default function ProfileCard({ profile }: { profile: string }) {
 
   if (error === "Private Profile") {
     return (
-      <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 shadow-2xl mx-auto">
+      <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-linear-to-br from-white/10 to-white/5 shadow-2xl mx-auto">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black to-transparent rounded-2xl md:rounded-3xl" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black to-transparent rounded-2xl md:rounded-3xl" />
         </div>
         <div className="relative z-10 flex flex-col items-center justify-center py-16 text-center">
           <Lock className="w-16 h-16 text-white/50 mb-4" />
@@ -93,7 +94,7 @@ export default function ProfileCard({ profile }: { profile: string }) {
 
   if (error || !profileData) {
     return (
-      <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 shadow-2xl mx-auto">
+      <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-linear-to-br from-white/10 to-white/5 shadow-2xl mx-auto">
         <div className="text-center py-12 text-white/70">
           Failed to load profile
         </div>
@@ -102,7 +103,7 @@ export default function ProfileCard({ profile }: { profile: string }) {
   }
 
   return (
-    <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 shadow-2xl mx-auto">
+    <div className="relative border border-white/20 w-full max-w-sm lg:max-w-md xl:max-w-lg rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xl bg-linear-to-br from-white/10 to-white/5 shadow-2xl mx-auto">
       {/* Background Image*/}
       <div className="absolute inset-0 z-0">
         {profileData.cover_image ? (
@@ -125,8 +126,8 @@ export default function ProfileCard({ profile }: { profile: string }) {
           />
         )}
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-2xl md:rounded-3xl" />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 rounded-2xl md:rounded-3xl" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent rounded-2xl md:rounded-3xl" />
+        <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 via-transparent to-purple-500/5 rounded-2xl md:rounded-3xl" />
       </div>
 
       {/* Settings Icon - Only show for own profile */}
@@ -145,7 +146,7 @@ export default function ProfileCard({ profile }: { profile: string }) {
         {/* Profile Section */}
         <div className="flex gap-3 sm:gap-4 items-start w-full">
           {/* Profile Picture */}
-          <div className="relative flex-shrink-0">
+          <div className="relative shrink-0">
             <div className="relative h-16 w-16 sm:h-20 sm:w-20 border border-white/10 rounded-full shadow-2xl">
               {profileData.image ? (
                 <Image
@@ -169,10 +170,10 @@ export default function ProfileCard({ profile }: { profile: string }) {
 
           {/* Profile Details */}
           <div className="backdrop-blur-xl bg-white/5 border border-white/20 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-2xl flex-1 min-w-0">
-            <h1 className="font-semibold text-white text-lg sm:text-xl leading-tight tracking-tight break-words">
+            <h1 className="font-semibold text-white text-lg sm:text-xl leading-tight tracking-tight wrap-break-word">
               {profileData.name}
             </h1>
-            <p className="text-white/70 text-xs sm:text-sm mt-1 font-light break-words">
+            <p className="text-white/70 text-xs sm:text-sm mt-1 font-light wrap-break-word">
               @{profileData.username}
             </p>
           </div>
@@ -185,7 +186,7 @@ export default function ProfileCard({ profile }: { profile: string }) {
               <h3 className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-2">
                 Bio
               </h3>
-              <p className="text-white/90 text-sm leading-relaxed font-light break-words">
+              <p className="text-white/90 text-sm leading-relaxed font-light wrap-break-word">
                 {profileData.bio}
               </p>
             </div>
@@ -202,7 +203,7 @@ export default function ProfileCard({ profile }: { profile: string }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span className="bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent group-hover:from-white group-hover:to-white transition-all duration-300 break-all">
+                <span className="bg-linear-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent group-hover:from-white group-hover:to-white transition-all duration-300 break-all">
                   {profileData.website}
                 </span>
               </Link>
