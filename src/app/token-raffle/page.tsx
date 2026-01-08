@@ -61,9 +61,7 @@ export default function InviteCodeRafflePage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-8"
           >
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Token Raffle
-            </h1>
+            <h1 className="text-3xl font-bold text-white mb-2">Token Raffle</h1>
             <p className="text-gray-300">
               One code per 24 hours. It&apos;ll refresh when used
             </p>
@@ -78,9 +76,17 @@ export default function InviteCodeRafflePage() {
             {/* Token Display */}
             <div className="mb-6">
               <div className="bg-black/60 border border-stone-700 rounded-xl p-4 text-center">
-                <code className="font-mono text-white text-lg break-all">
-                  {token || "No code available"}
-                </code>
+                {token ? (
+                  <code className="font-mono text-white text-lg break-all">
+                    {token || "No code available.Check back after 24 hours"}
+                  </code>
+                ) : (
+                  <p className="font-mono text-white text-xs break-all">
+                    No code available.
+                    <br />
+                    Check back after 24 hours
+                  </p>
+                )}
               </div>
             </div>
 
