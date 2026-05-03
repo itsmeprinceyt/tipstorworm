@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { MyJWT } from "./types/User/JWT.type";
+import { rateLimitMiddleware } from "./lib/Redis/rateLimiter";
 
 export async function proxy(req: NextRequest) {
   const url = req.nextUrl.clone();
   const path = url.pathname;
+  const pathname = req.nextUrl.pathname;
 
   const token = await getToken({
     req,
@@ -30,6 +32,25 @@ export async function proxy(req: NextRequest) {
     }
     url.pathname = "/";
     return NextResponse.redirect(url);
+  }
+
+  // TODO: work in progress
+  if (pathname.startsWith("/api/")) {
+    console.log(`API hit`);
+    const skipRoutes = ["/api/auth/session/", "/api/public/single-setting/"];
+
+    const shouldSkip = skipRoutes.some((route) => pathname.startsWith(route));
+
+    if (!shouldSkip) {
+      const rateLimitResponse = await rateLimitMiddleware(req);
+      if (rateLimitResponse) {
+        return new NextResponse(rateLimitResponse.body, {
+          status: rateLimitResponse.status,
+          headers: rateLimitResponse.headers,
+        });
+      }
+    }
+    return NextResponse.next();
   }
 
   if (path.startsWith("/admin") || path.startsWith("/api/admin")) {

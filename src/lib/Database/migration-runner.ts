@@ -1,16 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import fs from "fs";
 import path from "path";
 import type { Pool, PoolConnection } from "mysql2/promise";
-import { fileURLToPath } from "url";
 import { setupIndexes } from "./createIndexs";
 import MIGRATIONS_TABLE_SQL from "./Queries/migration.queries";
 import { getProduction } from "../../utils/Variables/getProduction.util";
 import { getCurrentDateTime } from "../../utils/Variables/getDateTime.util";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 /**
  * @brief Executes pending database migrations and ensures indexing is set up.
@@ -28,7 +23,13 @@ const __dirname = path.dirname(__filename);
  * - In production, `setupIndexes` will only create missing indexes; in development, it may drop and recreate them.
  */
 export async function runMigrations(pool: Pool) {
-  const migrationsDir = path.join(__dirname, "Migrations");
+  const migrationsDir = path.join(
+    process.cwd(),
+    "src",
+    "lib",
+    "Database",
+    "Migrations"
+  );
 
   if (!fs.existsSync(migrationsDir)) {
     console.warn(

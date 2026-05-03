@@ -213,15 +213,14 @@ export default function LoginPage() {
                             <motion.span
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
-                              className={
-                                isValidFormat
-                                  ? "text-emerald-400"
-                                  : "text-red-400"
-                              }
+                              className={`text-xs 
+                                ${
+                                  isValidFormat
+                                    ? "text-emerald-400"
+                                    : "text-red-400"
+                                }`}
                             >
-                              {isValidFormat
-                                ? "✓ Valid format"
-                                : "✗ Invalid format"}
+                              {isValidFormat ? "Valid" : "Invalid"}
                             </motion.span>
                           )}
                         </div>

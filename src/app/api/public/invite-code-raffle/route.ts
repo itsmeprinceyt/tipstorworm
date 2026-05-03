@@ -4,7 +4,7 @@ import { getCurrentDateTime } from "../../../../utils/Variables/getDateTime.util
 import { generateHexId } from "../../../../utils/Variables/generateHexID.util";
 
 /**
- * Token Raffle API - Returns a single invite code string on a 24-hour interval
+ * Token Raffle API - Returns the current raffle token string on a 24-hour interval
  *
  * Returns only the raw token string - no JSON, no extra data
  * Returns 500 error if something goes wrong
@@ -12,9 +12,9 @@ import { generateHexId } from "../../../../utils/Variables/generateHexID.util";
  * Behavior:
  * - Only one raffle token exists at any time
  * - Each token expires exactly 24 hours after creation
- * - Tokens are single-use (max_uses = 1)
+ * - Tokens are shown even if already used (single-use, but always displayed)
  * - New tokens created only when 24 hours have passed since last creation
- * - Used tokens block new creation until their 24-hour lifecycle completes
+ * - Shows the token even if max_uses has been reached
  *
  * @route POST /api/public/invite-code-raffle
  * @returns {Promise<NextResponse>} Plain text response with token or empty string
@@ -45,26 +45,21 @@ export async function POST(): Promise<NextResponse> {
 
     if (Array.isArray(raffleTokenList) && raffleTokenList.length > 0) {
       const tokenData = raffleTokenList[0];
-      const tokenExpiry = new Date(tokenData.expires_at);
       const tokenCreatedAt = new Date(tokenData.created_at);
 
       const hoursSinceCreation =
         (now.getTime() - tokenCreatedAt.getTime()) / (1000 * 60 * 60);
 
       if (hoursSinceCreation < 24) {
-        if (
-          tokenData.active === 1 &&
-          tokenData.uses < tokenData.max_uses &&
-          now < tokenExpiry
-        ) {
-          tokenToReturn = tokenData.token;
-        } else {
-          return new NextResponse("", { status: 200 });
-        }
+        // Always return the token even if used or expired
+        // This allows users to see what the current/previous token was
+        tokenToReturn = tokenData.token;
       }
+      // If 24+ hours have passed, we'll create a new token below
     }
 
     if (!tokenToReturn) {
+      // No valid current token or 24+ hours have passed since last creation
       const newToken = generateHexId({
         length: 36,
         uppercase: true,
@@ -76,7 +71,8 @@ export async function POST(): Promise<NextResponse> {
 
       await pool.execute(`DELETE FROM invite_tokens WHERE raffle = TRUE`);
       await pool.execute(
-        `INSERT INTO invite_tokens (token, raffle, created_at, expires_at) VALUES (?, TRUE, ?, ?)`,
+        `INSERT INTO invite_tokens (token, raffle, created_at, expires_at, uses, max_uses, active) 
+         VALUES (?, TRUE, ?, ?, 0, 1, 1)`,
         [newToken, createdAt, expiresDateString]
       );
 

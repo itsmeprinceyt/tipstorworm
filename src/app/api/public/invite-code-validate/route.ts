@@ -79,20 +79,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (Array.isArray(tokenList) && tokenList.length > 0) {
       const tokenData = tokenList[0];
 
-      if (tokenData.active === 0) {
-        const errorResponse: ErrorResponseDTO = {
-          success: false,
-          message: "Token expired",
-          code: "TOKEN_EXPIRED",
-        };
-        return NextResponse.json(errorResponse, { status: 410 });
-      }
-
       if (tokenData.uses >= tokenData.max_uses) {
         const errorResponse: ErrorResponseDTO = {
           success: false,
           message: `Token already used`,
           code: "TOKEN_MAX_USES_EXCEEDED",
+        };
+        return NextResponse.json(errorResponse, { status: 410 });
+      }
+
+      if (tokenData.active === 0) {
+        const errorResponse: ErrorResponseDTO = {
+          success: false,
+          message: "Token expired",
+          code: "TOKEN_EXPIRED",
         };
         return NextResponse.json(errorResponse, { status: 410 });
       }
