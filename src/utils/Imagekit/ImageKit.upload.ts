@@ -69,21 +69,19 @@ export async function uploadToImageKit(
       expire,
       signature,
       publicKey,
-
       file,
       fileName: finalFileName,
-
       folder: finalFolder,
       isPrivateFile,
-
       ...rest,
-
+      customMetadata: rest.customMetadata as
+        | Record<string, unknown>
+        | undefined,
       onProgress: (evt) => {
         if (!onProgress) return;
         const total = evt?.total ?? 0;
         onProgress(total > 0 ? (evt.loaded / total) * 100 : 0);
       },
-
       abortSignal,
     });
 

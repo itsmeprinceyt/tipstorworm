@@ -3,11 +3,17 @@ export type UploadOptions = {
   baseName?: string;
   folder?: string;
   isPrivateFile?: boolean;
-  customMetadata?:
-    | string
-    | Record<string, string | number | boolean | Array<string | number | boolean>>;
-
-  responseFields?: string | string[];
+  customMetadata?: Record<string, unknown>;
+  responseFields?: (
+    | "isPrivateFile"
+    | "customMetadata"
+    | "tags"
+    | "customCoordinates"
+    | "embeddedMetadata"
+    | "isPublished"
+    | "metadata"
+    | "selectedFieldsSchema"
+  )[];
   onProgress?: (pct: number) => void;
   abortSignal?: AbortSignal;
 };
