@@ -1,14 +1,4 @@
 "use client";
-import dynamic from "next/dynamic";
-
-const FloatingParticles = dynamic(
-  () => import("./Components/utils/FloatingParticle"),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-);
-
 export default function PageWrapper({
   children,
 }: {
@@ -27,9 +17,6 @@ export default function PageWrapper({
           backgroundPosition: "0 0",
         }}
       />
-
-      {/* This will only load and render on client side */}
-      <FloatingParticles />
     </div>
   );
 }
