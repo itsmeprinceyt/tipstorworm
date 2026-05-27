@@ -4,10 +4,88 @@ import { getToken } from "next-auth/jwt";
 import { MyJWT } from "./types/User/JWT.type";
 import { rateLimitMiddleware } from "./lib/Redis/rateLimiter";
 
+// ─── Route Registry ───────────────────────────────────────────────────────────
+
+const ROUTES = {
+  PUBLIC: {
+    LOGIN: ["/login"],
+  },
+  PROTECTED: {
+    DASHBOARD: ["/dashboard"],
+    ADMIN: ["/admin"],
+    PROFILE_SETTINGS: ["/profile"], // narrowed further in matchesProfileSettings()
+  },
+  API: {
+    DASHBOARD: ["/api/dashboard"],
+    ADMIN: ["/api/admin"],
+    PROFILE_SETTINGS: ["/api/profile"],
+    EXCLUDED_FROM_RATE_LIMIT: [
+      "/api/auth/session",
+      "/api/public/single-setting",
+    ],
+  },
+} as const;
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function matchesRoute(path: string, routes: readonly string[]): boolean {
+  return routes.some((route) => path === route || path.startsWith(route + "/"));
+}
+
+function matchesProfileSettings(path: string): boolean {
+  // Matches /profile/:id/settings or /api/profile/:id/settings
+  return (
+    (path.startsWith("/profile/") || path.startsWith("/api/profile/")) &&
+    path.includes("/settings")
+  );
+}
+
+function shouldRateLimit(path: string): boolean {
+  return (
+    path.startsWith("/api/") &&
+    !ROUTES.API.EXCLUDED_FROM_RATE_LIMIT.some((route) => path.startsWith(route))
+  );
+}
+
+function isAdminUser(user: MyJWT): boolean {
+  return user?.is_admin === true;
+}
+
+// ─── Handlers ─────────────────────────────────────────────────────────────────
+
+function handleUnauthorized(
+  req: NextRequest,
+  url: URL,
+  path: string
+): NextResponse {
+  if (path.startsWith("/api/")) {
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
+  }
+  url.pathname = "/login";
+  url.searchParams.set("callbackUrl", req.url);
+  return NextResponse.redirect(url);
+}
+
+function handleForbidden(
+  path: string,
+  url: URL,
+  redirectTo = "/"
+): NextResponse {
+  if (path.startsWith("/api/")) {
+    return NextResponse.json({ error: "Access denied" }, { status: 403 });
+  }
+  url.pathname = redirectTo;
+  return NextResponse.redirect(url);
+}
+
+// ─── Middleware ───────────────────────────────────────────────────────────────
+
 export async function proxy(req: NextRequest) {
   const url = req.nextUrl.clone();
   const path = url.pathname;
-  const pathname = req.nextUrl.pathname;
 
   const token = await getToken({
     req,
@@ -17,131 +95,77 @@ export async function proxy(req: NextRequest) {
   const isLoggedIn = Boolean(token);
   const user = token as MyJWT;
 
-  const isAdminUser = (user: MyJWT): boolean => {
-    return user?.is_admin === true;
-  };
-
-  const isApiRoute = path.startsWith("/api/");
-
-  if (isLoggedIn && path.startsWith("/login")) {
-    if (isApiRoute) {
-      return NextResponse.json(
-        { error: "Already authenticated" },
-        { status: 400 }
-      );
+  /* ---------------- RATE LIMITING ---------------- */
+  if (shouldRateLimit(path)) {
+    const rateLimitResponse = await rateLimitMiddleware(req);
+    if (rateLimitResponse) {
+      return new NextResponse(rateLimitResponse.body, {
+        status: rateLimitResponse.status,
+        headers: rateLimitResponse.headers,
+      });
     }
-    url.pathname = "/";
-    return NextResponse.redirect(url);
   }
 
-  // TODO: work in progress
-  if (pathname.startsWith("/api/")) {
-    console.log(`API hit`);
-    const skipRoutes = ["/api/auth/session/", "/api/public/single-setting/"];
-
-    const shouldSkip = skipRoutes.some((route) => pathname.startsWith(route));
-
-    if (!shouldSkip) {
-      const rateLimitResponse = await rateLimitMiddleware(req);
-      if (rateLimitResponse) {
-        return new NextResponse(rateLimitResponse.body, {
-          status: rateLimitResponse.status,
-          headers: rateLimitResponse.headers,
-        });
-      }
+  /* ---------------- LOGIN PAGE ---------------- */
+  if (matchesRoute(path, ROUTES.PUBLIC.LOGIN)) {
+    if (isLoggedIn) {
+      url.pathname = isAdminUser(user) ? "/admin" : "/";
+      return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }
 
-  if (path.startsWith("/admin") || path.startsWith("/api/admin")) {
-    if (!isLoggedIn) {
-      if (isApiRoute) {
-        return NextResponse.json(
-          { error: "Authentication required" },
-          { status: 401 }
-        );
-      }
-      url.pathname = "/login";
-      url.searchParams.set("callbackUrl", req.url);
-      return NextResponse.redirect(url);
-    }
+  /* ---------------- DASHBOARD ---------------- */
+  if (
+    matchesRoute(path, ROUTES.PROTECTED.DASHBOARD) ||
+    matchesRoute(path, ROUTES.API.DASHBOARD)
+  ) {
+    if (!isLoggedIn) return handleUnauthorized(req, url, path);
+    return NextResponse.next();
+  }
 
+  /* ---------------- ADMIN ---------------- */
+  if (
+    matchesRoute(path, ROUTES.PROTECTED.ADMIN) ||
+    matchesRoute(path, ROUTES.API.ADMIN)
+  ) {
+    if (!isLoggedIn) return handleUnauthorized(req, url, path);
     if (!isAdminUser(user)) {
       console.warn(`Unauthorized admin access attempt by user: ${user?.email}`);
-      if (isApiRoute) {
-        return NextResponse.json(
-          { error: "Admin access required" },
-          { status: 403 }
-        );
-      }
-      url.pathname = "/";
-      return NextResponse.redirect(url);
+      return handleForbidden(path, url, "/");
     }
+    return NextResponse.next();
   }
 
-  if (
-    !isLoggedIn &&
-    (path.startsWith("/dashboard") || path.startsWith("/api/dashboard"))
-  ) {
-    if (isApiRoute) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
-    }
-    url.pathname = "/login";
-    url.searchParams.set("callbackUrl", req.url);
-    return NextResponse.redirect(url);
-  }
+  /* ---------------- PROFILE SETTINGS ---------------- */
+  if (matchesProfileSettings(path)) {
+    if (!isLoggedIn) return handleUnauthorized(req, url, path);
 
-  if (
-    (path.startsWith("/profile/") && path.includes("/settings")) ||
-    (path.startsWith("/api/profile/") && path.includes("/settings"))
-  ) {
-    if (!isLoggedIn) {
-      if (isApiRoute) {
-        return NextResponse.json(
-          { error: "Authentication required" },
-          { status: 401 }
-        );
-      }
-      url.pathname = "/";
-      return NextResponse.redirect(url);
-    }
+    const pathSegments = path.split("/").filter(Boolean);
+    // /profile/:identifier/settings  →  index 0=profile, 1=identifier
+    // /api/profile/:identifier/settings  →  index 0=api, 1=profile, 2=identifier
+    const identifierIndex = path.startsWith("/api/") ? 2 : 1;
+    const profileIdentifier = pathSegments[identifierIndex];
 
-    const pathSegments = path.split("/").filter((segment) => segment);
-    if (pathSegments.length >= 2) {
-      const profileIdentifier = pathSegments[1];
-      const currentUserID = user?.user_id;
-      const currentUsername = user?.username;
+    const isOwnProfile =
+      profileIdentifier === user?.username ||
+      profileIdentifier === user?.user_id;
 
-      const isOwnProfile =
-        profileIdentifier === currentUsername ||
-        profileIdentifier === currentUserID;
-
-      if (!isOwnProfile) {
-        if (isApiRoute) {
-          return NextResponse.json({ error: "Access denied" }, { status: 403 });
-        }
-        url.pathname = "/";
-        return NextResponse.redirect(url);
-      }
-    }
+    if (!isOwnProfile) return handleForbidden(path, url, "/");
+    return NextResponse.next();
   }
 
   return NextResponse.next();
 }
 
+// ─── Matcher ──────────────────────────────────────────────────────────────────
+
 export const config = {
   matcher: [
-    // Page routes
     "/login",
     "/dashboard/:path*",
-    "/settings/:path*",
     "/admin/:path*",
     "/profile/:path*/settings/:path*",
-
-    // API routes
     "/api/dashboard/:path*",
     "/api/admin/:path*",
     "/api/profile/:path*/settings/:path*",

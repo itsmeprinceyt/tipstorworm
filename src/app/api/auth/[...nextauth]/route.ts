@@ -37,6 +37,30 @@ function isValidEmail(email: string): boolean {
   return re.test(email);
 }
 
+async function getUserImages(
+  pool: Pool,
+  userId: string | undefined
+): Promise<{ image: string; cover_image: string }> {
+  if (!userId) return { image: "", cover_image: "" };
+
+  const [rows] = await pool.execute<any[]>(
+    `SELECT image_type, image_url FROM user_images WHERE user_id = ? AND image_type IN ('pfp', 'cover')`,
+    [userId]
+  );
+
+  let image = "";
+  let cover_image = "";
+
+  if (Array.isArray(rows)) {
+    for (const row of rows) {
+      if (row.image_type === "pfp") image = row.image_url ?? "";
+      if (row.image_type === "cover") cover_image = row.image_url ?? "";
+    }
+  }
+
+  return { image, cover_image };
+}
+
 declare module "next-auth" {
   interface Session {
     user: {
@@ -207,7 +231,7 @@ const authOptions: NextAuthOptions = {
           );
         }
 
-        await pool.execute(
+        await pool.query(
           "INSERT INTO users (id, user_id, name, username, email, image, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
           [
             newId,
@@ -251,22 +275,26 @@ const authOptions: NextAuthOptions = {
       const t = token as MyJWT;
       const pool = await getPool();
 
-      // To make the next-auth trigger an session update from db when we edit the profile
       if (trigger === "update") {
-        const [rows] = await pool.execute<MyJWT[]>(
-          "SELECT id, user_id, name, username, email, image, cover_image, bio, website, visibility, is_admin, is_mod, is_banned FROM users WHERE email = ?",
+        const [rows] = await pool.query<MyJWT[]>(
+          "SELECT id, user_id, name, username, email, bio, website, visibility, is_admin, is_mod, is_banned FROM users WHERE email = ?",
           [t.email]
         );
 
         if (Array.isArray(rows) && rows.length > 0) {
           const dbUser = rows[0];
+          const { image, cover_image } = await getUserImages(
+            pool,
+            dbUser.id ?? t.id
+          );
+
           t.id = dbUser.id ?? t.id;
           t.user_id = dbUser.user_id ?? t.user_id;
           t.name = dbUser.name ?? "";
           t.username = dbUser.username ?? null;
           t.email = dbUser.email ?? t.email;
-          t.image = dbUser.image ?? "";
-          t.cover_image = dbUser.cover_image ?? "";
+          t.image = image;
+          t.cover_image = cover_image;
           t.bio = dbUser.bio ?? "";
           t.website = dbUser.website ?? null;
           t.visibility = dbUser.visibility ?? "public";
@@ -290,19 +318,24 @@ const authOptions: NextAuthOptions = {
 
       if (emailToCheck) {
         const [rows] = await pool.execute<MyJWT[]>(
-          "SELECT id, user_id, name, username, email, image, cover_image, bio, website, visibility, is_admin, is_mod, is_banned FROM users WHERE email = ?",
+          "SELECT id, user_id, name, username, email, bio, website, visibility, is_admin, is_mod, is_banned FROM users WHERE email = ?",
           [emailToCheck]
         );
 
         if (Array.isArray(rows) && rows.length > 0) {
           const dbUser = rows[0];
+          const { image, cover_image } = await getUserImages(
+            pool,
+            dbUser.id ?? t.id
+          );
+
           t.id = dbUser.id ?? t.id;
           t.user_id = dbUser.user_id ?? t.user_id;
           t.name = dbUser.name ?? "";
           t.username = dbUser.username ?? null;
           t.email = dbUser.email ?? emailToCheck;
-          t.image = dbUser.image ?? "";
-          t.cover_image = dbUser.cover_image ?? "";
+          t.image = image;
+          t.cover_image = cover_image;
           t.bio = dbUser.bio ?? "";
           t.website = dbUser.website ?? null;
           t.visibility = dbUser.visibility ?? "public";
