@@ -18,7 +18,7 @@ export default function HeroSection() {
           <div className="space-y-6">
             <div className="flex justify-center mb-4">
               <div className="relative w-25 h-25 hover:scale-105 transition-all ease-in-out duration-1000">
-                <Image src={Logo} fill alt="Logo" />
+                <Image src={Logo} fill alt="Logo" sizes="100px" />
                 <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse"></div>
               </div>
             </div>
